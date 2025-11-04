@@ -1,13 +1,13 @@
 class Element:
-    def __init__(self, x: int, y: int, weigth: int, height: int) -> None:
+    def __init__(self, x: int, y: int, length: int, height: int) -> None:
         self.x = x
         self.y = y
-        self.weigth = weigth
+        self.length = length
         self.height = height
 
     def __repr__(self):
         return (
-            f"{self.__class__.__name__}(x={self.x}, y={self.y}, weigth={self.weigth}, height={self.height})"
+            f"{self.__class__.__name__}(x={self.x}, y={self.y}, length={self.length}, height={self.height})"
         )
 
 

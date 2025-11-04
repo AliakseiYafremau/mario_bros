@@ -1,8 +1,7 @@
-from struct import pack
-from tkinter import Pack
 from game.domain.directions import Direction
 from game.domain.elements import Element
-from game.domain.package import Package
+from game.domain.package import Package, PackageState
+
 
 class Conveyor(Element):
     def __init__(self, x: int, y: int, length: int, height: int, direction: Direction, velocity: int):
@@ -20,12 +19,13 @@ class Conveyor(Element):
     def put_package(self, package: Package):
         if not isinstance(package, Package):
             raise TypeError("package must be a Package instance")
-        package.is_on_conveyor = True
+        package.state = PackageState.ON_CONVEYOR
         self._packages.append(package)
     
     def lift_package(self, package: Package):
         self._packages.remove(package)
         package.is_on_conveyor = False
+        package.state = PackageState.FALLING
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
         if self.x + self.length < package.x:

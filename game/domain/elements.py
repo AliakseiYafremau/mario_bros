@@ -5,7 +5,7 @@ class Element:
         self.length = length
         self.height = height
 
-    def is_touched(self, element: 'Element') -> bool:
+    def is_touched(self, element: "Element") -> bool:
         if not isinstance(element, Element):
             raise TypeError("element must be an Element instance")
 
@@ -25,9 +25,7 @@ class Element:
         return not (is_separated_horizontally or is_separated_vertically)
 
     def __repr__(self):
-        return (
-            f"{self.__class__.__name__}(x={self.x}, y={self.y}, length={self.length}, height={self.height})"
-        )
+        return f"{self.__class__.__name__}(x={self.x}, y={self.y}, length={self.length}, height={self.height})"
 
 
 class MotionElement(Element):

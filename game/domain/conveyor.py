@@ -18,6 +18,26 @@ class Conveyor(Element):
         self._packages: list[Package] = []
         super().__init__(x, y, length, height)
 
+    @property
+    def velocity(self) -> int:
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, value: int):
+        if value < 0:
+            raise ValueError("Velocity cannot be negative")
+        self._velocity = value
+
+    @property
+    def direction(self) -> Direction:
+        return self._direction
+
+    @direction.setter
+    def direction(self, value: Direction):
+        if not isinstance(value, Direction):
+            raise TypeError("direction must be a Direction instance")
+        self._direction = value
+
     def move_packages(self):
         for package in self._packages:
             package.move_x(self._velocity)
@@ -39,22 +59,3 @@ class Conveyor(Element):
             return False
         return True
 
-    @property
-    def velocity(self):
-        return self._velocity
-
-    @property
-    def direction(self):
-        return self._direction
-
-    @velocity.setter
-    def velocity(self, value: int):
-        if value < 0:
-            raise ValueError("Velocity cannot be negative")
-        self._velocity = value
-
-    @direction.setter
-    def direction(self, value: Direction):
-        if not isinstance(value, Direction):
-            raise TypeError("direction must be a Direction instance")
-        self._direction = value

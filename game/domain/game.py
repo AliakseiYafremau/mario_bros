@@ -36,8 +36,8 @@ class Game:
         self.gravity_force = gravity_force
 
     def move_packages(self):
-        fallen_packages = self.give_falling_packages()
-        free_packages = self.give_free_packages()
+        falling_packages = self._give_falling_packages()
+        free_packages = self._give_free_packages()
 
         for package in free_packages:
             for player in self.players:
@@ -45,8 +45,12 @@ class Game:
                     player.pick_package(package)
                     free_packages.remove(package)
 
-        map(lambda package: package.move_x(self.gravity_force), fallen_packages)
+        map(lambda package: package.move_x(self.gravity_force), falling_packages)
         map(lambda conveyor: conveyor.move_packages(), self.conveyors)
+
+        fallen_packages = self._give_fallen_packages()
+        self.live_amount -= len(fallen_packages)
+        map(lambda package: self.packages.remove(package), fallen_packages)
 
     def move_player_up(self, player: Player):
         player_positions = self.players_positions[player]
@@ -85,3 +89,6 @@ class Game:
         return list(
             filter(lambda package: package.state == PackageState.FALLING, self.packages)
         )
+
+    def _give_fallen_packages(self) -> list[Package]:
+        return list(filter(lambda package: package.x < 0, self.packages))

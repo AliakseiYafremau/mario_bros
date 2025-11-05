@@ -12,3 +12,6 @@ class Truck(MotionElement):
             raise TypeError("package must be a Package instance")
         package.state = PackageState.ON_TRUCK
         self._packages.append(package)
+
+    def is_full(self) -> bool:
+        return len(self._packages) >= 8

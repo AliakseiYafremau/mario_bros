@@ -14,7 +14,7 @@ class MoveUpPlayer(Controller):
     def __init__(self, game: Game, player: Player):
         self.game = game
         self.player = player
-    
+
     def execute(self):
         self.game.move_player_up(self.player)
 
@@ -23,6 +23,6 @@ class MoveDownPlayer(Controller):
     def __init__(self, game: Game, player: Player):
         self.game = game
         self.player = player
-    
+
     def execute(self):
         self.game.move_player_down(self.player)

@@ -14,6 +14,8 @@ class Game:
         packages: list[Package],
         factories: list[PackageFactory],
         trucks: list[Truck],
+    
+        gravity_force: int = -1,
     ):
         self.live_amount = live_amount
         self.players = players
@@ -22,21 +24,26 @@ class Game:
         self.factories = factories
         self.trucks = trucks
 
-    def move(self):
-        falling_packages = self.give_falling_packages()
+        self.gravity_force =gravity_force
+
+    def move_packages(self):
+        fallen_packages = self.give_falling_packages()
         free_packages = self.give_free_packages()
 
-        # ...
+        for package in free_packages:
+            for player in self.players:
+                if player.is_touched(package) and player:
+                    player.pick_package(package)
 
-    def give_free_packages(self):
+        map(lambda package: package.move_x(self.gravity_force), fallen_packages)
+        map(lambda conveyor: conveyor.move_packages(), self.conveyors)
+
+    def give_free_packages(self) -> list[Package]:
         return list(
             filter(lambda package: package.staate == PackageState.FREE, self.packages)
         )
 
-    def give_falling_packages(self):
+    def give_falling_packages(self) -> list[Package]:
         return list(
             filter(lambda package: package.state == PackageState.FALLING, self.packages)
         )
-
-    def can_player_take_package(self, package: Package):
-        return True # Fake implementation

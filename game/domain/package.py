@@ -6,10 +6,14 @@ class PackageState(Enum):
     ON_CONVEYOR = "conveyor"
     ON_TRUCK = "truck"
     PICKED = "picked"
-    FALLING = "falling"
+    FREE = "free"
+    FREE = "FREE"
 
 
 class Package(MotionElement):
-    def __init__(self, x, y, length, height):
-        self.state: PackageState = PackageState.ON_CONVEYOR
+    def __init__(
+        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR
+    ):
+        self.state = state
         super().__init__(x, y, length, height)
+

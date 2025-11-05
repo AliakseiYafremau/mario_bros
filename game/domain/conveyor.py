@@ -58,4 +58,3 @@ class Conveyor(Element):
         if self.x + self.length < package.x:
             return False
         return True
-

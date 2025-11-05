@@ -1,5 +1,3 @@
-from turtle import pos
-from pyxel import play
 from game.domain.conveyor import Conveyor
 from game.domain.exceptions import DomainError
 from game.domain.package import Package, PackageState
@@ -49,21 +47,21 @@ class Game:
 
         map(lambda package: package.move_x(self.gravity_force), fallen_packages)
         map(lambda conveyor: conveyor.move_packages(), self.conveyors)
-    
+
     def move_player_up(self, player: Player):
         player_positions = self.players_positions[player]
         player_current_position = (player.x, player.y)
 
         if player_current_position == player_positions[-1]:
             raise DomainError("cannot raise the player because is on the top")
-        
+
         for position_index in range(len(player_positions) - 1):
             if player_current_position == player_positions[position_index]:
                 new_player_position = player_positions[position_index + 1]
                 player.x, player.y = new_player_position[0], new_player_position[1]
 
         raise DomainError("player has invalid position")
-    
+
     def move_player_down(self, player: Player):
         player_positions = self.players_positions[player]
         player_current_position = (player.x, player.y)

@@ -3,7 +3,8 @@
 ## TODO ✍️
 
 - [ ] Prepare graphics for the models
-- [ ] 
+- [ ] Correct logic of conveyor and fallings
+- [ ] Implement truck logic
 
 ## Proposals
 

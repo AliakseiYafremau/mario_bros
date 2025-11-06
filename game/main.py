@@ -12,10 +12,7 @@ def main():
 
     game = Game(
         live_amount=3,
-        players={
-            mario: ((200, 100), (200, 0)),
-            luigi: ((100, 100), (100, 0))
-        }
+        players={mario: ((200, 100), (200, 0)), luigi: ((100, 100), (100, 0))},
     )
 
     move_up_mario = MoveUpPlayer(
@@ -43,7 +40,7 @@ def main():
             pyxel.KEY_DOWN: move_down_mario,
             pyxel.KEY_W: move_up_luigi,
             pyxel.KEY_S: move_down_luigi,
-        }
+        },
     )
 
 

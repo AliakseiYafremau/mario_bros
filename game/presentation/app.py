@@ -7,7 +7,7 @@ from game.presentation.pyxel_elements import PyxelElement
 
 
 class PyxelApp:
-    def __init__(self, *elements: PyxelElement, buttons: dict[object, Controller]):
+    def __init__(self, *elements: PyxelElement, buttons: dict[int, Controller]):
         self.elements = elements
         self.buttons = buttons
 

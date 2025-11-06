@@ -1,4 +1,13 @@
 class Element:
+    """Base class for all game elements.
+
+    Attributes:
+        x (int): The x-coordinate of the element.
+        y (int): The y-coordinate of the element.
+        length (int): The length of the element.
+        height (int): The height of the element.
+    """
+
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         self.x = x
         self.y = y
@@ -6,6 +15,14 @@ class Element:
         self.height = height
 
     def is_touched(self, element: "Element") -> bool:
+        """Check if this element is touching another element.
+
+        Args:
+            element (Element): The other element to check against.
+
+        Returns:
+            bool: True if the elements are touching, False otherwise.
+        """
         if not isinstance(element, Element):
             raise TypeError("element must be an Element instance")
 
@@ -29,6 +46,15 @@ class Element:
 
 
 class MotionElement(Element):
+    """Element that can move in the game.
+
+    Attributes:
+        x (int): The x-coordinate of the element.
+        y (int): The y-coordinate of the element.
+        length (int): The length of the element.
+        height (int): The height of the element.
+    """
+
     def move(self, dx: int = 0, dy: int = 0) -> None:
         self.x = self.x + dx
         self.y = self.y + dy

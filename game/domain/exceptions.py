@@ -1,2 +1,2 @@
 class DomainError(Exception):
-    pass
+    """Logic error"""

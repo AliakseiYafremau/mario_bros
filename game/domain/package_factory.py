@@ -3,6 +3,8 @@ from game.domain.package import Package
 
 
 class PackageFactory(Element):
+    """Factory to create Package instances."""
+
     def __init__(
         self,
         x: int,

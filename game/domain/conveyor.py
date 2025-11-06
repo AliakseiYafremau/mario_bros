@@ -4,6 +4,24 @@ from game.domain.package import Package, PackageState
 
 
 class Conveyor(Element):
+    """The conveyor belt element.
+
+    The `Conveyor` is an element that can move `Package` objects
+    placed on it in a specified direction and velocity.
+
+    Attributes:
+        x (int): Current X coordinate.
+        y (int): Current Y coordinate.
+        length (int): Length of the conveyor in the X axis.
+        height (int): Height of the conveyor in the Y axis.
+        direction (Direction): Direction in which the conveyor moves packages.
+        velocity (int): Speed at which the conveyor moves packages.
+
+    Raises:
+        TypeError: If ``direction`` is not a :class:`Direction` instance.
+        ValueError: If ``velocity`` is negative.
+    """
+
     def __init__(
         self,
         x: int,
@@ -39,6 +57,7 @@ class Conveyor(Element):
         self._direction = value
 
     def move_packages(self):
+        """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
             package.move_x(self._velocity)
             if not self._is_package_on_conveyor(package):

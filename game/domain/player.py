@@ -4,6 +4,25 @@ from game.domain.package import Package, PackageState
 
 
 class Player(MotionElement):
+    """The player character in the game world.
+
+    The `Player` is a controllable character that can move around
+    the game world, pick up `Package` objects, and interact with other
+    game elements.
+
+    Attributes:
+        x (int): Current X coordinate.
+        y (int): Current Y coordinate.
+        length (int): Length of the player in the X axis.
+        height (int): Height of the player in the Y axis.
+        name (str): Name of the player.
+        package (Package | None): The package currently held by the player,
+            or None if no package is held.
+
+    Raises:
+        TypeError: If ``package`` is not a :class:`Package` instance or None.
+    """
+
     def __init__(self, x, y, length, height, name):
         self.name = name
         self._package: Package | None = None

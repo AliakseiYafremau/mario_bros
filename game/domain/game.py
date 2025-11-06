@@ -26,8 +26,6 @@ class Game:
             if not is_correct:
                 raise DomainError("player is not located on one of the entered points")
 
-        # Keep concrete, non-optional collections internally to satisfy
-        # static type checkers and avoid repeated None checks.
         self.players = tuple(players.keys())
         self.players_positions = players
         self.conveyors = conveyors if conveyors is not None else []
@@ -41,13 +39,10 @@ class Game:
         falling_packages = self._give_falling_packages()
         free_packages = self._give_free_packages()
 
-        # Players pick up free packages. Iterate over a copy to allow
-        # modifying the underlying lists during iteration.
         for package in list(free_packages):
             for player in self.players:
                 if player and player.is_touched(package):
                     player.pick_package(package)
-                    # remove from the game's package collection if present
                     if package in self.packages:
                         self.packages.remove(package)
 

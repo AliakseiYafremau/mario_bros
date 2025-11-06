@@ -11,10 +11,10 @@ class Game:
         self,
         live_amount: int,
         players: dict[Player, tuple[tuple[int, int], ...]],
-        conveyors: list[Conveyor],
-        packages: list[Package],
-        factories: list[PackageFactory],
-        trucks: list[Truck],
+        conveyors: list[Conveyor] | None = None,
+        packages: list[Package] | None = None,
+        factories: list[PackageFactory] | None = None,
+        trucks: list[Truck] | None = None,
         gravity_force: int = -1,
     ):
         self.live_amount = live_amount
@@ -63,6 +63,7 @@ class Game:
             if player_current_position == player_positions[position_index]:
                 new_player_position = player_positions[position_index + 1]
                 player.x, player.y = new_player_position[0], new_player_position[1]
+                return
 
         raise DomainError("player has invalid position")
 
@@ -77,6 +78,7 @@ class Game:
             if player_current_position == player_positions[position_index]:
                 new_player_position = player_positions[position_index - 1]
                 player.x, player.y = new_player_position[0], new_player_position[1]
+                return
 
         raise DomainError("player has invalid position")
 

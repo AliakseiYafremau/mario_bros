@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 
+from game.domain.exceptions import DomainError
 from game.domain.game import Game
 from game.domain.player import Player
 
@@ -16,7 +17,10 @@ class MoveUpPlayer(Controller):
         self.player = player
 
     def execute(self):
-        self.game.move_player_up(self.player)
+        try:
+            self.game.move_player_up(self.player)
+        except DomainError:
+            return
 
 
 class MoveDownPlayer(Controller):
@@ -25,4 +29,7 @@ class MoveDownPlayer(Controller):
         self.player = player
 
     def execute(self):
-        self.game.move_player_down(self.player)
+        try:
+            self.game.move_player_down(self.player)
+        except DomainError:
+            return

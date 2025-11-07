@@ -1,4 +1,5 @@
 import pyxel
+from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
@@ -12,7 +13,10 @@ def main():
 
     game = Game(
         live_amount=3,
-        players={mario: ((200, 100), (200, 0)), luigi: ((100, 100), (100, 0))},
+        players={
+            mario: (Floor(200, 100, player=mario), Floor(200, 0)),
+            luigi: (Floor(100, 100, player=luigi), Floor(100, 0)),
+        },
     )
 
     move_up_mario = MoveUpPlayer(

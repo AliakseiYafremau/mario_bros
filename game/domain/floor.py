@@ -2,7 +2,7 @@ from game.domain.player import Player
 
 
 class Floor:
-    def __init__(self, x, y, player: Player):
+    def __init__(self, x, y, player: Player | None = None):
         self.x = x
         self.y = y
         self.player = player

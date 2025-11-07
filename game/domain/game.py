@@ -1,7 +1,7 @@
 from game.domain.conveyor import Conveyor
 from game.domain.exceptions import DomainError
 from game.domain.floor import Floor
-from game.domain.package import Package, PackageState
+from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
@@ -37,42 +37,39 @@ class Game:
         for conveyor in self.conveyors:
             if conveyor.falling_package is not None:
                 if conveyor.finish_floor.player is not None:
-                    conveyor.finish_floor.player.pick_package(
-                        conveyor.falling_package
-                    )
+                    conveyor.finish_floor.player.pick_package(conveyor.falling_package)
                 else:
                     self.live_amount -= 1
                 conveyor.falling_package = None
-
 
         map(lambda conveyor: conveyor.move_packages(), self.conveyors)
 
     def move_player_up(self, player: Player):
         player_positions = self.players_positions[player]
-        player_current_position = (player.x, player.y)
 
-        if player_current_position == player_positions[-1]:
-            raise DomainError("cannot raise the player because is on the top")
+        for position_index, floor in enumerate(player_positions):
+            if floor.x == player.x and floor.y == player.y:
+                if position_index == len(player_positions) - 1:
+                    raise DomainError("cannot raise the player because is on the top")
 
-        for position_index in range(len(player_positions) - 1):
-            if player_current_position == player_positions[position_index]:
-                new_player_position = player_positions[position_index + 1]
-                player.x, player.y = new_player_position[0], new_player_position[1]
+                next_floor = player_positions[position_index + 1]
+                player.x, player.y = next_floor.x, next_floor.y
                 return
 
         raise DomainError("player has invalid position")
 
     def move_player_down(self, player: Player):
         player_positions = self.players_positions[player]
-        player_current_position = (player.x, player.y)
 
-        if player_current_position == player_positions[0]:
-            raise DomainError("cannot lower the player because is on the bottom")
+        for position_index, floor in enumerate(player_positions):
+            if floor.x == player.x and floor.y == player.y:
+                if position_index == 0:
+                    raise DomainError(
+                        "cannot lower the player because is on the bottom"
+                    )
 
-        for position_index in range(1, len(player_positions)):
-            if player_current_position == player_positions[position_index]:
-                new_player_position = player_positions[position_index - 1]
-                player.x, player.y = new_player_position[0], new_player_position[1]
+                previous_floor = player_positions[position_index - 1]
+                player.x, player.y = previous_floor.x, previous_floor.y
                 return
 
         raise DomainError("player has invalid position")

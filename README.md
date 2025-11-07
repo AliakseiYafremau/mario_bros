@@ -13,3 +13,4 @@
     - [x] Delete free state
     - [x] Falling package should belongs to a conveyor
 - [ ] Check if the FALLING state really necessary
+- [ ] Implement player put package logic

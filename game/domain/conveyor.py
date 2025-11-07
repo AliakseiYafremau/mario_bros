@@ -38,7 +38,7 @@ class Conveyor(Element):
         self.direction = direction
         self.velocity = velocity
         self.finish_floor = finish_floor
-        self.falling_package = None
+        self.falling_package: Package | None = None
         self._packages: list[Package] = []
         super().__init__(x, y, length, height)
 

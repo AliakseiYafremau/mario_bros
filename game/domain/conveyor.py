@@ -68,6 +68,7 @@ class Conveyor(Element):
             package.move_x(self._velocity)
             if not self._is_package_on_conveyor(package):
                 self.falling_package = package
+                package.state = PackageState.FALLING
                 self.lift_package(package)
 
     def put_package(self, package: Package):

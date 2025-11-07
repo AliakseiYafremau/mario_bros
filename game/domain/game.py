@@ -1,5 +1,6 @@
 from game.domain.conveyor import Conveyor
 from game.domain.exceptions import DomainError
+from game.domain.floor import Floor
 from game.domain.package import Package, PackageState
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
@@ -10,12 +11,11 @@ class Game:
     def __init__(
         self,
         live_amount: int,
-        players: dict[Player, tuple[tuple[int, int], ...]],
+        players: dict[Player, tuple[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         packages: list[Package] | None = None,
         factories: list[PackageFactory] | None = None,
         trucks: list[Truck] | None = None,
-        gravity_force: int = -1,
     ):
         self.live_amount = live_amount
 
@@ -33,25 +33,19 @@ class Game:
         self.factories = factories if factories is not None else []
         self.trucks = trucks if trucks is not None else []
 
-        self.gravity_force = gravity_force
-
     def move_packages(self):
-        falling_packages = self._give_falling_packages()
-        free_packages = self._give_free_packages()
+        for conveyor in self.conveyors:
+            if conveyor.falling_package is not None:
+                if conveyor.finish_floor.player is not None:
+                    conveyor.finish_floor.player.pick_package(
+                        conveyor.falling_package
+                    )
+                else:
+                    self.live_amount -= 1
+                conveyor.falling_package = None
 
-        for package in list(free_packages):
-            for player in self.players:
-                if player and player.is_touched(package):
-                    player.pick_package(package)
-                    if package in self.packages:
-                        self.packages.remove(package)
 
-        map(lambda package: package.move_x(self.gravity_force), falling_packages)
         map(lambda conveyor: conveyor.move_packages(), self.conveyors)
-
-        fallen_packages = self._give_fallen_packages()
-        self.live_amount -= len(fallen_packages)
-        map(lambda package: self.packages.remove(package), fallen_packages)
 
     def move_player_up(self, player: Player):
         player_positions = self.players_positions[player]
@@ -82,16 +76,3 @@ class Game:
                 return
 
         raise DomainError("player has invalid position")
-
-    def _give_free_packages(self) -> list[Package]:
-        return list(
-            filter(lambda package: package.state == PackageState.FREE, self.packages)
-        )
-
-    def _give_falling_packages(self) -> list[Package]:
-        return list(
-            filter(lambda package: package.state == PackageState.FALLING, self.packages)
-        )
-
-    def _give_fallen_packages(self) -> list[Package]:
-        return list(filter(lambda package: package.x < 0, self.packages))

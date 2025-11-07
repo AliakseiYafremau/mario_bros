@@ -3,12 +3,13 @@
 ## TODO ✍️
 
 - [ ] Prepare graphics for the models
-- [ ] Correct logic of conveyor and fallings
+- [x] Correct logic of conveyor and fallings
 - [ ] Implement truck logic
 
 ## Proposals
 
-- [ ] Check if the player can take the package by the its current floor
+- [x] Check if the player can take the package by the its current floor
     - [x] Add Floor class
-    - [ ] Delete free state
-    - [ ] Falling package should belongs to a conveyor
+    - [x] Delete free state
+    - [x] Falling package should belongs to a conveyor
+- [ ] Check if the FALLING state really necessary

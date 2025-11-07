@@ -9,6 +9,6 @@
 ## Proposals
 
 - [ ] Check if the player can take the package by the its current floor
-    - [ ] Add Floor class
+    - [x] Add Floor class
     - [ ] Delete free state
     - [ ] Falling package should belongs to a conveyor

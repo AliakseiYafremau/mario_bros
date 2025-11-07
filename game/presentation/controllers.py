@@ -6,6 +6,7 @@ from game.domain.player import Player
 
 
 class Controller(ABC):
+    """Controller interface for handling user inputs."""
     @abstractmethod
     def execute(self):
         raise NotImplementedError

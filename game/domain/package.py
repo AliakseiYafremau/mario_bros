@@ -33,15 +33,12 @@ class PackageState(Enum):
         PICKED: Package has been picked by the player.
         FALLING: Package is in a falling state (not supported by all
             game subsystems).
-        FREE: Package is free in the level (not attached to conveyor or
-            truck).
     """
 
     ON_CONVEYOR = "conveyor"
     ON_TRUCK = "truck"
     PICKED = "picked"
     FALLING = "falling"
-    FREE = "free"
 
 
 class Package(MotionElement):

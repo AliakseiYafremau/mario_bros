@@ -11,7 +11,7 @@ class PyxelApp:
         self.elements = elements
         self.buttons = buttons
 
-        resource_path = Path(__file__).resolve().parents[2] / "assets" / "res.pyxres"
+        resource_path = Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
 
         pyxel.init(418, 173, title="Pyxel APP")
         pyxel.load(str(resource_path))

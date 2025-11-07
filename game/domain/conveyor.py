@@ -1,5 +1,6 @@
 from game.domain.directions import Direction
 from game.domain.elements import Element
+from game.domain.floor import Floor
 from game.domain.package import Package, PackageState
 
 
@@ -16,6 +17,8 @@ class Conveyor(Element):
         height (int): Height of the conveyor in the Y axis.
         direction (Direction): Direction in which the conveyor moves packages.
         velocity (int): Speed at which the conveyor moves packages.
+        start_floor (Floor): The floor where the conveyor starts.
+        finish_floor (Floor): The floor where the conveyor ends.
 
     Raises:
         TypeError: If ``direction`` is not a :class:`Direction` instance.
@@ -30,9 +33,12 @@ class Conveyor(Element):
         height: int,
         direction: Direction,
         velocity: int,
+        finish_floor: Floor,
     ):
         self.direction = direction
         self.velocity = velocity
+        self.finish_floor = finish_floor
+        self.falling_package = None
         self._packages: list[Package] = []
         super().__init__(x, y, length, height)
 
@@ -61,6 +67,7 @@ class Conveyor(Element):
         for package in self._packages:
             package.move_x(self._velocity)
             if not self._is_package_on_conveyor(package):
+                self.falling_package = package
                 self.lift_package(package)
 
     def put_package(self, package: Package):
@@ -71,7 +78,6 @@ class Conveyor(Element):
 
     def lift_package(self, package: Package):
         self._packages.remove(package)
-        package.state = PackageState.FREE
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
         if self.x + self.length < package.x:

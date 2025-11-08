@@ -1,4 +1,7 @@
+from math import floor
 import pyxel
+from game.domain.conveyor import Conveyor
+from game.domain.directions import Direction
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.player import Player
@@ -11,12 +14,41 @@ def main():
     mario = Player(200, 100, 100, 100, "Mario")
     luigi = Player(100, 100, 100, 100, "Luigi")
 
+    floor1_mario = Floor(200, 50, player=mario)
+    floor2_mario = Floor(200, 100)
+    floor3_mario = Floor(200, 150)
+
+    floor1_luigi = Floor(100, 50, player=luigi)
+    floor2_luigi = Floor(100, 100)
+    floor3_luigi = Floor(100, 150)
+
+    conveyor1 = Conveyor(
+        x=50,
+        y=150,
+        length=100,
+        height=20,
+        direction=Direction.LEFT,
+        velocity=5,
+        finish_floor=floor1_mario,
+    )
+    conveyor2 = Conveyor(
+        x=150,
+        y=150,
+        length=100,
+        height=20,
+        direction=Direction.LEFT,
+        velocity=5,
+        finish_floor=floor1_luigi,
+    )
+    conveyor1.next_conveyor = conveyor2
+
     game = Game(
         live_amount=3,
         players={
-            mario: (Floor(200, 100, player=mario), Floor(200, 0)),
-            luigi: (Floor(100, 100, player=luigi), Floor(100, 0)),
+            mario: (floor1_mario, floor2_mario, floor3_mario),
+            luigi: (floor1_luigi, floor2_luigi, floor3_luigi),
         },
+        conveyors=[conveyor1, conveyor2],
     )
 
     move_up_mario = MoveUpPlayer(
@@ -39,6 +71,8 @@ def main():
     PyxelApp(
         PyxelElement(mario, 0, 0, 0, 16, 16),
         PyxelElement(luigi, 0, 0, 16, 16, 16),
+        PyxelElement(conveyor1, 0, 32, 32, 32, 8),
+        PyxelElement(conveyor2, 0, 32, 64, 32, 8),
         buttons={
             pyxel.KEY_UP: move_up_mario,
             pyxel.KEY_DOWN: move_down_mario,

@@ -34,7 +34,7 @@ class Conveyor(Element):
         direction: Direction,
         velocity: int,
         finish_floor: Floor,
-        next_conveyor: 'Conveyor',
+        next_conveyor: 'Conveyor | None' = None,
     ):
         self.direction = direction
         self.velocity = velocity

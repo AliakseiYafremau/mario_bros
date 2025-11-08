@@ -34,11 +34,13 @@ class Conveyor(Element):
         direction: Direction,
         velocity: int,
         finish_floor: Floor,
+        next_conveyor: 'Conveyor',
     ):
         self.direction = direction
         self.velocity = velocity
         self.finish_floor = finish_floor
         self.falling_package: Package | None = None
+        self.next_conveyor = next_conveyor
         self._packages: list[Package] = []
         super().__init__(x, y, length, height)
 

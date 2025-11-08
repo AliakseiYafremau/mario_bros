@@ -37,7 +37,16 @@ class Game:
         for conveyor in self.conveyors:
             if conveyor.falling_package is not None:
                 if conveyor.finish_floor.player is not None:
-                    conveyor.finish_floor.player.pick_package(conveyor.falling_package)
+                    current_package = conveyor.falling_package
+                    current_player = conveyor.finish_floor.player
+                    next_conveyor = conveyor.next_conveyor
+
+                    #FIXME Does not make sense to pick and put at the same time
+                    # P.S we can use it for the representation that depends of the state
+                    current_player.pick_package(current_package)
+                    current_player.put_package(conveyor.falling_package)
+
+                    next_conveyor.put_package(current_package)
                 else:
                     self.live_amount -= 1
                 conveyor.falling_package = None

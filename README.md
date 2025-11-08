@@ -12,5 +12,5 @@
     - [x] Add Floor class
     - [x] Delete free state
     - [x] Falling package should belongs to a conveyor
-- [ ] Check if the FALLING state really necessary
-- [ ] Implement player put package logic
+- [x] Check if the FALLING state really necessary
+- [x] Implement player put package logic

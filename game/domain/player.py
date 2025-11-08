@@ -47,6 +47,7 @@ class Player(MotionElement):
     def put_package(self):
         if self.package is None:
             raise DomainError("player does not have any package")
+        self.package.state = PackageState.FALLING
         self.package = None
 
     def move(self, dx=0, dy=0):

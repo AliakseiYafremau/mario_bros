@@ -16,7 +16,7 @@ class Game:
         packages: list[Package] | None = None,
         factories: list[PackageFactory] | None = None,
         trucks: list[Truck] | None = None,
-    ):
+    ) -> None:
         self.live_amount = live_amount
 
         for player in players.keys():
@@ -33,18 +33,20 @@ class Game:
         self.factories = factories if factories is not None else []
         self.trucks = trucks if trucks is not None else []
 
-    def move_packages(self):
+    def move_packages(self) -> None:
         for conveyor in self.conveyors:
             if conveyor.falling_package is not None:
                 if conveyor.finish_floor.player is not None:
                     current_package = conveyor.falling_package
                     current_player = conveyor.finish_floor.player
+                    if conveyor.next_conveyor is None:
+                        raise DomainError("conveyor has no next conveyor")
                     next_conveyor = conveyor.next_conveyor
 
-                    #FIXME Does not make sense to pick and put at the same time
+                    # FIXME Does not make sense to pick and put at the same time
                     # P.S we can use it for the representation that depends of the state
                     current_player.pick_package(current_package)
-                    current_player.put_package(conveyor.falling_package)
+                    current_player.put_package()
 
                     next_conveyor.put_package(current_package)
                 else:
@@ -53,7 +55,7 @@ class Game:
 
         map(lambda conveyor: conveyor.move_packages(), self.conveyors)
 
-    def move_player_up(self, player: Player):
+    def move_player_up(self, player: Player) -> None:
         player_positions = self.players_positions[player]
         player_current_floor = Floor(player.x, player.y)
 
@@ -68,7 +70,7 @@ class Game:
 
         raise DomainError("player has invalid position")
 
-    def move_player_down(self, player: Player):
+    def move_player_down(self, player: Player) -> None:
         player_positions = self.players_positions[player]
         player_current_floor = Floor(player.x, player.y)
 

@@ -23,13 +23,13 @@ class Player(MotionElement):
         TypeError: If ``package`` is not a :class:`Package` instance or None.
     """
 
-    def __init__(self, x, y, length, height, name):
+    def __init__(self, x, y, length, height, name) -> None:
         self.name = name
         self._package: Package | None = None
         super().__init__(x, y, length, height)
 
     @property
-    def package(self):
+    def package(self) -> Package | None:
         return self._package
 
     @package.setter
@@ -38,24 +38,25 @@ class Player(MotionElement):
             raise TypeError("package must be a Package instance or None")
         self._package = value
 
-    def pick_package(self, package: Package):
+    def pick_package(self, package: Package) -> None:
         if self.package is not None:
             raise DomainError("player already has a package")
         package.state = PackageState.PICKED
         self.package = package
 
-    def put_package(self):
+    def put_package(self) -> None:
         if self.package is None:
             raise DomainError("player does not have any package")
         self.package.state = PackageState.FALLING
         self.package = None
 
-    def move(self, dx=0, dy=0):
-        self.package.move(dx=dx, dy=dy)
+    def move(self, dx=0, dy=0) -> None:
+        if self.package is not None:
+            self.package.move(dx=dx, dy=dy)
         return super().move(dx, dy)
 
-    def move_x(self, dx):
+    def move_x(self, dx) -> None:
         return self.move(dx=dx, dy=0)
 
-    def move_y(self, dy):
+    def move_y(self, dy) -> None:
         return self.move(dx=0, dy=dy)

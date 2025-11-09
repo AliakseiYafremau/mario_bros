@@ -61,7 +61,7 @@ class Package(MotionElement):
 
     def __init__(
         self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR
-    ):
+    ) -> None:
         if not isinstance(state, PackageState):
             raise TypeError("state must be an instance of PackageState")
         self.state = state

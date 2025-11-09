@@ -3,7 +3,7 @@ from game.domain.package import Package, PackageState
 
 
 class Truck(MotionElement):
-    def __init__(self, x, y, length, height):
+    def __init__(self, x, y, length, height) -> None:
         self._packages: list[Package] = []
         super().__init__(x, y, length, height)
 

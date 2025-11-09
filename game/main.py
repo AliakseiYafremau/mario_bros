@@ -1,4 +1,3 @@
-from math import floor
 import pyxel
 from game.domain.conveyor import Conveyor
 from game.domain.directions import Direction

@@ -34,8 +34,8 @@ class Conveyor(Element):
         direction: Direction,
         velocity: int,
         finish_floor: Floor,
-        next_conveyor: 'Conveyor | None' = None,
-    ):
+        next_conveyor: "Conveyor | None" = None,
+    ) -> None:
         self.direction = direction
         self.velocity = velocity
         self.finish_floor = finish_floor
@@ -49,7 +49,7 @@ class Conveyor(Element):
         return self._velocity
 
     @velocity.setter
-    def velocity(self, value: int):
+    def velocity(self, value: int) -> None:
         if value < 0:
             raise ValueError("Velocity cannot be negative")
         self._velocity = value
@@ -59,12 +59,12 @@ class Conveyor(Element):
         return self._direction
 
     @direction.setter
-    def direction(self, value: Direction):
+    def direction(self, value: Direction) -> None:
         if not isinstance(value, Direction):
             raise TypeError("direction must be a Direction instance")
         self._direction = value
 
-    def move_packages(self):
+    def move_packages(self) -> None:
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
             package.move_x(self._velocity)
@@ -73,13 +73,13 @@ class Conveyor(Element):
                 package.state = PackageState.FALLING
                 self.lift_package(package)
 
-    def put_package(self, package: Package):
+    def put_package(self, package: Package) -> None:
         if not isinstance(package, Package):
             raise TypeError("package must be a Package instance")
         package.state = PackageState.ON_CONVEYOR
         self._packages.append(package)
 
-    def lift_package(self, package: Package):
+    def lift_package(self, package: Package) -> None:
         self._packages.remove(package)
 
     def _is_package_on_conveyor(self, package: Package) -> bool:

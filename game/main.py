@@ -6,7 +6,7 @@ from game.domain.game import Game
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import PyxelElement, Frame
+from game.presentation.pyxel_elements import Grid, PyxelElement, Frame
 
 
 def main():
@@ -69,9 +69,15 @@ def main():
 
     PyxelApp(
         PyxelElement(mario, Frame(0, 0, 0, 16, 16)),
-        PyxelElement(luigi, Frame(0, 0, 16, 16, 16)),
-        PyxelElement(conveyor1, Frame(0, 32, 32, 32, 8)),
-        PyxelElement(conveyor2, Frame(0, 32, 64, 32, 8)),
+        PyxelElement(luigi, Frame(0, 16, 0, 16, 16)),
+        PyxelElement(
+            conveyor1,
+            Frame(1, 0, 24, 8, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 0, 32, 16, 8),
+            grid=Grid.ROW,
+        ),
         buttons={
             pyxel.KEY_UP: move_up_mario,
             pyxel.KEY_DOWN: move_down_mario,

@@ -1,6 +1,12 @@
+from enum import Enum
 import pyxel
 
 from game.domain.elements import Element
+
+
+class Grid(Enum):
+    ROW = "row"
+    COLUMN = "column"
 
 
 class Frame:
@@ -30,15 +36,20 @@ class PyxelElement(Element):
         self,
         element: Element,
         *frames: Frame,
+        grid: Grid = Grid.ROW,
     ):
         self.element = element
         self.frames = frames
+        self.grid = grid
 
     def draw(self):
+        element_x = self.element.x
+        element_y = self.element.y
+
         for frame in self.frames:
             pyxel.blt(
-                x=self.element.x,
-                y=self.element.y,
+                x=element_x,
+                y=element_y,
                 img=frame.image,
                 u=frame.u,
                 v=frame.v,
@@ -48,3 +59,10 @@ class PyxelElement(Element):
                 rotate=frame.rotate,
                 scale=frame.scale,
             )
+
+            if self.grid == Grid.ROW:
+                element_x += frame.h
+            elif self.grid == Grid.COLUMN:
+                element_y += frame.w
+            else:
+                raise ValueError("Invalid Grid type")

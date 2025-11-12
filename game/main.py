@@ -6,20 +6,20 @@ from game.domain.game import Game
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import PyxelElement
+from game.presentation.pyxel_elements import PyxelElement, Frame
 
 
 def main():
     mario = Player(200, 100, 100, 100, "Mario")
     luigi = Player(100, 100, 100, 100, "Luigi")
 
-    floor1_mario = Floor(200, 50, player=mario)
+    floor1_mario = Floor(200, 150)
     floor2_mario = Floor(200, 100)
-    floor3_mario = Floor(200, 150)
+    floor3_mario = Floor(200, 50, player=mario)
 
-    floor1_luigi = Floor(100, 50, player=luigi)
+    floor1_luigi = Floor(100, 150)
     floor2_luigi = Floor(100, 100)
-    floor3_luigi = Floor(100, 150)
+    floor3_luigi = Floor(100, 50, player=luigi)
 
     conveyor1 = Conveyor(
         x=50,
@@ -68,10 +68,10 @@ def main():
     )
 
     PyxelApp(
-        PyxelElement(mario, 0, 0, 0, 16, 16),
-        PyxelElement(luigi, 0, 0, 16, 16, 16),
-        PyxelElement(conveyor1, 0, 32, 32, 32, 8),
-        PyxelElement(conveyor2, 0, 32, 64, 32, 8),
+        PyxelElement(mario, Frame(0, 0, 0, 16, 16)),
+        PyxelElement(luigi, Frame(0, 0, 16, 16, 16)),
+        PyxelElement(conveyor1, Frame(0, 32, 32, 32, 8)),
+        PyxelElement(conveyor2, Frame(0, 32, 64, 32, 8)),
         buttons={
             pyxel.KEY_UP: move_up_mario,
             pyxel.KEY_DOWN: move_down_mario,

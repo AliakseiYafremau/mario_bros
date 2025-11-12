@@ -3,10 +3,9 @@ import pyxel
 from game.domain.elements import Element
 
 
-class PyxelElement(Element):
+class Frame:
     def __init__(
         self,
-        element: Element,
         image: int,
         u: int,
         v: int,
@@ -16,7 +15,6 @@ class PyxelElement(Element):
         rotate: int | None = None,
         scale: int | None = None,
     ):
-        self.element = element
         self.image = image
         self.u = u
         self.v = v
@@ -26,16 +24,27 @@ class PyxelElement(Element):
         self.rotate = rotate
         self.scale = scale
 
+
+class PyxelElement(Element):
+    def __init__(
+        self,
+        element: Element,
+        *frames: Frame,
+    ):
+        self.element = element
+        self.frames = frames
+
     def draw(self):
-        pyxel.blt(
-            x=self.element.x,
-            y=self.element.y,
-            img=self.image,
-            u=self.u,
-            v=self.v,
-            w=self.w,
-            h=self.h,
-            colkey=self.colkey,
-            rotate=self.rotate,
-            scale=self.scale,
-        )
+        for frame in self.frames:
+            pyxel.blt(
+                x=self.element.x,
+                y=self.element.y,
+                img=frame.image,
+                u=frame.u,
+                v=frame.v,
+                w=frame.w,
+                h=frame.h,
+                colkey=frame.colkey,
+                rotate=frame.rotate,
+                scale=frame.scale,
+            )

@@ -1,3 +1,4 @@
+from game.domain.conveyor import Conveyor
 from game.domain.elements import Element
 from game.domain.package import Package
 
@@ -15,17 +16,21 @@ class PackageFactory(Element):
         new_package_y: int,
         new_package_length: int,
         new_package_height: int,
+        conveyor: Conveyor,
     ) -> None:
         self.new_package_x = new_package_x
         self.new_package_y = new_package_y
         self.new_package_length = new_package_length
         self.new_package_height = new_package_height
+        self.conveyor = conveyor
         super().__init__(x, y, length, height)
 
-    def create_package(self) -> Package:
-        return Package(
-            x=self.new_package_x,
-            y=self.new_package_y,
-            length=self.new_package_length,
-            height=self.new_package_height,
+    def create_package(self) -> None:
+        self.conveyor.put_package(
+            Package(
+                x=self.new_package_x,
+                y=self.new_package_y,
+                length=self.new_package_length,
+                height=self.new_package_height,
+            )
         )

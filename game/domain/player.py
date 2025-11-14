@@ -50,13 +50,13 @@ class Player(MotionElement):
         self.package.state = PackageState.FALLING
         self.package = None
 
-    def move(self, dx=0, dy=0) -> None:
+    def move(self, x=0, y=0) -> None:
         if self.package is not None:
-            self.package.move(dx=dx, dy=dy)
-        return super().move(dx, dy)
+            self.package.move(x=x, y=y)
+        return super().move(x, y)
 
-    def move_x(self, dx) -> None:
-        return self.move(dx=dx, dy=0)
+    def move_x(self, x) -> None:
+        return self.move(x=x, y=0)
 
-    def move_y(self, dy) -> None:
-        return self.move(dx=0, dy=dy)
+    def move_y(self, y) -> None:
+        return self.move(x=0, y=y)

@@ -67,7 +67,7 @@ class Game:
         for position_index in range(len(player_positions) - 1):
             if player_current_floor == player_positions[position_index]:
                 new_player_position = player_positions[position_index + 1]
-                player.x, player.y = new_player_position.x, new_player_position.y
+                player.move(new_player_position.x, new_player_position.y)
                 return
 
         raise DomainError("player has invalid position")
@@ -86,7 +86,7 @@ class Game:
         for position_index in range(1, len(player_positions)):
             if player_current_floor == player_positions[position_index]:
                 new_player_position = player_positions[position_index - 1]
-                player.x, player.y = new_player_position.x, new_player_position.y
+                player.move(new_player_position.x, new_player_position.y)
                 return
 
         raise DomainError("player has invalid position")

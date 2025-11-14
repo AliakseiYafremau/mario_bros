@@ -4,6 +4,7 @@ from game.domain.conveyor import Conveyor
 from game.domain.directions import Direction
 from game.domain.floor import Floor
 from game.domain.game import Game
+from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
@@ -42,6 +43,8 @@ def main():
     )
     conveyor1.next_conveyor = conveyor2
 
+    package_factory = PackageFactory(50, 50, 50, 50, 50, 50, 50, 50, conveyor1)
+
     game = Game(
         live_amount=3,
         players={
@@ -49,6 +52,7 @@ def main():
             luigi: (floor1_luigi, floor2_luigi, floor3_luigi),
         },
         conveyors=[conveyor1, conveyor2],
+        factories=[package_factory],
     )
 
     move_up_mario = MoveUpPlayer(
@@ -86,6 +90,10 @@ def main():
             Frame(1, 16, 88, 16, 8),
             Frame(1, 0, 32, 16, 8),
             grid=Grid.ROW,
+        ),
+        PyxelElement(
+            package_factory,
+            Frame(0, 80, 0, 16, 16),
         ),
         buttons={
             pyxel.KEY_UP: move_up_mario,

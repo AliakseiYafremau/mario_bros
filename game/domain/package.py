@@ -1,25 +1,3 @@
-"""Package domain models.
-
-This module defines the :class:`PackageState` enumeration and the
-:class:`Package` domain model used by the game logic.
-
-The design follows simple, mutable data-carrying objects that inherit
-movement behaviour from :class:`game.domain.elements.MotionElement`.
-
-Example:
-    Create a package located at ``(10, 5)`` on the conveyor::
-
-        from game.domain.package import Package, PackageState
-
-        pkg = Package(10, 5, 2, 1, state=PackageState.ON_CONVEYOR)
-
-Attributes:
-    The :class:`Package` object exposes public attributes ``x``, ``y``,
-    ``weigth`` (length in x axis) and ``height`` inherited from
-    :class:`game.domain.elements.Element`, and the ``state`` attribute
-    indicating its current life-cycle state.
-"""
-
 from enum import Enum
 from game.domain.elements import MotionElement
 

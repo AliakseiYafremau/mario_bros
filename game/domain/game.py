@@ -1,10 +1,8 @@
 from game.domain.conveyor import Conveyor
 from game.domain.exceptions import DomainError
 from game.domain.floor import Floor
-from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
-from game.domain.truck import Truck
 
 
 class Game:
@@ -13,9 +11,7 @@ class Game:
         live_amount: int,
         players: dict[Player, tuple[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
-        packages: list[Package] | None = None,
         factories: list[PackageFactory] | None = None,
-        trucks: list[Truck] | None = None,
     ) -> None:
         self.live_amount = live_amount
 
@@ -29,9 +25,7 @@ class Game:
         self.players = tuple(players.keys())
         self.players_positions = players
         self.conveyors = conveyors if conveyors is not None else []
-        self.packages = packages if packages is not None else []
         self.factories = factories if factories is not None else []
-        self.trucks = trucks if trucks is not None else []
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
@@ -69,6 +63,10 @@ class Game:
                 return
 
         raise DomainError("player has invalid position")
+
+    def create_package(self):
+        for factory in self.factories:
+            factory.create_package()
 
     def move_player_down(self, player: Player) -> None:
         player_positions = self.players_positions[player]

@@ -1,4 +1,5 @@
 import pyxel
+
 from game.domain.conveyor import Conveyor
 from game.domain.directions import Direction
 from game.domain.floor import Floor
@@ -6,7 +7,7 @@ from game.domain.game import Game
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import Grid, PyxelElement, Frame
+from game.presentation.pyxel_elements import Frame, Grid, PyxelElement
 
 
 def main():

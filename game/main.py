@@ -76,6 +76,14 @@ def main():
             Frame(1, 0, 24, 8, 8),
             Frame(1, 16, 88, 16, 8),
             Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
+            Frame(1, 16, 88, 16, 8),
             Frame(1, 0, 32, 16, 8),
             grid=Grid.ROW,
         ),
@@ -85,6 +93,8 @@ def main():
             pyxel.KEY_W: move_up_luigi,
             pyxel.KEY_S: move_down_luigi,
         },
+        game=game,
+        tick_second=0.5,
     )
 
 

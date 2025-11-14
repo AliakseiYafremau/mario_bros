@@ -67,7 +67,10 @@ class Conveyor(Element):
     def move_packages(self) -> None:
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
-            package.move_x(self._velocity)
+            if self.direction == Direction.LEFT:
+                package.move_y(self._velocity)
+            else:
+                package.move_y(self._velocity * -1)
             if not self._is_package_on_conveyor(package):
                 self.falling_package = package
                 package.state = PackageState.FALLING

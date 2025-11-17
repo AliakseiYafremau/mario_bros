@@ -87,6 +87,9 @@ Class that renders an object in the application based on game elements and frame
 
 `Frame` stores information about images. It is used to display several photos for one element at once (since an element can be complex and consist of more than one image (for example, a conveyor belt)).
 
+### PyxelApp
+`PyxelApp` wires the Pyxel event loop to the game simulation: it loads sprite resources, keeps a list of `PyxelElement` instances to draw, binds `Controller`s to keyboard buttons, and advances `Game` ticks according to configurable delays for package movement and creation. On every update it polls the buttons, extends the render list with freshly spawned packages, and calls `Game.move_packages()` / `Game.create_package()` when the elapsed time exceeds the configured cadence before redrawing the scene.
+
 # Main Algorithms
 - `Game.move_packages()` is the heart of the loop. First, it inspects every `Conveyor` for a `falling_package`. If the target `finish_floor` hosts a `Player`, the player briefly picks that package, drops it toward the `next_conveyor`, and the controller inserts it onto the next belt; otherwise a dropped package decrements `live_amount`. After resolving transfers it calls `Conveyor.move_packages()` on each belt and increments the global `tick`.
 - `Conveyor.move_packages()` iterates through its `_packages`, offsets each package horizontally by `velocity` toward `direction`, and checks `_is_package_on_conveyor()`. Packages that have moved beyond the physical span are marked `FALLING`, recorded as `falling_package`, and removed via `lift_package()` so they can be caught by the next floor.

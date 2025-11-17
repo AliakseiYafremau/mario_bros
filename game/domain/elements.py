@@ -73,7 +73,7 @@ class MotionElement(Element):
         self.y = y
 
     def move_x(self, x: int) -> None:
-        self.move(x=x, y=0)
+        self.move(x=x, y=self.y)
 
     def move_y(self, y: int) -> None:
-        self.move(x=0, y=y)
+        self.move(x=self.x, y=y)

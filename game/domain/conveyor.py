@@ -46,6 +46,10 @@ class Conveyor(Element):
         self.falling_package: Package | None = None
         self.next_conveyor = next_conveyor
         self._packages: list[Package] = []
+        if self.direction == Direction.RIGHT:
+            self.start_position: tuple[int, int] = (x, y + height)
+        else:
+            self.start_position: tuple[int, int] = (x + length, y + height)
         super().__init__(x, y, length, height)
 
     @property
@@ -83,6 +87,7 @@ class Conveyor(Element):
     def put_package(self, package: Package) -> None:
         if not isinstance(package, Package):
             raise TypeError("package must be a Package instance")
+        package.move(self.start_position[0], self.start_position[1])
         package.state = PackageState.ON_CONVEYOR
         self._packages.append(package)
 

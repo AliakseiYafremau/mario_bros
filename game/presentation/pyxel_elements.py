@@ -2,6 +2,10 @@ from enum import Enum
 import pyxel
 
 from game.domain.elements import Element
+from game.domain.logging import get_logger
+
+
+logger = get_logger(__name__, "PRESENTATION")
 
 
 class Grid(Enum):
@@ -41,6 +45,12 @@ class PyxelElement(Element):
         self.element = element
         self.frames = frames
         self.grid = grid
+        logger.debug(
+            "%s was created in (x=%s, y=%s)",
+            self.element,
+            self.element.x,
+            self.element.y,
+        )
 
     def draw(self):
         element_x = self.element.x

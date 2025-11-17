@@ -43,7 +43,7 @@ def main():
     )
     conveyor1.next_conveyor = conveyor2
 
-    package_factory = PackageFactory(50, 50, 50, 50, 50, 50, 50, 50, conveyor1)
+    package_factory = PackageFactory(50, 50, 50, 50, 70, 150, 50, 50, conveyor1)
 
     game = Game(
         live_amount=3,
@@ -104,7 +104,7 @@ def main():
         game=game,
         tick_second=1,
         move_package_tick=1,
-        create_package_tick=10,
+        create_package_tick=5,
     )
 
 

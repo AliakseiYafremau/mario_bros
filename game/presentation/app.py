@@ -3,6 +3,7 @@ from time import perf_counter
 
 import pyxel
 
+from game.domain.conveyor import Conveyor
 from game.domain.game import Game
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import Frame, PyxelElement

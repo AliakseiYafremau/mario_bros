@@ -20,14 +20,14 @@ class Element:
 
 ```python
 class MotionElement(Element):
-    def move(self, x: int = 0, y: int = 0) -> None:
-      """Moves the object along the x and y axes."""
+  def move(self, x: int = 0, y: int = 0) -> None:
+    """Moves the object along the x and y axes."""
 
-    def move_x(self, x: int) -> None:
-      """Moves the object along the x axis."""
+  def move_x(self, x: int) -> None:
+    """Moves the object along the x axis."""
 
-    def move_y(self, y: int) -> None:
-      """Moves the object along the y axis."""
+  def move_y(self, y: int) -> None:
+    """Moves the object along the y axis."""
 ```
 
 ### Player
@@ -35,14 +35,14 @@ class MotionElement(Element):
 
 ```python
 class Player(MotionElement):
-    def __init__(self, x, y, length, height, name) -> None:
-      ...
+  def __init__(self, x, y, length, height, name) -> None:
+    ...
 
-    def pick_package(self, package: Package) -> None:
-      """Pick package if it does not have it."""
+  def pick_package(self, package: Package) -> None:
+    """Pick package if it does not have it."""
 
-    def put_package(self) -> None:
-      """Put package if it has it"""
+  def put_package(self) -> None:
+    """Put package if it has it"""
 ```
 
 ### Package

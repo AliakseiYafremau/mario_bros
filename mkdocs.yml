@@ -1,0 +1,6 @@
+site_name: Mario Bros Game
+plugins:
+  to-pdf:
+    author: Aliaksei & Razvan
+    toc_title: Index
+    output_path: ../report.pdf

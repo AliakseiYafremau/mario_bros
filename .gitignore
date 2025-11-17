@@ -12,3 +12,7 @@ assets/
 
 # Logs
 *.log
+
+# Documentation
+site
+*.pdf

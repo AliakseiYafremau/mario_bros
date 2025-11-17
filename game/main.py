@@ -8,11 +8,11 @@ from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import Frame, Grid, PyxelElement
+from game.presentation.pyxel_elements import BoardedElement, Frame, Grid, PyxelElement
 
 
 def main():
-    mario = Player(200, 100, 100, 100, "Mario")
+    mario = Player(200, 100, 16, 16, "Mario")
     luigi = Player(100, 100, 100, 100, "Luigi")
 
     floor1_mario = Floor(200, 150)
@@ -73,7 +73,7 @@ def main():
     )
 
     PyxelApp(
-        PyxelElement(mario, Frame(0, 0, 0, 16, 16)),
+        BoardedElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         PyxelElement(luigi, Frame(0, 16, 0, 16, 16)),
         PyxelElement(
             conveyor1,

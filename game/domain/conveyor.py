@@ -1,7 +1,11 @@
 from game.domain.directions import Direction
 from game.domain.elements import Element
 from game.domain.floor import Floor
+from game.domain.logging import get_logger
 from game.domain.package import Package, PackageState
+
+
+logger = get_logger(__name__, layer="DOMAIN")
 
 
 class Conveyor(Element):
@@ -68,9 +72,9 @@ class Conveyor(Element):
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
             if self.direction == Direction.LEFT:
-                package.move_y(self._velocity)
+                package.move_x(package.x + self._velocity * -1)
             else:
-                package.move_y(self._velocity * -1)
+                package.move_x(package.x + self._velocity)
             if not self._is_package_on_conveyor(package):
                 self.falling_package = package
                 package.state = PackageState.FALLING
@@ -86,6 +90,6 @@ class Conveyor(Element):
         self._packages.remove(package)
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
-        if self.x + self.length < package.x:
+        if self.x + self.length < package.x < self.x:
             return False
         return True

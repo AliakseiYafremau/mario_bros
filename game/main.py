@@ -28,7 +28,7 @@ def main():
         y=150,
         length=100,
         height=20,
-        direction=Direction.LEFT,
+        direction=Direction.RIGHT,
         velocity=5,
         finish_floor=floor1_mario,
     )
@@ -102,7 +102,9 @@ def main():
             pyxel.KEY_S: move_down_luigi,
         },
         game=game,
-        tick_second=0.5,
+        tick_second=1,
+        move_package_tick=1,
+        create_package_tick=10,
     )
 
 

@@ -1,6 +1,7 @@
 from game.domain.conveyor import Conveyor
 from game.domain.exceptions import DomainError
 from game.domain.floor import Floor
+from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
@@ -14,8 +15,9 @@ class Game:
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
     ) -> None:
-        self.live_amount = live_amount
         self.tick = 0
+        self.newly_created_packages: list[Package] = []
+        self.live_amount = live_amount
 
         for player in players.keys():
             is_correct = False
@@ -30,10 +32,6 @@ class Game:
         self.factories = factories if factories is not None else []
 
     def move_packages(self) -> None:
-        if self.tick >= 5:
-            self.create_package()
-            self.tick = 0
-
         for conveyor in self.conveyors:
             if conveyor.falling_package is not None:
                 if conveyor.finish_floor.player is not None:
@@ -53,7 +51,8 @@ class Game:
                     self.live_amount -= 1
                 conveyor.falling_package = None
 
-        map(lambda conveyor: conveyor.move_packages(), self.conveyors)
+        for conveyor in self.conveyors:
+            conveyor.move_packages()
 
         self.tick += 1
 
@@ -74,7 +73,7 @@ class Game:
 
     def create_package(self):
         for factory in self.factories:
-            factory.create_package()
+            self.newly_created_packages.append(factory.create_package())
 
     def move_player_down(self, player: Player) -> None:
         player_positions = self.players_positions[player]

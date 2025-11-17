@@ -1,7 +1,7 @@
 from game.domain.conveyor import Conveyor
 from game.domain.elements import Element
 from game.domain.logging import get_logger
-from game.domain.package import Package
+from game.domain.package import Package, PackageState
 
 
 logger = get_logger(__name__, "DOMAIN")
@@ -29,13 +29,14 @@ class PackageFactory(Element):
         self.conveyor = conveyor
         super().__init__(x, y, length, height)
 
-    def create_package(self) -> None:
-        package = self.conveyor.put_package(
-            Package(
-                x=self.new_package_x,
-                y=self.new_package_y,
-                length=self.new_package_length,
-                height=self.new_package_height,
-            )
+    def create_package(self) -> Package:
+        package = Package(
+            x=self.new_package_x,
+            y=self.new_package_y,
+            length=self.new_package_length,
+            height=self.new_package_height,
+            state=PackageState.ON_CONVEYOR,
         )
+        self.conveyor.put_package(package)
         logger.debug("%s created package %s", self.__repr__(), package)
+        return package

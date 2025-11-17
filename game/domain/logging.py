@@ -13,7 +13,7 @@ def get_logger(name: str, layer: str) -> logging.Logger:
         ),
     )
 
-    console_handler = logging.StreamHandler()
+    console_handler = logging.FileHandler(filename="app.log")
     console_handler.setLevel(logging.DEBUG)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)

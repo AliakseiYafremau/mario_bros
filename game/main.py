@@ -13,7 +13,7 @@ from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, Grid, P
 
 def main():
     mario = Player(200, 100, 16, 16, "Mario")
-    luigi = Player(100, 100, 100, 100, "Luigi")
+    luigi = Player(100, 100, 16, 16, "Luigi")
 
     floor1_mario = Floor(200, 150)
     floor2_mario = Floor(200, 100)
@@ -43,7 +43,7 @@ def main():
     )
     conveyor1.next_conveyor = conveyor2
 
-    package_factory = PackageFactory(50, 50, 50, 50, 70, 150, 50, 50, conveyor1)
+    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 50, 50, conveyor1)
 
     game = Game(
         live_amount=3,
@@ -74,8 +74,8 @@ def main():
 
     PyxelApp(
         BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
-        PyxelElement(luigi, Frame(0, 16, 0, 16, 16)),
-        PyxelElement(
+        BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
+        BoardedPyxelElement(PyxelElement(
             conveyor1,
             Frame(1, 0, 24, 8, 8),
             Frame(1, 16, 88, 16, 8),
@@ -90,11 +90,11 @@ def main():
             Frame(1, 16, 88, 16, 8),
             Frame(1, 0, 32, 16, 8),
             grid=Grid.ROW,
-        ),
-        PyxelElement(
+        )),
+        BoardedPyxelElement(PyxelElement(
             package_factory,
             Frame(0, 80, 0, 16, 16),
-        ),
+        )),
         buttons={
             pyxel.KEY_UP: move_up_mario,
             pyxel.KEY_DOWN: move_down_mario,

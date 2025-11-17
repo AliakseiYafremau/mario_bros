@@ -1,6 +1,19 @@
 site_name: Mario Bros Game
+theme:
+  name: material
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 plugins:
   to-pdf:
     author: Aliaksei & Razvan
     toc_title: Index
     output_path: ../report.pdf
+    copyright: Copyright © Aliaksei & Razvan 2025
+    cover_subtitle: ""
+    toc_level: 3

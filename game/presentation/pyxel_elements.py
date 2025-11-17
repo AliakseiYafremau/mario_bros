@@ -78,22 +78,6 @@ class PyxelElement(Element):
                 raise ValueError("Invalid Grid type")
 
 
-class BoardedElement(PyxelElement):
-    def __init__(self, pyxel_element: PyxelElement):
-        self.pyxel_element = pyxel_element
-        self.element = pyxel_element.element
-
-    def draw(self):
-        pyxel.rectb(
-            self.element.x + 5,
-            self.element.y + 5,
-            self.element.length + 1,
-            self.element.height + 1,
-            8,
-        )
-        self.pyxel_element.draw()
-
-
 class PyxelStaticElement(PyxelElement):
     def __init__(self, x: int, y: int, *frames: Frame, grid: Grid = Grid.ROW):
         self.x = x

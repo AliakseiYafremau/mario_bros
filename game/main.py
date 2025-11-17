@@ -8,7 +8,7 @@ from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import BoardedElement, Frame, Grid, PyxelElement
+from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, Grid, PyxelElement
 
 
 def main():
@@ -73,7 +73,7 @@ def main():
     )
 
     PyxelApp(
-        BoardedElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
+        BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         PyxelElement(luigi, Frame(0, 16, 0, 16, 16)),
         PyxelElement(
             conveyor1,

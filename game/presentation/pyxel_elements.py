@@ -109,3 +109,36 @@ class PyxelStaticElement(PyxelElement):
                 element_y += frame.w
             else:
                 raise ValueError("Invalid Grid type")
+
+
+class BoardedPyxelElement(PyxelElement):
+    def __init__(
+        self,
+        element: PyxelElement,
+        padding: int = 1,
+        color: int = 7,
+    ):
+        self.decorated = element
+        self.padding = padding
+        self.color = color
+
+    @property
+    def element(self):
+        return self.decorated.element
+
+    def draw(self):
+        target = self.decorated.element
+
+        border_x = target.x - self.padding
+        border_y = target.y - self.padding
+        border_width = target.length + self.padding * 2
+        border_height = target.height + self.padding * 2
+
+        pyxel.rectb(
+            x=border_x,
+            y=border_y,
+            w=border_width,
+            h=border_height,
+            col=self.color,
+        )
+        self.decorated.draw()

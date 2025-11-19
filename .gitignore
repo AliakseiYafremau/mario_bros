@@ -16,3 +16,6 @@ assets/
 # Documentation
 site
 *.pdf
+
+# Ignore all IntelliJ/PyCharm project files
+.idea/

@@ -30,8 +30,7 @@ class PyxelApp:
         resource_path = (
             Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
-
-        pyxel.init(418, 173, title="Pyxel APP")
+        pyxel.init(418, 173, title="Pyxel APP", fps=30, quit_key=pyxel.KEY_ESCAPE)
         pyxel.load(str(resource_path))
         pyxel.run(self.update, self.draw)
 

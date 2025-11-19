@@ -3,7 +3,6 @@ import pyxel
 from game.domain.conveyor import Conveyor
 from game.domain.difficulty import Difficulty
 from game.presentation.gui import Window
-from game.domain.directions import Direction
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -75,6 +74,7 @@ def main():
         game=game,
         player=luigi,
     )
+
     #I HAVE TO FINISH EVERYTHING BELLOW THIS POINT!!!!!!!! (and above too kinda...)
 
     PyxelApp(

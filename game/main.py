@@ -6,6 +6,7 @@ from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
+from game.domain.truck import Truck
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
 from game.presentation.pyxel_elements import (
@@ -17,36 +18,53 @@ from game.presentation.pyxel_elements import (
 
 
 def main():
-    mario = Player(200, 100, 16, 16, "Mario")
-    luigi = Player(100, 100, 16, 16, "Luigi")
+    mario = Player(200, 50, 16, 16, "Mario")
+    luigi = Player(25, 50, 16, 16, "Luigi")
 
     floor1_mario = Floor(200, 150)
     floor2_mario = Floor(200, 100)
     floor3_mario = Floor(200, 50, player=mario)
 
-    floor1_luigi = Floor(100, 150)
-    floor2_luigi = Floor(100, 100)
-    floor3_luigi = Floor(100, 50, player=luigi)
+    floor1_luigi = Floor(25, 150)
+    floor2_luigi = Floor(25, 100)
+    floor3_luigi = Floor(25, 50, player=luigi)
 
     conveyor1 = Conveyor(
         x=50,
         y=150,
-        length=20,
+        length=100,
         height=20,
         direction=Direction.RIGHT,
-        velocity=5,
+        velocity=20,
         finish_floor=floor1_mario,
     )
     conveyor2 = Conveyor(
-        x=150,
-        y=150,
+        x=50,
+        y=100,
         length=100,
         height=20,
         direction=Direction.LEFT,
-        velocity=5,
+        velocity=20,
         finish_floor=floor1_luigi,
     )
+    conveyor3 = Conveyor(
+        x=50,
+        y=50,
+        length=100,
+        height=20,
+        direction=Direction.LEFT,
+        velocity=20,
+        finish_floor=floor1_luigi,
+    )
+    truck = Truck(
+        x=50,
+        y=50,
+        length=50,
+        height=50,
+    )
     conveyor1.next_step = conveyor2
+    conveyor2.next_step = conveyor3
+    conveyor3.next_step = truck
 
     package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyor1)
 
@@ -100,6 +118,42 @@ def main():
         ),
         BoardedPyxelElement(
             PyxelElement(
+                conveyor2,
+                Frame(1, 0, 24, 8, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 0, 32, 16, 8),
+                grid=Grid.ROW,
+            )
+        ),
+        BoardedPyxelElement(
+            PyxelElement(
+                conveyor3,
+                Frame(1, 0, 24, 8, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 0, 32, 16, 8),
+                grid=Grid.ROW,
+            )
+        ),
+        BoardedPyxelElement(
+            PyxelElement(
                 package_factory,
                 Frame(0, 80, 0, 16, 16),
             )
@@ -113,7 +167,7 @@ def main():
         game=game,
         tick_second=1,
         move_package_tick=1,
-        create_package_tick=2,
+        create_package_tick=5,
     )
 
 

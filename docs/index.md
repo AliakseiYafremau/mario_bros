@@ -88,25 +88,41 @@ Class that renders an object in the application based on game elements and frame
 `Frame` stores information about images. It is used to display several photos for one element at once (since an element can be complex and consist of more than one image (for example, a conveyor belt)).
 
 ### BoardedPyxelElement
+
 Decorator for any `PyxelElement` that draws a rectangular border sized after the element's `length` and `height` (plus optional padding) before delegating to the wrapped element's `draw()`. It is intended as a _development_ aid when you need to highlight, align, or debug sprites during Pyxel scene tuning.
 
 ### PyxelApp
+
 `PyxelApp` wires the Pyxel event loop to the game simulation: it loads sprite resources, keeps a list of `PyxelElement` instances to draw, binds `Controller`s to keyboard buttons, and advances `Game` ticks according to configurable delays for package movement and creation. On every update it polls the buttons, extends the render list with freshly spawned packages, and calls `Game.move_packages()` / `Game.create_package()` when the elapsed time exceeds the configured cadence before redrawing the scene.
 
 # Main Algorithms
+
 ## `Game.move_packages()` 
+
 It is the heart of the loop. First, it inspects every `Conveyor` for a `falling_package`. If the target `finish_floor` hosts a `Player`, the player briefly picks that package, drops it toward the `next_conveyor`, and the controller inserts it onto the next belt; otherwise a dropped package decrements `live_amount`. After resolving transfers it calls `Conveyor.move_packages()` on each belt and increments the global `tick`.
+
 ## `Conveyor.move_packages()`
+
 It iterates through its `_packages`, offsets each package horizontally by `velocity` toward `direction`, and checks `_is_package_on_conveyor()`. Packages that have moved beyond the physical span are marked `FALLING`, recorded as `falling_package`, and removed via `lift_package()` so they can be caught by the next floor.
+
 ## `Game.move_player_up()` / `move_player_down()`
+
 They take a `Player`, find their current `Floor` within the allowed tuple, and move exactly one step toward the target tier. They guard against moving past the ends of the tuple and raise a `DomainError` if a player's coordinates no longer match any known floor.
+
 ## `Game.create_package()`
+
 It asks every `PackageFactory` to `create_package()`, which in turn spawns a `Package` at the configured coordinates and places it on a belt so it joins the next simulation step automatically.
+
 ## `Truck.put_package()`
+
 It is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
-## Tick (PyxelApp.tick_second)
-To emulate the movement of older consoles, the concept of ticks was implemented. The number of ticks per second indicates the number of updates that will be made in one second. This allows us to not depend on the player's FPS (which could be the case if we used `pyxel.update()` directly).
+
+## `Tick` (`PyxelApp.tick_second`)
+
+To emulate the movement of older consoles, the concept of ticks was implemented. The number of ticks per second indicates the number of updates that will be made in one second.
+
 # Work carried out
+
 To facilitate development and increase scalability, the project's business logic was moved to the domain and separated from the libraries.
 
 A class with corresponding methods was created for each entity in the game. The _player_ represents the movable player in the game. The _conveyor_ is responsible for moving _packages_, and the _package factory_ is responsible for creating them.

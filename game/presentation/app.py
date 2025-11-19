@@ -43,6 +43,7 @@ class PyxelApp:
             self.elements.append(
                 BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
             )
+            self.game.newly_created_packages.remove(new_package)
 
         current_time = perf_counter()
         if (

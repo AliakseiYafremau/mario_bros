@@ -26,12 +26,19 @@ def main():
     selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
     running_window = Window()
 
-    floors_mario = [Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors_luigi = [Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors = (floors_mario, floors_luigi)
+    floors_mario = (Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"]))
+    floors_luigi = (Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"]))
+    floors = []
+    for i in range(selected_difficulty.difficulty_values()["belts"]):
+        floors.append((floors_luigi[i], floors_mario[i]))
 
     speed = selected_difficulty.difficulty_values()["conveyor_speed"]
-    conveyors = [Conveyor(conveyor_id=i, x=50, y=(running_window.height-50-i*50), length=200, height=20, speed=speed, finish_floor=floors[i]) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    conveyors = (Conveyor(conveyor_id=i,
+                          x=50,
+                          y=(running_window.height-50-i*50),
+                          length=200, height=20, speed=speed,
+                          finish_floor=floors[i][i%2]
+                          ) for i in range(selected_difficulty.difficulty_values()["belts"]))
 
     truck = Truck(
         x=50,

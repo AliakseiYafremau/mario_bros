@@ -102,14 +102,17 @@ It iterates through its `_packages`, offsets each package horizontally by `veloc
 They take a `Player`, find their current `Floor` within the allowed tuple, and move exactly one step toward the target tier. They guard against moving past the ends of the tuple and raise a `DomainError` if a player's coordinates no longer match any known floor.
 ## `Game.create_package()`
 It asks every `PackageFactory` to `create_package()`, which in turn spawns a `Package` at the configured coordinates and places it on a belt so it joins the next simulation step automatically.
-## `Truck.put_package()`It is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
+## `Truck.put_package()`
+It is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
 ## Tick (PyxelApp.tick_second)
 To emulate the movement of older consoles, the concept of ticks was implemented. The number of ticks per second indicates the number of updates that will be made in one second. This allows us to not depend on the player's FPS (which could be the case if we used `pyxel.update()` directly).
-
+# Work carried out
 To facilitate development and increase scalability, the project's business logic was moved to the domain and separated from the libraries.
 
 A class with corresponding methods was created for each entity in the game. The _player_ represents the movable player in the game. The _conveyor_ is responsible for moving _packages_, and the _package factory_ is responsible for creating them.
 
 To facilitate working with the _domain_ API, a `Game` facade was created, which includes the basic methods for working with the game.
 
-Since the [`pyxel`](https://github.com/kitao/pyxel) library only provides basic display functionality, several secondary classes were created to facilitate working with the library. `Controller` is a command pattern that provides a unified interface for all user input. `PyxelElement` allows you to create complex elements from multiple images (`Frames`).
+Since the [`pyxel`](https://github.com/kitao/pyxel) library only provides basic display functionality, several secondary classes were created to facilitate working with the library. `Controller` (Command pattern) provides a unified interface for all user input. `PyxelElement` allows you to create complex elements from multiple images (`Frames`).
+
+To speed up development and debugging, a logging system and decorator `BoardedPyxelElement` (draws a white line around the perimeter of the element) were implemented.

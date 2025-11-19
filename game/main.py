@@ -1,6 +1,8 @@
 import pyxel
 
 from game.domain.conveyor import Conveyor
+from game.domain.difficulty import Difficulty
+from game.presentation.gui import Window
 from game.domain.directions import Direction
 from game.domain.floor import Floor
 from game.domain.game import Game
@@ -21,47 +23,25 @@ def main():
     mario = Player(200, 50, 16, 16, "Mario")
     luigi = Player(25, 50, 16, 16, "Luigi")
 
-    floor1_mario = Floor(200, 150)
-    floor2_mario = Floor(200, 100)
-    floor3_mario = Floor(200, 50, player=mario)
+    selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
+    running_window = Window()
 
-    floor1_luigi = Floor(25, 150)
-    floor2_luigi = Floor(25, 100)
-    floor3_luigi = Floor(25, 50, player=luigi)
+    floors_mario = [Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors_luigi = [Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors = (floors_mario, floors_luigi)
 
-    conveyor1 = Conveyor(
-        x=50,
-        y=150,
-        length=100,
-        height=20,
-        direction=Direction.RIGHT,
-        velocity=20,
-        finish_floor=floor1_mario,
-    )
-    conveyor2 = Conveyor(
-        x=50,
-        y=100,
-        length=100,
-        height=20,
-        direction=Direction.LEFT,
-        velocity=20,
-        finish_floor=floor1_luigi,
-    )
-    conveyor3 = Conveyor(
-        x=50,
-        y=50,
-        length=100,
-        height=20,
-        direction=Direction.LEFT,
-        velocity=20,
-        finish_floor=floor1_luigi,
-    )
+    speed = selected_difficulty.difficulty_values()["conveyor_speed"]
+    conveyors = [Conveyor(conveyor_id=i, x=50, y=(running_window.height-50-i*50), length=200, height=20, speed=speed, finish_floor=floors[i]) for i in range(selected_difficulty.difficulty_values()["belts"])]
+
     truck = Truck(
         x=50,
         y=50,
         length=50,
         height=50,
     )
+
+    #I HAVE TO FINISH EVERYTHING BELLOW THIS POINT!!!!!!!! (and above too kinda...)
+
     conveyor1.next_step = conveyor2
     conveyor2.next_step = conveyor3
     conveyor3.next_step = truck

@@ -7,9 +7,6 @@ __pycache__
 .ruff_cache
 .mypy_cache
 
-# Graphics
-assets/
-
 # Logs
 *.log
 

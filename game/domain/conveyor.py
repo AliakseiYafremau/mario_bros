@@ -31,17 +31,23 @@ class Conveyor(Element):
 
     def __init__(
         self,
+        conveyor_id: int,
         x: int,
         y: int,
         length: int,
         height: int,
-        direction: Direction,
-        velocity: int,
+        speed: tuple,
         finish_floor: Floor,
         next_step: CanRecievePackage | None = None,
     ) -> None:
-        self.direction = direction
-        self.velocity = velocity
+        self.conveyor_id = conveyor_id
+        self.direction = Direction.LEFT if conveyor_id % 2 == 0 else Direction.RIGHT
+        if conveyor_id == 0:
+            self.velocity = speed[0]
+        elif conveyor_id % 2 == 0:
+            self.velocity = speed[1]
+        else:
+            self.velocity = speed[2]
         self.finish_floor = finish_floor
         self.falling_package: Package | None = None
         self.next_step = next_step
@@ -52,33 +58,14 @@ class Conveyor(Element):
             self.start_position = (x, y + height)
         super().__init__(x, y, length, height)
 
-    @property
-    def velocity(self) -> int:
-        return self._velocity
-
-    @velocity.setter
-    def velocity(self, value: int) -> None:
-        if value < 0:
-            raise ValueError("Velocity cannot be negative")
-        self._velocity = value
-
-    @property
-    def direction(self) -> Direction:
-        return self._direction
-
-    @direction.setter
-    def direction(self, value: Direction) -> None:
-        if not isinstance(value, Direction):
-            raise TypeError("direction must be a Direction instance")
-        self._direction = value
 
     def move_packages(self) -> None:
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
             if self.direction == Direction.LEFT:
-                package.move_x(package.x + self._velocity * -1)
+                package.move_x(package.x + self.velocity * -1)
             else:
-                package.move_x(package.x + self._velocity)
+                package.move_x(package.x + self.velocity)
             if not self._is_package_on_conveyor(package):
                 logger.debug("%s felt", package)
                 self.falling_package = package

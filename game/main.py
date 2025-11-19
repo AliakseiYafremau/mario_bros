@@ -8,7 +8,12 @@ from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.presentation.app import PyxelApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
-from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, Grid, PyxelElement
+from game.presentation.pyxel_elements import (
+    BoardedPyxelElement,
+    Frame,
+    Grid,
+    PyxelElement,
+)
 
 
 def main():
@@ -26,7 +31,7 @@ def main():
     conveyor1 = Conveyor(
         x=50,
         y=150,
-        length=100,
+        length=20,
         height=20,
         direction=Direction.RIGHT,
         velocity=5,
@@ -41,9 +46,9 @@ def main():
         velocity=5,
         finish_floor=floor1_luigi,
     )
-    conveyor1.next_conveyor = conveyor2
+    conveyor1.next_step = conveyor2
 
-    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 50, 50, conveyor1)
+    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyor1)
 
     game = Game(
         live_amount=3,
@@ -75,26 +80,30 @@ def main():
     PyxelApp(
         BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
-        BoardedPyxelElement(PyxelElement(
-            conveyor1,
-            Frame(1, 0, 24, 8, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 16, 88, 16, 8),
-            Frame(1, 0, 32, 16, 8),
-            grid=Grid.ROW,
-        )),
-        BoardedPyxelElement(PyxelElement(
-            package_factory,
-            Frame(0, 80, 0, 16, 16),
-        )),
+        BoardedPyxelElement(
+            PyxelElement(
+                conveyor1,
+                Frame(1, 0, 24, 8, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 16, 88, 16, 8),
+                Frame(1, 0, 32, 16, 8),
+                grid=Grid.ROW,
+            )
+        ),
+        BoardedPyxelElement(
+            PyxelElement(
+                package_factory,
+                Frame(0, 80, 0, 16, 16),
+            )
+        ),
         buttons={
             pyxel.KEY_UP: move_up_mario,
             pyxel.KEY_DOWN: move_down_mario,
@@ -104,7 +113,7 @@ def main():
         game=game,
         tick_second=1,
         move_package_tick=1,
-        create_package_tick=5,
+        create_package_tick=2,
     )
 
 

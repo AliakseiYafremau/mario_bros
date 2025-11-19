@@ -2,7 +2,7 @@ from game.domain.directions import Direction
 from game.domain.elements import Element
 from game.domain.floor import Floor
 from game.domain.logging import get_logger
-from game.domain.package import Package, PackageState
+from game.domain.package import CanRecievePackage, Package, PackageState
 
 
 logger = get_logger(__name__, layer="DOMAIN")
@@ -38,18 +38,18 @@ class Conveyor(Element):
         direction: Direction,
         velocity: int,
         finish_floor: Floor,
-        next_conveyor: "Conveyor | None" = None,
+        next_step: CanRecievePackage | None = None,
     ) -> None:
         self.direction = direction
         self.velocity = velocity
         self.finish_floor = finish_floor
         self.falling_package: Package | None = None
-        self.next_conveyor = next_conveyor
+        self.next_step = next_step
         self._packages: list[Package] = []
         if self.direction == Direction.RIGHT:
-            self.start_position: tuple[int, int] = (x, y + height)
+            self.start_position: tuple[int, int] = (x, y)
         else:
-            self.start_position: tuple[int, int] = (x + length, y + height)
+            self.start_position = (x, y + height)
         super().__init__(x, y, length, height)
 
     @property
@@ -80,6 +80,7 @@ class Conveyor(Element):
             else:
                 package.move_x(package.x + self._velocity)
             if not self._is_package_on_conveyor(package):
+                logger.debug("%s felt", package)
                 self.falling_package = package
                 package.state = PackageState.FALLING
                 self.lift_package(package)
@@ -87,7 +88,7 @@ class Conveyor(Element):
     def put_package(self, package: Package) -> None:
         if not isinstance(package, Package):
             raise TypeError("package must be a Package instance")
-        package.move(self.start_position[0], self.start_position[1])
+        package.move(self.start_position[0], self.start_position[1] - package.height)
         package.state = PackageState.ON_CONVEYOR
         self._packages.append(package)
 
@@ -95,6 +96,4 @@ class Conveyor(Element):
         self._packages.remove(package)
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
-        if self.x + self.length < package.x < self.x:
-            return False
-        return True
+        return self.x <= package.x <= self.x + self.length

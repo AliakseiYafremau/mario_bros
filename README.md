@@ -2,10 +2,6 @@
 
 You can find documentation in [`docs` folder](docs/index.md).
 
-## TODO ✍️
-
-- [ ] Implement truck logic
-
 ## Setup project
 
 ```bash

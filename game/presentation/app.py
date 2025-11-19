@@ -3,10 +3,9 @@ from time import perf_counter
 
 import pyxel
 
-from game.domain.conveyor import Conveyor
 from game.domain.game import Game
 from game.presentation.controllers import Controller
-from game.presentation.pyxel_elements import Frame, PyxelElement
+from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 
 
 class PyxelApp:
@@ -42,7 +41,9 @@ class PyxelApp:
                 self.buttons[button].execute()
 
         for new_package in self.game.newly_created_packages:
-            self.elements.append(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
+            self.elements.append(
+                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
+            )
 
         current_time = perf_counter()
         if (

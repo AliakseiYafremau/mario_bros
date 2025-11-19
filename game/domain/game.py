@@ -4,7 +4,6 @@ from game.domain.floor import Floor
 from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
-from game.domain.truck import Truck
 
 
 class Game:
@@ -37,18 +36,20 @@ class Game:
                 if conveyor.finish_floor.player is not None:
                     current_package = conveyor.falling_package
                     current_player = conveyor.finish_floor.player
-                    if conveyor.next_conveyor is None:
-                        raise DomainError("conveyor has no next conveyor")
-                    next_conveyor = conveyor.next_conveyor
+                    next_step = conveyor.next_step
+                    if next_step is None:
+                        raise DomainError("next step is not defined for the conveyor")
 
                     # FIXME Does not make sense to pick and put at the same time
                     # P.S we can use it for the representation that depends of the state
                     current_player.pick_package(current_package)
                     current_player.put_package()
 
-                    next_conveyor.put_package(current_package)
+                    next_step.put_package(current_package)
                 else:
                     self.live_amount -= 1
+                    if self.live_amount < 0:
+                        raise DomainError("no more lives left")
                 conveyor.falling_package = None
 
         for conveyor in self.conveyors:

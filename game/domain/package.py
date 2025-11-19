@@ -1,4 +1,6 @@
+from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Protocol
 from game.domain.elements import MotionElement
 
 
@@ -44,3 +46,9 @@ class Package(MotionElement):
             raise TypeError("state must be an instance of PackageState")
         self.state = state
         super().__init__(x, y, length, height)
+
+
+class CanRecievePackage(Protocol):
+    @abstractmethod
+    def put_package(self, package: Package) -> None:
+        raise NotImplementedError

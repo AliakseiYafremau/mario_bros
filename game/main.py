@@ -26,19 +26,19 @@ def main():
     selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
     running_window = Window()
 
-    floors_mario = (Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"]))
-    floors_luigi = (Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"]))
+    floors_mario = [Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors_luigi = [Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         floors.append((floors_luigi[i], floors_mario[i]))
 
     speed = selected_difficulty.difficulty_values()["conveyor_speed"]
-    conveyors = (Conveyor(conveyor_id=i,
+    conveyors = [Conveyor(conveyor_id=i,
                           x=50,
                           y=(running_window.height-50-i*50),
                           length=200, height=20, speed=speed,
                           finish_floor=floors[i][i%2]
-                          ) for i in range(selected_difficulty.difficulty_values()["belts"]))
+                          ) for i in range(selected_difficulty.difficulty_values()["belts"])]
 
     truck = Truck(
         x=50,
@@ -47,21 +47,15 @@ def main():
         height=50,
     )
 
-    #I HAVE TO FINISH EVERYTHING BELLOW THIS POINT!!!!!!!! (and above too kinda...)
-
-    conveyor1.next_step = conveyor2
-    conveyor2.next_step = conveyor3
-    conveyor3.next_step = truck
-
-    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyor1)
+    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyors[0])
 
     game = Game(
         live_amount=3,
         players={
-            mario: (floor1_mario, floor2_mario, floor3_mario),
-            luigi: (floor1_luigi, floor2_luigi, floor3_luigi),
+            mario: floors_mario,
+            luigi: floors_luigi,
         },
-        conveyors=[conveyor1, conveyor2],
+        conveyors=conveyors,
         factories=[package_factory],
     )
 
@@ -81,6 +75,7 @@ def main():
         game=game,
         player=luigi,
     )
+    #I HAVE TO FINISH EVERYTHING BELLOW THIS POINT!!!!!!!! (and above too kinda...)
 
     PyxelApp(
         BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),

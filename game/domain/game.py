@@ -10,7 +10,7 @@ class Game:
     def __init__(
         self,
         live_amount: int,
-        players: dict[Player, tuple[Floor, ...]],
+        players: dict[Player, list[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
     ) -> None:

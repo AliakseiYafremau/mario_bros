@@ -2,7 +2,7 @@
 
 # Mario Bros game
 
-You can find documentation in [`docs` folder](docs/index.md).
+You can find report in [`docs`](docs/index.md) folder.
 
 ## Setup project
 
@@ -10,6 +10,12 @@ You can find documentation in [`docs` folder](docs/index.md).
 python -m venv .venv
 source .venv/bin/activate # for Linux
 pip install -r requirements.txt
+```
+
+## Run
+
+```bash
+python -m game.main
 ```
 
 ## Build report

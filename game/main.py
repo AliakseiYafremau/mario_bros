@@ -22,14 +22,14 @@ def main():
     selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
     running_window = Window()
 
-    mario = Player((running_window.width-100), 450, 16, 16, "Mario")
+    mario = Player((running_window.width - 100), 450, 16, 16, "Mario")
     luigi = Player(100, 450, 16, 16, "Luigi")
 
-    floors_mario = [Floor(x=(running_window.width-100),
-                          y=(running_window.height-50-i*50),
+    floors_mario = [Floor(x=(running_window.width - 100),
+                          y=(running_window.height - 50 - i * 50),
                           player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors_luigi = [Floor(x=100,
-                          y=(running_window.height-50-i*50),
+                          y=(running_window.height - 50 - i * 50),
                           player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
     for i in range(selected_difficulty.difficulty_values()["belts"]):
@@ -38,9 +38,9 @@ def main():
     speed = selected_difficulty.difficulty_values()["conveyor_speed"]
     conveyors = [Conveyor(conveyor_id=i,
                           x=100,
-                          y=(running_window.height-75-i*50),
-                          length=(running_window.width-200), height=20, speed=speed,
-                          finish_floor=floors[i][i%2]
+                          y=(running_window.height - 75 - i * 50),
+                          length=(running_window.width - 200), height=20, speed=speed,
+                          finish_floor=floors[i][i % 2]
                           ) for i in range(selected_difficulty.difficulty_values()["belts"])]
 
     truck = Truck(
@@ -51,13 +51,13 @@ def main():
     )
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
-        if i != (selected_difficulty.difficulty_values()["belts"]-1):
-            conveyors[i].next_step = conveyors[i+1]
+        if i != (selected_difficulty.difficulty_values()["belts"] - 1):
+            conveyors[i].next_step = conveyors[i + 1]
         else:
             conveyors[i].next_step = truck
 
     package_factory = PackageFactory(100,
-                                     running_window.width-100,
+                                     running_window.width - 100,
                                      16,
                                      16,
                                      70,
@@ -93,45 +93,34 @@ def main():
         player=luigi,
     )
 
+    conveyor_middle_frames = [Frame(1, 16, 88, 16, 8) for i in range(72)]
     rendered_conveyors = [BoardedPyxelElement(PyxelElement(conveyors[i],
                                                            Frame(1, 0, 24, 8, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
-                                                           Frame(1, 16, 88, 16, 8),
+                                                           *conveyor_middle_frames,
                                                            Frame(1, 0, 32, 16, 8),
-                                                           grid=Grid.ROW,)) for i in range(selected_difficulty.difficulty_values()["belts"])]
+                                                           grid=Grid.ROW, )) for i in
+                          range(selected_difficulty.difficulty_values()["belts"])]
 
     PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
-        BoardedPyxelElement(PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
-        rendered_conveyors[0],
-        rendered_conveyors[1],
-        rendered_conveyors[2],
-        rendered_conveyors[3],
-        rendered_conveyors[4],
+             BoardedPyxelElement(PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
+             *rendered_conveyors,
              BoardedPyxelElement(
-            PyxelElement(
-                package_factory,
-                Frame(0, 64, 112, 16, 16,),
-            )
-        ),
-        buttons={
-            pyxel.KEY_UP: move_up_mario,
-            pyxel.KEY_DOWN: move_down_mario,
-            pyxel.KEY_W: move_up_luigi,
-            pyxel.KEY_S: move_down_luigi,
-        },
-        game=game,
-        tick_second=0.5,
-        move_package_tick=0.5,
-        create_package_tick=5,
-    )
+                 PyxelElement(
+                     package_factory,
+                     Frame(0, 64, 112, 16, 16, ),
+                 )
+             ),
+             buttons={
+                 pyxel.KEY_UP: move_up_mario,
+                 pyxel.KEY_DOWN: move_down_mario,
+                 pyxel.KEY_W: move_up_luigi,
+                 pyxel.KEY_S: move_down_luigi,
+             },
+             game=game,
+             tick_second=1,
+             move_package_tick=0.5,
+             create_package_tick=5,
+             )
 
 
 if __name__ == "__main__":

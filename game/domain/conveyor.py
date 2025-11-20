@@ -55,7 +55,7 @@ class Conveyor(Element):
         if self.direction == Direction.LEFT:
             self.start_position: tuple[int, int] = (x+length, y)
         else:
-            self.start_position = (x, y + height)
+            self.start_position: tuple[int, int] = (x, y)
         super().__init__(x, y, length, height)
 
     def put_package(self, package: Package) -> None:

@@ -2,12 +2,7 @@ import random
 
 class Difficulty:
 
-    EASY = 0
-    MEDIUM = 1
-    EXTREME = 2
-    CRAZY = 3
-
-    def __init__(self, difficulty: int = EASY):
+    def __init__(self, difficulty: int = 0):
         self.difficulty = difficulty
 
     @property
@@ -29,14 +24,22 @@ class Difficulty:
                           (1, random.uniform(1, 2), random.uniform(1, 2)))
         INCREASE = (50, 30, 30, 20)
         ELIMINATES = (3, 5, 5, 0)
-        if self.difficulty == Difficulty.CRAZY:
-            self.reversed_controls = True
+        WINDOW_HEIGHT = (325, 425, 525, 325)
+        WINDOW_WIDTH = (500, 650, 800, 500)
+
+        if self.difficulty == 3:
+            reversed_controls = True
         else:
-            self.reversed_controls = False
+            reversed_controls = False
         return {
             "belts": BELTS[self.difficulty],
             "conveyor_speed": CONVEYOR_SPEED[self.difficulty],
             "increase": INCREASE[self.difficulty],
             "eliminates": ELIMINATES[self.difficulty],
-            "reversed_controls": self.reversed_controls
+            "reversed_controls": reversed_controls,
+            "window_height": WINDOW_HEIGHT[self.difficulty],
+            "window_width": WINDOW_WIDTH[self.difficulty]
         }
+
+selected_difficulty = Difficulty(3)  # Hard set since we are not going to actually implement a difficulty selector,
+                                     # but the game would be ready for it.

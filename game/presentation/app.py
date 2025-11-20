@@ -4,7 +4,7 @@ from time import perf_counter
 import pyxel
 
 from game.domain.game import Game
-from game.presentation.gui import Window
+from game.presentation.gui import running_window
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 
@@ -27,7 +27,6 @@ class PyxelApp:
         self.create_package_tick = create_package_tick
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
-        running_window = Window()
 
         resource_path = (
             Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"

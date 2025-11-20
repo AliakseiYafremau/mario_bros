@@ -1,16 +1,9 @@
-from game.presentation.pyxel_elements import (
-    BoardedPyxelElement,
-    Frame,
-    Grid,
-    PyxelElement,
-)
+from game.domain.difficulty import selected_difficulty
 
 class Window:
-    __instance = None
+    def __init__(self, width: int = 500):
+        self.width = selected_difficulty.difficulty_values()["window_width"]
+        self.height = selected_difficulty.difficulty_values()["window_height"]
 
-    def __new__(cls, width=800, height=600):
-        if cls.__instance is None:
-            cls.__instance = super().__new__(cls)
-            cls.__instance.width = width
-            cls.__instance.height = height
-        return cls.__instance
+
+running_window = Window() #Manually altering window resolution is not recommended

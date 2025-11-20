@@ -1,8 +1,8 @@
 import pyxel
 
 from game.domain.conveyor import Conveyor
-from game.domain.difficulty import Difficulty
-from game.presentation.gui import Window
+from game.domain.difficulty import selected_difficulty
+from game.presentation.gui import running_window
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -19,16 +19,13 @@ from game.presentation.pyxel_elements import (
 
 
 def main():
-    selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
-    running_window = Window()
+    mario = Player((running_window.width - 100), (running_window.height - 100), 16, 16, "Mario")
+    luigi = Player(100-16, (running_window.height - 100), 16, 16, "Luigi")
 
-    mario = Player((running_window.width - 100), 450, 16, 16, "Mario")
-    luigi = Player(100, 450, 16, 16, "Luigi")
-
-    floors_mario = [Floor(x=(running_window.width - 100),
+    floors_mario = [Floor(x=mario.x,
                           y=(running_window.height - 50 - i * 50),
                           player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors_luigi = [Floor(x=100,
+    floors_luigi = [Floor(x=luigi.x,
                           y=(running_window.height - 50 - i * 50),
                           player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
@@ -91,7 +88,7 @@ def main():
         player=luigi,
     )
 
-    conveyor_middle_frames = [Frame(1, 16, 88, 16, 8) for i in range(72)]
+    conveyor_middle_frames = [Frame(1, 16, 88, 16, 8) for i in range(35)]
     rendered_conveyors = [BoardedPyxelElement(PyxelElement(conveyors[i],
                                                            Frame(1, 0, 24, 8, 8),
                                                            *conveyor_middle_frames,
@@ -109,10 +106,10 @@ def main():
                  )
              ),
              buttons={
-                 pyxel.KEY_UP: move_up_mario,
-                 pyxel.KEY_DOWN: move_down_mario,
-                 pyxel.KEY_W: move_up_luigi,
-                 pyxel.KEY_S: move_down_luigi,
+                 pyxel.KEY_UP: move_up_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_mario,
+                 pyxel.KEY_DOWN: move_down_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_mario,
+                 pyxel.KEY_W: move_up_luigi if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_luigi,
+                 pyxel.KEY_S: move_down_luigi if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_luigi,
              },
              game=game,
              tick_second=1,

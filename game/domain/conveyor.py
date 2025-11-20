@@ -73,10 +73,33 @@ class Conveyor(Element):
     def move_packages(self) -> None:
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
+            if package.stage != 5 and self._package_changes_stage(package):
+                if package.stage == 0:
+                    package.stage = 1
+                    package.stage_to_be_changed_to = 1
+                    logger.debug("%s increased stage to 1 of", package)
+                elif package.stage == 1:
+                    package.stage = 2
+                    package.stage_to_be_changed_to = 2
+                    logger.debug("%s increased stage to 1 of", package)
+                elif package.stage == 2:
+                    package.stage = 3
+                    package.stage_to_be_changed_to = 3
+                    logger.debug("%s increased stage to 1 of", package)
+                elif package.stage == 3:
+                    package.stage = 4
+                    package.stage_to_be_changed_to = 4
+                    logger.debug("%s increased stage to 1 of", package)
+                elif package.stage == 4:
+                    package.stage = 5
+                    package.stage_to_be_changed_to = 5
+                    logger.debug("%s increased stage to 1 of", package)
+
             if self.direction == Direction.LEFT:
                 package.move_x(package.x + self.velocity * -4)
             else:
                 package.move_x(package.x + self.velocity * 4)
+
             if not self._is_package_on_conveyor(package):
                 logger.debug("%s felt", package)
                 self.falling_package = package
@@ -88,3 +111,9 @@ class Conveyor(Element):
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
         return self.x <= package.x <= self.x + self.length
+
+    def _package_changes_stage(self, package: Package) -> bool:
+        if self.conveyor_id - 1 == package.stage:
+            return package.x <= self.x + (self.length//2)
+        else:
+            return False

@@ -4,6 +4,7 @@ from time import perf_counter
 import pyxel
 
 from game.domain.game import Game
+from game.domain.package import Package
 from game.presentation.gui import running_window
 from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
@@ -57,7 +58,15 @@ class PyxelApp:
                 BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 3, 12, 9)))
             )
             self.game.newly_created_packages.remove(new_package)
+            self.game.packages.append(new_package)
             self.game.packages_at_play += 1
+
+        for element in self.elements:
+            if isinstance(element.element, Package) and element.element.stage_to_be_changed_to != 0:
+                self.elements.append(BoardedPyxelElement(PyxelElement(element.element, Frame(
+                    0, 66, 3 + (16*element.element.stage_to_be_changed_to), 12, 9))))
+                self.elements.remove(element)
+                element.element.stage_to_be_changed_to = 0
 
         current_time = perf_counter()
         if (

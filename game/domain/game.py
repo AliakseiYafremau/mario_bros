@@ -4,7 +4,6 @@ from game.domain.floor import Floor
 from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
-from game.domain.difficulty import selected_difficulty
 
 
 class Game:
@@ -33,6 +32,7 @@ class Game:
         self.conveyors = conveyors if conveyors is not None else []
         self.factories = factories if factories is not None else []
         self.packages_at_play = 0
+        self.packages = []
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:

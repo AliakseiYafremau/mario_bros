@@ -16,7 +16,7 @@ class PyxelApp:
         buttons: dict[int, Controller],
         game: Game,
         tick_second: float,
-        move_package_tick: int,
+        move_package_tick: float,
         create_package_tick: int,
     ):
         self.elements = list(elements)

@@ -65,8 +65,8 @@ def main():
                                      running_window.height-95,
                                      60,
                                      40,
-                                     16,
-                                     16,
+                                     12,
+                                     9,
                                      conveyor=factory_conveyor)
 
     game = Game(

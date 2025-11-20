@@ -54,7 +54,7 @@ class PyxelApp:
 
         for new_package in self.game.newly_created_packages:
             self.elements.append(
-                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
+                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 3, 12, 9)))
             )
             self.game.newly_created_packages.remove(new_package)
             self.game.packages_at_play += 1

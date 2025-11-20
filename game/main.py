@@ -128,8 +128,8 @@ def main():
             pyxel.KEY_S: move_down_luigi,
         },
         game=game,
-        tick_second=1,
-        move_package_tick=1,
+        tick_second=0.5,
+        move_package_tick=0.5,
         create_package_tick=5,
     )
 

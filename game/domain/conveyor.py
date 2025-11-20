@@ -69,9 +69,9 @@ class Conveyor(Element):
         """Move all packages on the conveyor according to its direction and velocity."""
         for package in self._packages:
             if self.direction == Direction.LEFT:
-                package.move_x(package.x + self.velocity * -1)
+                package.move_x(package.x + self.velocity * -5)
             else:
-                package.move_x(package.x + self.velocity)
+                package.move_x(package.x + self.velocity * 5)
             if not self._is_package_on_conveyor(package):
                 logger.debug("%s felt", package)
                 self.falling_package = package

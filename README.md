@@ -1,4 +1,4 @@
-(Do not pull the difficulties branch, Ill keep working on it until its done)
+(You can pull the difficulties branch, regardless Ill keep working on it until its done but at least its midly understandable now and it partially works)
 
 # Mario Bros game
 

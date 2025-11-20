@@ -96,8 +96,8 @@ def main():
                                                            Frame(1, 0, 32, 16, 8),
                                                            grid=Grid.ROW,)) for i in range(selected_difficulty.difficulty_values()["belts"])]
 
-    PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
-        BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
+    PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
+        BoardedPyxelElement(PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
         rendered_conveyors[0],
         rendered_conveyors[1],
         rendered_conveyors[2],

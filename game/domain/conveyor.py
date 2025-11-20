@@ -41,7 +41,7 @@ class Conveyor(Element):
         next_step: CanRecievePackage | None = None,
     ) -> None:
         self.conveyor_id = conveyor_id
-        self.direction = Direction.RIGHT if conveyor_id % 2 == 0 else Direction.LEFT
+        self.direction = Direction.LEFT if conveyor_id % 2 == 0 else Direction.RIGHT
         if conveyor_id == 0:
             self.velocity = speed[0]
         elif conveyor_id % 2 == 0:
@@ -52,8 +52,8 @@ class Conveyor(Element):
         self.falling_package: Package | None = None
         self.next_step = next_step
         self._packages: list[Package] = []
-        if self.direction == Direction.RIGHT:
-            self.start_position: tuple[int, int] = (x, y)
+        if self.direction == Direction.LEFT:
+            self.start_position: tuple[int, int] = (x+length, y)
         else:
             self.start_position = (x, y + height)
         super().__init__(x, y, length, height)

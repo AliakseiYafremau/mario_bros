@@ -56,12 +56,10 @@ def main():
         else:
             conveyors[i].next_step = truck
 
-    package_factory = PackageFactory(100,
-                                     running_window.width - 100,
+    package_factory = PackageFactory(running_window.width-100,
+                                     running_window.height-75,
                                      16,
                                      16,
-                                     70,
-                                     150,
                                      16,
                                      16,
                                      conveyors[0])

@@ -16,14 +16,10 @@ class PackageFactory(Element):
         y: int,
         length: int,
         height: int,
-        new_package_x: int,
-        new_package_y: int,
         new_package_length: int,
         new_package_height: int,
         conveyor: Conveyor,
     ) -> None:
-        self.new_package_x = new_package_x
-        self.new_package_y = new_package_y
         self.new_package_length = new_package_length
         self.new_package_height = new_package_height
         self.conveyor = conveyor
@@ -31,8 +27,8 @@ class PackageFactory(Element):
 
     def create_package(self) -> Package:
         package = Package(
-            x=self.new_package_x,
-            y=self.new_package_y,
+            x=0, #Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
+            y=0, #Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
             length=self.new_package_length,
             height=self.new_package_height,
             state=PackageState.ON_CONVEYOR,

@@ -41,5 +41,5 @@ class Difficulty:
             "window_width": WINDOW_WIDTH[self.difficulty]
         }
 
-selected_difficulty = Difficulty(3)  # Hard set since we are not going to actually implement a difficulty selector,
+selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector,
                                      # but the game would be ready for it.

@@ -23,10 +23,10 @@ def main():
     luigi = Player(100-16, (running_window.height - 100), 16, 16, "Luigi")
 
     floors_mario = [Floor(x=mario.x,
-                          y=(running_window.height - 50 - i * 50),
+                          y=(running_window.height - 100 - i * 50),
                           player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors_luigi = [Floor(x=luigi.x,
-                          y=(running_window.height - 50 - i * 50),
+                          y=(running_window.height - 100 - i * 50),
                           player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
     for i in range(selected_difficulty.difficulty_values()["belts"]):

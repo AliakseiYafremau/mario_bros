@@ -1,3 +1,10 @@
+from game.presentation.pyxel_elements import (
+    BoardedPyxelElement,
+    Frame,
+    Grid,
+    PyxelElement,
+)
+
 class Window:
     __instance = None
 
@@ -7,6 +14,3 @@ class Window:
             cls.__instance.width = width
             cls.__instance.height = height
         return cls.__instance
-
-
-# YET TO BE ADDED BUT MOST OF THE THINGS IN MAIN WILL BE MOVED HERE AT SOME POINT, THIS IS WHERE ALL THE RENDERING ELEMENTS WILL TAKE PLACE

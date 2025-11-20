@@ -19,8 +19,8 @@ from game.presentation.pyxel_elements import (
 
 
 def main():
-    mario = Player(200, 50, 16, 16, "Mario")
-    luigi = Player(25, 50, 16, 16, "Luigi")
+    mario = Player(200, 450, 16, 16, "Mario")
+    luigi = Player(25, 450, 16, 16, "Luigi")
 
     selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
     running_window = Window()
@@ -75,14 +75,11 @@ def main():
         player=luigi,
     )
 
-    #I HAVE TO FINISH EVERYTHING BELLOW THIS POINT!!!!!!!! (and above too kinda...)
-
-    PyxelApp(
-        BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
+    PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
         BoardedPyxelElement(
             PyxelElement(
-                conveyor1,
+                conveyors[0],
                 Frame(1, 0, 24, 8, 8),
                 Frame(1, 16, 88, 16, 8),
                 Frame(1, 16, 88, 16, 8),
@@ -100,7 +97,7 @@ def main():
         ),
         BoardedPyxelElement(
             PyxelElement(
-                conveyor2,
+                conveyors[1],
                 Frame(1, 0, 24, 8, 8),
                 Frame(1, 16, 88, 16, 8),
                 Frame(1, 16, 88, 16, 8),
@@ -118,7 +115,7 @@ def main():
         ),
         BoardedPyxelElement(
             PyxelElement(
-                conveyor3,
+                conveyors[2],
                 Frame(1, 0, 24, 8, 8),
                 Frame(1, 16, 88, 16, 8),
                 Frame(1, 16, 88, 16, 8),

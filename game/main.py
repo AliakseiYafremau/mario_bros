@@ -67,14 +67,14 @@ def main():
                                      40,
                                      16,
                                      16,
-                                     conveyor=conveyors[2])
+                                     conveyor=factory_conveyor)
 
     game = Game(
         players={
             mario: floors_mario,
             luigi: floors_luigi,
         },
-        conveyors=conveyors,
+        conveyors=[factory_conveyor, *conveyors],
         factories=[package_factory],
     )
 

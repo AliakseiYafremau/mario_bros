@@ -25,8 +25,12 @@ def main():
     mario = Player((running_window.width-100), 450, 16, 16, "Mario")
     luigi = Player(100, 450, 16, 16, "Luigi")
 
-    floors_mario = [Floor(x=(running_window.width-100), y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors_luigi = [Floor(x=100, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors_mario = [Floor(x=(running_window.width-100),
+                          y=(running_window.height-50-i*50),
+                          player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors_luigi = [Floor(x=100,
+                          y=(running_window.height-50-i*50),
+                          player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         floors.append((floors_luigi[i], floors_mario[i]))
@@ -52,7 +56,15 @@ def main():
         else:
             conveyors[i].next_step = truck
 
-    package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyors[0])
+    package_factory = PackageFactory(100,
+                                     running_window.width-100,
+                                     16,
+                                     16,
+                                     70,
+                                     150,
+                                     16,
+                                     16,
+                                     conveyors[0])
 
     game = Game(
         live_amount=3,
@@ -106,7 +118,7 @@ def main():
              BoardedPyxelElement(
             PyxelElement(
                 package_factory,
-                Frame(0, 80, 0, 16, 16),
+                Frame(0, 64, 112, 16, 16,),
             )
         ),
         buttons={

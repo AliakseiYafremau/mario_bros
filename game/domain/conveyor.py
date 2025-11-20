@@ -41,7 +41,7 @@ class Conveyor(Element):
         next_step: CanRecievePackage | None = None,
     ) -> None:
         self.conveyor_id = conveyor_id
-        self.direction = Direction.LEFT if conveyor_id % 2 == 0 else Direction.RIGHT
+        self.direction = Direction.RIGHT if conveyor_id % 2 == 0 else Direction.LEFT
         if conveyor_id == 0:
             self.velocity = speed[0]
         elif conveyor_id % 2 == 0:
@@ -58,6 +58,12 @@ class Conveyor(Element):
             self.start_position = (x, y + height)
         super().__init__(x, y, length, height)
 
+    def put_package(self, package: Package) -> None:
+        if not isinstance(package, Package):
+            raise TypeError("package must be a Package instance")
+        package.move(self.start_position[0], self.start_position[1] - package.height)
+        package.state = PackageState.ON_CONVEYOR
+        self._packages.append(package)
 
     def move_packages(self) -> None:
         """Move all packages on the conveyor according to its direction and velocity."""
@@ -71,13 +77,6 @@ class Conveyor(Element):
                 self.falling_package = package
                 package.state = PackageState.FALLING
                 self.lift_package(package)
-
-    def put_package(self, package: Package) -> None:
-        if not isinstance(package, Package):
-            raise TypeError("package must be a Package instance")
-        package.move(self.start_position[0], self.start_position[1] - package.height)
-        package.state = PackageState.ON_CONVEYOR
-        self._packages.append(package)
 
     def lift_package(self, package: Package) -> None:
         self._packages.remove(package)

@@ -19,23 +19,23 @@ from game.presentation.pyxel_elements import (
 
 
 def main():
-    mario = Player(200, 450, 16, 16, "Mario")
-    luigi = Player(25, 450, 16, 16, "Luigi")
-
     selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector
     running_window = Window()
 
-    floors_mario = [Floor(x=200, y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors_luigi = [Floor(x=25, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    mario = Player((running_window.width-100), 450, 16, 16, "Mario")
+    luigi = Player(100, 450, 16, 16, "Luigi")
+
+    floors_mario = [Floor(x=(running_window.width-100), y=(running_window.height-50-i*50), player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
+    floors_luigi = [Floor(x=100, y=(running_window.height-50-i*50), player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors = []
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         floors.append((floors_luigi[i], floors_mario[i]))
 
     speed = selected_difficulty.difficulty_values()["conveyor_speed"]
     conveyors = [Conveyor(conveyor_id=i,
-                          x=50,
-                          y=(running_window.height-50-i*50),
-                          length=200, height=20, speed=speed,
+                          x=100,
+                          y=(running_window.height-75-i*50),
+                          length=(running_window.width-200), height=20, speed=speed,
                           finish_floor=floors[i][i%2]
                           ) for i in range(selected_difficulty.difficulty_values()["belts"])]
 
@@ -81,63 +81,29 @@ def main():
         player=luigi,
     )
 
+    rendered_conveyors = [BoardedPyxelElement(PyxelElement(conveyors[i],
+                                                           Frame(1, 0, 24, 8, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 16, 88, 16, 8),
+                                                           Frame(1, 0, 32, 16, 8),
+                                                           grid=Grid.ROW,)) for i in range(selected_difficulty.difficulty_values()["belts"])]
+
     PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
-        BoardedPyxelElement(
-            PyxelElement(
-                conveyors[0],
-                Frame(1, 0, 24, 8, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 0, 32, 16, 8),
-                grid=Grid.ROW,
-            )
-        ),
-        BoardedPyxelElement(
-            PyxelElement(
-                conveyors[1],
-                Frame(1, 0, 24, 8, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 0, 32, 16, 8),
-                grid=Grid.ROW,
-            )
-        ),
-        BoardedPyxelElement(
-            PyxelElement(
-                conveyors[2],
-                Frame(1, 0, 24, 8, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 16, 88, 16, 8),
-                Frame(1, 0, 32, 16, 8),
-                grid=Grid.ROW,
-            )
-        ),
-        BoardedPyxelElement(
+        rendered_conveyors[0],
+        rendered_conveyors[1],
+        rendered_conveyors[2],
+        rendered_conveyors[3],
+        rendered_conveyors[4],
+             BoardedPyxelElement(
             PyxelElement(
                 package_factory,
                 Frame(0, 80, 0, 16, 16),

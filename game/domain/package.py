@@ -5,7 +5,7 @@ from game.domain.elements import MotionElement
 
 
 class PackageState(Enum):
-    """Possible life-cycle states for a :class:`Package`.
+    """Possible life-cycle positions for a :class:`Package`.
 
     Attributes:
         ON_CONVEYOR: Package is on a conveyor belt.
@@ -20,6 +20,24 @@ class PackageState(Enum):
     PICKED = "picked"
     FALLING = "falling"
 
+class PackageStage(Enum):
+    """Possible life-cycle stages for a :class:`Package`. Used for rendering the appropriate sprite.
+
+    Attributes:
+        ON_CONVEYOR_0: Package has not yet passed the middle of the first conveyor belt.
+        ON_CONVEYOR_1: Package has not yet passed the middle of the second conveyor belt but has passed the first.
+        ON_CONVEYOR_2: Package has not yet passed the middle of the third conveyor belt but has passed the second.
+        ON_CONVEYOR_3: Package has not yet passed the middle of the forth conveyor belt but has passed the third.
+        ON_CONVEYOR_4: Package has not yet passed the middle of the fifth conveyor belt but has passed the forth.
+        ON_CONVEYOR_5: Package has  passed the middle of the fifth conveyor belt.
+    """
+
+    ON_CONVEYOR_0 = 0
+    ON_CONVEYOR_1 = 1
+    ON_CONVEYOR_2 = 2
+    ON_CONVEYOR_3 = 3
+    ON_CONVEYOR_4 = 4
+    ON_CONVEYOR_5 = 5
 
 class Package(MotionElement):
     """The movable package in the game world.
@@ -34,17 +52,21 @@ class Package(MotionElement):
         weigth (int): Width of the package.
         height (int): Height of the package.
         state (PackageState): Current state of the package.
+        stage (PackageStage): Current stage of the package.
 
     Raises:
         TypeError: If ``state`` is not a :class:`PackageState` instance.
     """
 
     def __init__(
-        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR
+        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR, stage: PackageStage = PackageStage.ON_CONVEYOR_0
     ) -> None:
         if not isinstance(state, PackageState):
             raise TypeError("state must be an instance of PackageState")
+        if not isinstance(stage, PackageStage):
+            raise TypeError("stage must be an instance of PackageStage")
         self.state = state
+        self.stage = stage
         super().__init__(x, y, length, height)
 
 

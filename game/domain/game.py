@@ -4,19 +4,22 @@ from game.domain.floor import Floor
 from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
+from game.domain.difficulty import selected_difficulty
 
 
 class Game:
     def __init__(
         self,
-        live_amount: int,
         players: dict[Player, list[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
     ) -> None:
         self.tick = 0
         self.newly_created_packages: list[Package] = []
-        self.live_amount = live_amount
+        self.live_amount = 3
+        self.points = 0
+        self.stored_deliveries = 0
+        self.minimum_number_packages = 1
 
         for player in players.keys():
             is_correct = False
@@ -29,6 +32,7 @@ class Game:
         self.players_positions = players
         self.conveyors = conveyors if conveyors is not None else []
         self.factories = factories if factories is not None else []
+        self.packages_at_play = 0
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:

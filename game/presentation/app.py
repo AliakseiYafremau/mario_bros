@@ -5,6 +5,7 @@ import pyxel
 
 from game.domain.game import Game
 from game.presentation.gui import running_window
+from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 
@@ -36,6 +37,17 @@ class PyxelApp:
         pyxel.run(self.update, self.draw)
 
     def update(self):
+
+        if self.game.points % (selected_difficulty.difficulty_values()["increase"]) == 0:
+            self.game.minimum_number_packages = 3 + self.game.points // (selected_difficulty.difficulty_values()["increase"])
+
+        if selected_difficulty.difficulty_values()["eliminates"] != 0 and (
+                self.game.stored_deliveries >= selected_difficulty.difficulty_values()["eliminates"]) and (
+                self.game.stored_deliveries % selected_difficulty.difficulty_values()["eliminates"] == 0) and (
+                self.game.live_amount < 3):
+            self.game.live_amount += 1
+            self.game.stored_deliveries -= selected_difficulty.difficulty_values()["eliminates"]
+
         for button in self.buttons:
             if pyxel.btnp(button):
                 self.buttons[button].execute()
@@ -45,6 +57,7 @@ class PyxelApp:
                 BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
             )
             self.game.newly_created_packages.remove(new_package)
+            self.game.packages_at_play += 1
 
         current_time = perf_counter()
         if (
@@ -54,10 +67,8 @@ class PyxelApp:
             self._last_move_package_time = current_time
             self.game.move_packages()
 
-        if (
-            current_time - self._last_create_package_time
-            >= self.tick_second * self.create_package_tick
-        ):
+        if self.game.packages_at_play < self.game.minimum_number_packages and (
+        current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick):
             self._last_create_package_time = current_time
             self.game.create_package()
 

@@ -62,7 +62,6 @@ def main():
                                      conveyors[0])
 
     game = Game(
-        live_amount=3,
         players={
             mario: floors_mario,
             luigi: floors_luigi,
@@ -113,7 +112,7 @@ def main():
              },
              game=game,
              tick_second=1,
-             move_package_tick=0.5,
+             move_package_tick=0.25,
              create_package_tick=5,
              )
 

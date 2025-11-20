@@ -24,3 +24,5 @@ python -m game.main
 pip install -r dev_requirements.txt
 mkdocs build
 ```
+
+`report.pdf` will be generated.

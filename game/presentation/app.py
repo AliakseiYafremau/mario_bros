@@ -18,7 +18,7 @@ class PyxelApp:
         game: Game,
         tick_second: float,
         move_package_tick: float,
-        create_package_tick: int,
+        create_package_tick: float,
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -39,7 +39,7 @@ class PyxelApp:
     def update(self):
 
         if self.game.points % (selected_difficulty.difficulty_values()["increase"]) == 0:
-            self.game.minimum_number_packages = 3 + self.game.points // (selected_difficulty.difficulty_values()["increase"])
+            self.game.minimum_number_packages = 1 + self.game.points // (selected_difficulty.difficulty_values()["increase"])
 
         if selected_difficulty.difficulty_values()["eliminates"] != 0 and (
                 self.game.stored_deliveries >= selected_difficulty.difficulty_values()["eliminates"]) and (
@@ -67,10 +67,11 @@ class PyxelApp:
             self._last_move_package_time = current_time
             self.game.move_packages()
 
-        if self.game.packages_at_play < self.game.minimum_number_packages and (
+        if self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
         current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick):
             self._last_create_package_time = current_time
             self.game.create_package()
+            self.create_package_tick = 15
 
     def draw(self):
         pyxel.cls(0)

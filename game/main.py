@@ -19,26 +19,34 @@ from game.presentation.pyxel_elements import (
 
 
 def main():
-    mario = Player((running_window.width - 100), (running_window.height - 100), 16, 16, "Mario")
-    luigi = Player(100-16, (running_window.height - 100), 16, 16, "Luigi")
+    mario = Player((running_window.width - 96), (running_window.height - 100), 16, 16, "Mario")
+    luigi = Player(75, (running_window.height - 100), 16, 16, "Luigi")
 
     floors_mario = [Floor(x=mario.x,
                           y=(running_window.height - 100 - i * 50),
-                          player=mario) for i in range(selected_difficulty.difficulty_values()["belts"])]
+                          player=mario) for i in range(selected_difficulty.difficulty_values()["belts"]-1)]
     floors_luigi = [Floor(x=luigi.x,
                           y=(running_window.height - 100 - i * 50),
                           player=luigi) for i in range(selected_difficulty.difficulty_values()["belts"])]
-    floors = []
-    for i in range(selected_difficulty.difficulty_values()["belts"]):
-        floors.append((floors_luigi[i], floors_mario[i]))
+    floors = [floors_luigi, floors_mario]
 
     speed = selected_difficulty.difficulty_values()["conveyor_speed"]
-    conveyors = [Conveyor(conveyor_id=i,
+    conveyors = [Conveyor(conveyor_id=i+1,
                           x=100,
                           y=(running_window.height - 75 - i * 50),
-                          length=(running_window.width - 200), height=20, speed=speed,
-                          finish_floor=floors[i][i % 2]
+                          length=(running_window.width - 200),
+                          height=20,
+                          speed=speed,
+                          finish_floor=floors[i%2][i]
                           ) for i in range(selected_difficulty.difficulty_values()["belts"])]
+
+    factory_conveyor = Conveyor(conveyor_id=0,
+                                x=running_window.width - 75,
+                                y=running_window.height - 75,
+                                length=60,
+                                height=20,
+                                speed=speed,
+                                finish_floor=floors[1][0])
 
     truck = Truck(
         x=50,
@@ -53,13 +61,13 @@ def main():
         else:
             conveyors[i].next_step = truck
 
-    package_factory = PackageFactory(running_window.width-100,
-                                     running_window.height-75,
+    package_factory = PackageFactory(running_window.width - 115 + factory_conveyor.length-20,
+                                     running_window.height-95,
+                                     60,
+                                     40,
                                      16,
                                      16,
-                                     16,
-                                     16,
-                                     conveyors[0])
+                                     conveyor=conveyors[2])
 
     game = Game(
         players={
@@ -97,13 +105,22 @@ def main():
 
     PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
              BoardedPyxelElement(PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
-             *rendered_conveyors,
              BoardedPyxelElement(
                  PyxelElement(
                      package_factory,
                      Frame(0, 64, 112, 16, 16, ),
                  )
              ),
+             *rendered_conveyors,
+             BoardedPyxelElement(PyxelElement(factory_conveyor,
+                                              Frame(1, 0, 24, 8, 8),
+                                              Frame(1, 16, 88, 16, 8),
+                                              Frame(1, 16, 88, 16, 8),
+                                              Frame(1, 16, 88, 16, 8),
+                                              Frame(1, 16, 88, 16, 8),
+                                              Frame(1, 16, 88, 16, 8),
+                                              Frame(1, 0, 32, 16, 8),
+                                              grid=Grid.ROW, )),
              buttons={
                  pyxel.KEY_UP: move_up_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_mario,
                  pyxel.KEY_DOWN: move_down_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_mario,

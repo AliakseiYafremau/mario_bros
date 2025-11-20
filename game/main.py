@@ -46,6 +46,12 @@ def main():
         height=50,
     )
 
+    for i in range(selected_difficulty.difficulty_values()["belts"]):
+        if i != (selected_difficulty.difficulty_values()["belts"]-1):
+            conveyors[i].next_step = conveyors[i+1]
+        else:
+            conveyors[i].next_step = truck
+
     package_factory = PackageFactory(50, 50, 16, 16, 70, 150, 16, 16, conveyors[0])
 
     game = Game(

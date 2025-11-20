@@ -8,13 +8,16 @@ from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
 from game.presentation.app import PyxelApp
-from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
+from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer, SwitchSceneController
 from game.presentation.pyxel_elements import (
     BoardedPyxelElement,
     Frame,
     Grid,
     PyxelElement,
 )
+from game.presentation.scenes.base import SceneManager
+from game.presentation.scenes.game import PyxelGame
+from game.presentation.scenes.menu import Menu
 
 
 def main():
@@ -95,7 +98,7 @@ def main():
         player=luigi,
     )
 
-    PyxelApp(
+    game_scene = PyxelGame(
         BoardedPyxelElement(PyxelElement(mario, Frame(0, 0, 0, 16, 16))),
         BoardedPyxelElement(PyxelElement(luigi, Frame(0, 16, 0, 16, 16))),
         BoardedPyxelElement(
@@ -169,7 +172,22 @@ def main():
         move_package_tick=1,
         create_package_tick=5,
     )
-
+    menu_scene = Menu(
+        buttons={
+            pyxel.KEY_1: SwitchSceneController(
+                manager=None,  # to be set later
+                scene_name="game",
+            ),
+        }
+    )
+    manager = SceneManager(
+        {
+            "menu": menu_scene,
+            "game": game_scene,
+        }
+    )
+    
+    PyxelApp(manager=manager)
 
 if __name__ == "__main__":
     main()

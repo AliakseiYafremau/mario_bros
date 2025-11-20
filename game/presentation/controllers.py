@@ -41,3 +41,13 @@ class MoveDownPlayer(Controller):
             self.game.move_player_down(self.player)
         except DomainError:
             return
+
+
+class SwitchSceneController(Controller):
+
+    def __init__(self, manager, scene_name: str):
+        self.manager = manager
+        self.scene_name = scene_name
+
+    def execute(self):
+            self.manager.switch_to(self.scene_name)

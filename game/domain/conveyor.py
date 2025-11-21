@@ -3,6 +3,7 @@ from game.domain.elements import Element
 from game.domain.floor import Floor
 from game.domain.logging import get_logger
 from game.domain.package import CanRecievePackage, Package, PackageState
+from game.domain.difficulty import selected_difficulty
 
 
 logger = get_logger(__name__, layer="DOMAIN")
@@ -52,13 +53,13 @@ class Conveyor(Element):
         else:
             self.velocity = speed[2]
         self.finish_floor = finish_floor
-        self.falling_package: Package | None = None
+        self.falling_packages: list[Package] = []
         self.next_step = next_step
         self._packages: list[Package] = []
         if conveyor_id == 0:
             self.start_position: tuple[int, int] = (x+length-16, y)
         elif self.direction == Direction.LEFT:
-            self.start_position: tuple[int, int] = (x+length, y)
+            self.start_position: tuple[int, int] = (x+length-12, y)
         else:
             self.start_position: tuple[int, int] = (x, y)
         super().__init__(x, y, length, height)
@@ -95,25 +96,44 @@ class Conveyor(Element):
                     package.stage_to_be_changed_to = 5
                     logger.debug("%s increased stage to 1 of", package)
 
-            if self.direction == Direction.LEFT:
-                package.move_x(package.x + self.velocity * -4)
-            else:
-                package.move_x(package.x + self.velocity * 4)
+            if not package.state == PackageState.FALLING:
+                if self.direction == Direction.LEFT:
+                    package.move_x(package.x + self.velocity * -4)
+                else:
+                    package.move_x(package.x + self.velocity * 4)
 
             if not self._is_package_on_conveyor(package):
                 logger.debug("%s felt", package)
-                self.falling_package = package
+                self.falling_packages.append(package)
                 package.state = PackageState.FALLING
+                if package.x < self.x:
+                    package.state_to_be_changed_to = 1
+                elif package.x > self.x+self.length:
+                    package.state_to_be_changed_to = 2
                 self.lift_package(package)
+        for package in self.falling_packages:
+            if self._package_is_offscreen(package):
+                self.falling_packages.remove(package)
+                logger.debug("%s due to being offscreen removed package", package)
+                package.offscreen = True
+            else:
+                package.move_y(package.y + 4)
 
     def lift_package(self, package: Package) -> None:
         self._packages.remove(package)
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
-        return self.x <= package.x <= self.x + self.length
+        return self.x <= package.x + (package.length//2) + 1 <= self.x + self.length
 
     def _package_changes_stage(self, package: Package) -> bool:
         if self.conveyor_id - 1 == package.stage:
             return package.x <= self.x + (self.length//2)
+        else:
+            return False
+
+    def _package_is_offscreen(self, package: Package) -> bool:
+        if package.y >= selected_difficulty.difficulty_values()["window_height"] or (
+                package.x + package.length <= 0) or (package.x >= selected_difficulty.difficulty_values()["window_width"]):
+            return True
         else:
             return False

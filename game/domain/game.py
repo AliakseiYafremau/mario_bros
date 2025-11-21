@@ -32,29 +32,20 @@ class Game:
         self.conveyors = conveyors if conveyors is not None else []
         self.factories = factories if factories is not None else []
         self.packages_at_play = 0
-        self.packages = []
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
-            if conveyor.falling_package is not None:
-                if conveyor.finish_floor.player is not None:
-                    current_package = conveyor.falling_package
-                    current_player = conveyor.finish_floor.player
-                    next_step = conveyor.next_step
-                    if next_step is None:
-                        raise DomainError("next step is not defined for the conveyor")
+            if conveyor.finish_floor.player is not None:
+                # FIXME Have to check all of this and fix it, thus making players move packages
+                current_package = conveyor.falling_package
+                current_player = conveyor.finish_floor.player
+                next_step = conveyor.next_step
+                if next_step is None:
+                    raise DomainError("next step is not defined for the conveyor")
+                current_player.pick_package(current_package)
+                current_player.put_package()
 
-                    # FIXME Does not make sense to pick and put at the same time
-                    # P.S we can use it for the representation that depends of the state
-                    current_player.pick_package(current_package)
-                    current_player.put_package()
-
-                    next_step.put_package(current_package)
-                else:
-                    self.live_amount -= 1
-                    if self.live_amount < 0:
-                        raise DomainError("no more lives left")
-                conveyor.falling_package = None
+                next_step.put_package(current_package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()

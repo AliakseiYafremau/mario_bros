@@ -48,7 +48,9 @@ class Package(MotionElement):
             raise TypeError("stage must be an instance of int and between 0 and 5 inclusive")
         self.state = state
         self.stage = stage
-        self.stage_to_be_changed_to = 0
+        self.stage_to_be_changed_to = 0 # 0 means no change but a value diffrent form 0 means it gets changed to that respective stage
+        self.state_to_be_changed_to = 0 # 0 means no change, 1 means it falls to the left, 2 means it falls to the right
+        self.offscreen = False
         super().__init__(x, y, length, height)
 
 

@@ -5,7 +5,7 @@ from game.domain.elements import MotionElement
 
 
 class PackageState(Enum):
-    """Possible life-cycle states for a :class:`Package`.
+    """Possible life-cycle positions for a :class:`Package`.
 
     Attributes:
         ON_CONVEYOR: Package is on a conveyor belt.
@@ -20,7 +20,6 @@ class PackageState(Enum):
     PICKED = "picked"
     FALLING = "falling"
 
-
 class Package(MotionElement):
     """The movable package in the game world.
 
@@ -34,17 +33,24 @@ class Package(MotionElement):
         weigth (int): Width of the package.
         height (int): Height of the package.
         state (PackageState): Current state of the package.
+        stage (PackageStage): Current stage of the package.
 
     Raises:
         TypeError: If ``state`` is not a :class:`PackageState` instance.
     """
 
     def __init__(
-        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR
+        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR, stage: int = 0
     ) -> None:
         if not isinstance(state, PackageState):
             raise TypeError("state must be an instance of PackageState")
+        if not isinstance(stage, int) or not (0 <= stage <= 5):
+            raise TypeError("stage must be an instance of int and between 0 and 5 inclusive")
         self.state = state
+        self.stage = stage
+        self.stage_to_be_changed_to = 0 # 0 means no change but a value diffrent form 0 means it gets changed to that respective stage
+        self.state_to_be_changed_to = 0 # 0 means no change, 1 means it falls to the left, 2 means it falls to the right
+        self.offscreen = False
         super().__init__(x, y, length, height)
 
 

@@ -9,14 +9,16 @@ from game.domain.player import Player
 class Game:
     def __init__(
         self,
-        live_amount: int,
-        players: dict[Player, tuple[Floor, ...]],
+        players: dict[Player, list[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
     ) -> None:
         self.tick = 0
         self.newly_created_packages: list[Package] = []
-        self.live_amount = live_amount
+        self.live_amount = 3
+        self.points = 0
+        self.stored_deliveries = 0
+        self.minimum_number_packages = 1
 
         for player in players.keys():
             is_correct = False
@@ -29,28 +31,21 @@ class Game:
         self.players_positions = players
         self.conveyors = conveyors if conveyors is not None else []
         self.factories = factories if factories is not None else []
+        self.packages_at_play = 0
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
-            if conveyor.falling_package is not None:
-                if conveyor.finish_floor.player is not None:
-                    current_package = conveyor.falling_package
-                    current_player = conveyor.finish_floor.player
-                    next_step = conveyor.next_step
-                    if next_step is None:
-                        raise DomainError("next step is not defined for the conveyor")
+            if conveyor.finish_floor.player is not None:
+                # FIXME Have to check all of this and fix it, thus making players move packages
+                current_package = conveyor.falling_package
+                current_player = conveyor.finish_floor.player
+                next_step = conveyor.next_step
+                if next_step is None:
+                    raise DomainError("next step is not defined for the conveyor")
+                current_player.pick_package(current_package)
+                current_player.put_package()
 
-                    # FIXME Does not make sense to pick and put at the same time
-                    # P.S we can use it for the representation that depends of the state
-                    current_player.pick_package(current_package)
-                    current_player.put_package()
-
-                    next_step.put_package(current_package)
-                else:
-                    self.live_amount -= 1
-                    if self.live_amount < 0:
-                        raise DomainError("no more lives left")
-                conveyor.falling_package = None
+                next_step.put_package(current_package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()

@@ -7,12 +7,12 @@ __pycache__
 .ruff_cache
 .mypy_cache
 
-# Graphics
-assets/
-
 # Logs
 *.log
 
 # Documentation
 site
 *.pdf
+
+# Ignore all IntelliJ/PyCharm project files
+.idea/

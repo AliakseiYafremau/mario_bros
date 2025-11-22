@@ -4,8 +4,13 @@ from time import perf_counter
 import pyxel
 
 from game.domain.game import Game
+from game.domain.package import Package
+from game.presentation.gui import running_window
+from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
+from game.domain.exceptions import DomainError
+
 
 
 class PyxelApp:
@@ -15,8 +20,8 @@ class PyxelApp:
         buttons: dict[int, Controller],
         game: Game,
         tick_second: float,
-        move_package_tick: int,
-        create_package_tick: int,
+        move_package_tick: float,
+        create_package_tick: float,
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -30,21 +35,59 @@ class PyxelApp:
         resource_path = (
             Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
-
-        pyxel.init(418, 173, title="Pyxel APP")
+        pyxel.init(running_window.width, running_window.height, title="Pyxel APP", fps=60, quit_key=pyxel.KEY_ESCAPE)
         pyxel.load(str(resource_path))
         pyxel.run(self.update, self.draw)
 
     def update(self):
+
+        if self.game.points % (selected_difficulty.difficulty_values()["increase"]) == 0:
+            self.game.minimum_number_packages = 1 + self.game.points // (selected_difficulty.difficulty_values()["increase"])
+
+        if selected_difficulty.difficulty_values()["eliminates"] != 0 and (
+                self.game.stored_deliveries >= selected_difficulty.difficulty_values()["eliminates"]) and (
+                self.game.stored_deliveries % selected_difficulty.difficulty_values()["eliminates"] == 0) and (
+                self.game.live_amount < 3):
+            self.game.live_amount += 1
+            self.game.stored_deliveries -= selected_difficulty.difficulty_values()["eliminates"]
+
         for button in self.buttons:
             if pyxel.btnp(button):
                 self.buttons[button].execute()
 
         for new_package in self.game.newly_created_packages:
             self.elements.append(
-                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 67, 11, 7)))
+                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 3, 12, 9)))
             )
             self.game.newly_created_packages.remove(new_package)
+            self.game.packages_at_play += 1
+
+        for element in self.elements:
+            if isinstance(element.element, Package) and element.element.stage_to_be_changed_to != 0:
+                self.elements.append(BoardedPyxelElement(PyxelElement(element.element, Frame(
+                    element.decorated.frames[0].image,
+                    element.decorated.frames[0].u,
+                    3 + (16*element.element.stage_to_be_changed_to),
+                    element.decorated.frames[0].w,
+                    element.decorated.frames[0].h))))
+                self.elements.remove(element)
+                element.element.stage_to_be_changed_to = 0
+            if isinstance(element.element, Package) and element.element.state_to_be_changed_to != 0:
+                self.elements.append(BoardedPyxelElement(PyxelElement(element.element, Frame(
+                    element.decorated.frames[0].image,
+                    element.decorated.frames[0].u + (element.element.state_to_be_changed_to * 16),
+                    element.decorated.frames[0].v,
+                    element.decorated.frames[0].w,
+                    element.decorated.frames[0].h))))
+                self.elements.remove(element)
+                element.element.state_to_be_changed_to = 0
+                self.game.packages_at_play -= 1
+                self.game.live_amount -= 1
+            if isinstance(element.element, Package) and element.element.offscreen:
+                self.elements.remove(element)
+
+        if self.game.live_amount < 0:
+            raise DomainError("no more lives left")
 
         current_time = perf_counter()
         if (
@@ -54,12 +97,11 @@ class PyxelApp:
             self._last_move_package_time = current_time
             self.game.move_packages()
 
-        if (
-            current_time - self._last_create_package_time
-            >= self.tick_second * self.create_package_tick
-        ):
+        if self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
+        current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick):
             self._last_create_package_time = current_time
             self.game.create_package()
+            self.create_package_tick = 15
 
     def draw(self):
         pyxel.cls(0)

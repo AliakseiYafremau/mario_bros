@@ -37,6 +37,7 @@ class Game:
         self.factories = factories if factories is not None else []
         self.packages_at_play = 0
         self.truck = truck
+        self.original_truck_x = truck.x
         self.first_package_moved = False
 
     def move_packages(self) -> None:

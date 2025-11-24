@@ -73,7 +73,7 @@ def main():
                                      40,
                                      12,
                                      8,
-                                     conveyor=factory_conveyor)
+                                     conveyor=conveyors[-1])
 
     game = Game(
         players={
@@ -137,7 +137,7 @@ def main():
              },
              game=game,
              tick_second=1,
-             move_truck_tick=0.15,
+             move_truck_tick=0.07,
              move_package_tick=0.05,
              create_package_tick=5,
              )

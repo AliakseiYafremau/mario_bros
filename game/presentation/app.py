@@ -32,10 +32,10 @@ class PyxelApp:
         self.move_package_tick = move_package_tick
         self.create_package_tick = create_package_tick
         self.move_truck_tick = move_truck_tick
+        self._taking_a_break = perf_counter()
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
         self._last_move_truck_time = perf_counter()
-        self._taking_a_break = perf_counter()
         self._took_a_break = False
 
         resource_path = (
@@ -101,11 +101,13 @@ class PyxelApp:
             for element in self.elements:
                 if (isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(element.element, Truck):
                     self.elements.remove(element)
+            self.game.truck.has_returned = False
             self.game.truck.y -= 2
             self.game.truck.packages = []
             self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32))))
             self._taking_a_break = perf_counter() + 5
             self._took_a_break = True
+            self.game.points += 10
 
         if self._taking_a_break < perf_counter():
 
@@ -133,13 +135,12 @@ class PyxelApp:
                 self.game.create_package()
                 self.create_package_tick = (self.move_package_tick * 100) * (
                         selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
-            else:
-                if (
-                    perf_counter() - self._last_move_package_time >= self.tick_second * self.move_truck_tick
-                ):
-                    self._last_move_truck_time = perf_counter()
-                    original_truck_x = self.game.truck.x
-                    self.game.truck.truck_in_movement(original_truck_x)
+        else:
+            if (
+                perf_counter() - self._last_move_truck_time >= self.tick_second * self.move_truck_tick
+            ) and not self.game.truck.has_returned:
+                self._last_move_truck_time = perf_counter()
+                self.game.truck.truck_in_movement(self.game.original_truck_x)
 
 
     def draw(self):

@@ -5,7 +5,9 @@ from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
+from game.domain.logging import get_logger
 
+logger = get_logger(__name__, layer="DOMAIN")
 
 class Game:
     def __init__(
@@ -35,6 +37,7 @@ class Game:
         self.factories = factories if factories is not None else []
         self.packages_at_play = 0
         self.truck = truck
+        self.first_package_moved = False
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
@@ -47,11 +50,14 @@ class Game:
                         else:
                             if isinstance(conveyor.next_step, Truck):
                                 conveyor.next_step.put_package(package)
+                                logger.debug("%s package has been put in the truck", package)
                                 self.points += 2
                                 conveyor.packages.remove(package)
                                 self.packages_at_play -= 1
                             else:
+                                self.first_package_moved = True
                                 conveyor.next_step.put_package(package)
+                                logger.debug("%s package has changed conveyor", package)
                                 current_player.pick_package(package)
                                 self.points += 1
                                 # FIXME short break between picking and putting package. maybe 2 move ticks

@@ -123,10 +123,12 @@ class PyxelApp:
 
             if self._took_a_break:
                 self._last_create_package_time += 5
+                self._took_a_break = False
+
             if (
                     self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
                     current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick)
-            ):
+            ) or (self.game.packages_at_play == 0 and self.game.first_package_moved):
                 self._last_create_package_time = current_time
                 self.game.create_package()
                 self.create_package_tick = (self.move_package_tick * 100) * (

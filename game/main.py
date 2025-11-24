@@ -138,7 +138,7 @@ def main():
              game=game,
              tick_second=1,
              move_truck_tick=0.15,
-             move_package_tick=0.15,
+             move_package_tick=0.05,
              create_package_tick=5,
              )
 

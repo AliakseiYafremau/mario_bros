@@ -5,6 +5,8 @@ from game.domain.package import Package, PackageState
 class Truck(MotionElement):
     def __init__(self, x, y, length, height) -> None:
         self.packages: list = []
+        self.truck_speed: int = 4
+        self.has_just_started: bool = False
         super().__init__(x, y, length, height)
 
     def put_package(self, package: Package) -> None:
@@ -16,5 +18,12 @@ class Truck(MotionElement):
     def is_full(self) -> bool:
         return len(self.packages) >= 8
 
-    def truck_leaves(self) -> None:
-        self.packages = []
+    def truck_in_movement(self, original_x: int) -> None:
+        if self.x + self.length + 5 <= 0:
+            velocity = -1
+        else:
+            velocity = 0.5
+        if self.x + int(4*velocity) <= original_x:
+            self.x += int(4*velocity)
+        elif self.x != original_x and self.x + int(4*velocity) > original_x:
+            self.x = original_x

@@ -11,6 +11,7 @@ from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 from game.domain.exceptions import DomainError
 from game.domain.player import Player
+from game.domain.truck import Truck
 
 
 class PyxelApp:
@@ -21,6 +22,7 @@ class PyxelApp:
             game: Game,
             tick_second: float,
             move_package_tick: float,
+            move_truck_tick: float,
             create_package_tick: float,
     ):
         self.elements = list(elements)
@@ -29,10 +31,12 @@ class PyxelApp:
         self.tick_second = tick_second
         self.move_package_tick = move_package_tick
         self.create_package_tick = create_package_tick
+        self.move_truck_tick = move_truck_tick
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
-        self.taking_a_break = perf_counter()
-        self.took_a_break = False
+        self._last_move_truck_time = perf_counter()
+        self._taking_a_break = perf_counter()
+        self._took_a_break = False
 
         resource_path = (
                 Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
@@ -54,7 +58,7 @@ class PyxelApp:
             self.game.live_amount += 1
             self.game.stored_deliveries -= selected_difficulty.difficulty_values()["eliminates"]
 
-        if self.taking_a_break < perf_counter():
+        if self._taking_a_break < perf_counter():
             for button in self.buttons:
                 if pyxel.btnp(button):
                     self.buttons[button].execute()
@@ -94,14 +98,16 @@ class PyxelApp:
             raise DomainError("no more lives left")
 
         if self.game.truck.is_full():
-            self.game.truck.truck_leaves()
             for element in self.elements:
-                if isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK:
+                if (isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(element.element, Truck):
                     self.elements.remove(element)
-            self.taking_a_break = perf_counter() + 5
-            self.took_a_break = True
+            self.game.truck.y -= 2
+            self.game.truck.packages = []
+            self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32))))
+            self._taking_a_break = perf_counter() + 5
+            self._took_a_break = True
 
-        if self.taking_a_break < perf_counter():
+        if self._taking_a_break < perf_counter():
 
             for element in self.elements:
                 # FIXME change sprite if player has a package in hands
@@ -110,13 +116,12 @@ class PyxelApp:
 
             current_time = perf_counter()
             if (
-                    current_time - self._last_move_package_time
-                    >= self.tick_second * self.move_package_tick
+                    current_time - self._last_move_package_time >= self.tick_second * self.move_package_tick
             ):
                 self._last_move_package_time = current_time
                 self.game.move_packages()
 
-            if self.took_a_break:
+            if self._took_a_break:
                 self._last_create_package_time += 5
             if (
                     self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
@@ -126,6 +131,14 @@ class PyxelApp:
                 self.game.create_package()
                 self.create_package_tick = (self.move_package_tick * 100) * (
                         selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
+            else:
+                if (
+                    perf_counter() - self._last_move_package_time >= self.tick_second * self.move_truck_tick
+                ):
+                    self._last_move_truck_time = perf_counter()
+                    original_truck_x = self.game.truck.x
+                    self.game.truck.truck_in_movement(original_truck_x)
+
 
     def draw(self):
         pyxel.cls(0)

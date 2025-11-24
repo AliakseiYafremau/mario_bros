@@ -102,9 +102,3 @@ class Game:
             player_positions[current_position_index].player = None
             player_positions[current_position_index - 1].player = player
             return None
-
-    def give_points(self, game, amount: int):
-        if not isinstance(game, Game):
-            raise DomainError("game is not a Game class")
-        else:
-            game.points += amount

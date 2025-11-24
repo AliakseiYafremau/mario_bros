@@ -22,6 +22,7 @@ def main():
     mario = Player((running_window.width - 96), (running_window.height - 150), 16, 16, "Mario")
     luigi = Player(75, (running_window.height - 150), 16, 16, "Luigi")
 
+    # FIXME some floors(floor 1 for luigi for example) to be removed cause the player will never need to be there
     floors_mario = [Floor(x=mario.x,
                           y=(running_window.height - 100 - i * 50),
                           player=None
@@ -53,10 +54,10 @@ def main():
                                 finish_floor=floors_mario[0])
 
     truck = Truck(
-        x=50,
-        y=50,
-        length=50,
-        height=50,
+        x=conveyors[-1].x - 80,
+        y=conveyors[-1].y - 30,
+        length=45,
+        height=30,
     )
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
@@ -71,7 +72,7 @@ def main():
                                      60,
                                      40,
                                      12,
-                                     9,
+                                     8,
                                      conveyor=factory_conveyor)
 
     game = Game(
@@ -81,6 +82,7 @@ def main():
         },
         conveyors=[factory_conveyor, *conveyors],
         factories=[package_factory],
+        truck=truck
     )
 
     move_up_mario = MoveUpPlayer(
@@ -125,7 +127,8 @@ def main():
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 0, 32, 16, 8),
-                                              grid=Grid.ROW, )),
+                                              grid=Grid.ROW)),
+             BoardedPyxelElement(PyxelElement(truck, Frame(0, 131, 1, 45, 30))),
              buttons={
                  pyxel.KEY_UP: move_up_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_mario,
                  pyxel.KEY_DOWN: move_down_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_mario,

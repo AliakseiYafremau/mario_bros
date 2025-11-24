@@ -4,6 +4,7 @@ from game.domain.floor import Floor
 from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
+from game.domain.truck import Truck
 
 
 class Game:
@@ -12,6 +13,7 @@ class Game:
         players: dict[Player, list[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
+        truck: Truck = None
     ) -> None:
         self.tick = 0
         self.newly_created_packages: list[Package] = []
@@ -32,6 +34,7 @@ class Game:
         self.conveyors = conveyors if conveyors is not None else []
         self.factories = factories if factories is not None else []
         self.packages_at_play = 0
+        self.truck = truck
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
@@ -42,11 +45,18 @@ class Game:
                         if conveyor.next_step is None:
                             raise DomainError("next step is not defined for the conveyor")
                         else:
-                            conveyor.next_step.put_package(package)
-                            current_player.pick_package(package)
-                            # FIXME short break between picking and putting package. maybe 1 second tick or 2 move ticks
-                            current_player.put_package()
-                            conveyor.packages.remove(package)
+                            if isinstance(conveyor.next_step, Truck):
+                                conveyor.next_step.put_package(package)
+                                self.points += 2
+                                conveyor.packages.remove(package)
+                                self.packages_at_play -= 1
+                            else:
+                                conveyor.next_step.put_package(package)
+                                current_player.pick_package(package)
+                                self.points += 1
+                                # FIXME short break between picking and putting package. maybe 2 move ticks
+                                current_player.put_package()
+                                conveyor.packages.remove(package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()

@@ -9,16 +9,15 @@ class PackageState(Enum):
 
     Attributes:
         ON_CONVEYOR: Package is on a conveyor belt.
-        ON_TRUCK: Package is loaded on a truck.
         PICKED: Package has been picked by the player.
         FALLING: Package is in a falling state (not supported by all
             game subsystems).
     """
 
     ON_CONVEYOR = "conveyor"
-    ON_TRUCK = "truck"
     PICKED = "picked"
     FALLING = "falling"
+    ON_TRUCK = "truck"
 
 class Package(MotionElement):
     """The movable package in the game world.

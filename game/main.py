@@ -24,10 +24,12 @@ def main():
 
     floors_mario = [Floor(x=mario.x,
                           y=(running_window.height - 100 - i * 50),
-                          player=None) for i in range(selected_difficulty.difficulty_values()["belts"]-1)]
+                          player=None
+                          ) for i in range(selected_difficulty.difficulty_values()["belts"]-1)]
     floors_luigi = [Floor(x=luigi.x,
                           y=(running_window.height - 100 - i * 50),
-                          player=None) for i in range(selected_difficulty.difficulty_values()["belts"])]
+                          player=None
+                          ) for i in range(selected_difficulty.difficulty_values()["belts"])]
     floors_luigi[1].player = luigi
     floors_mario[1].player = mario
     floors = [floors_luigi, floors_mario]
@@ -48,7 +50,7 @@ def main():
                                 length=60,
                                 height=20,
                                 speed=speed,
-                                finish_floor=floors[1][0])
+                                finish_floor=floors_mario[0])
 
     truck = Truck(
         x=50,
@@ -132,7 +134,7 @@ def main():
              },
              game=game,
              tick_second=1,
-             move_package_tick=0.25,
+             move_package_tick=0.05,
              create_package_tick=5,
              )
 

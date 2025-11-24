@@ -35,17 +35,18 @@ class Game:
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
-            if conveyor.finish_floor.player is not None:
-                # FIXME Have to check all of this and fix it, thus making players move packages
-                current_package = conveyor.falling_package
-                current_player = conveyor.finish_floor.player
-                next_step = conveyor.next_step
-                if next_step is None:
-                    raise DomainError("next step is not defined for the conveyor")
-                current_player.pick_package(current_package)
-                current_player.put_package()
-
-                next_step.put_package(current_package)
+            for package in conveyor.packages:
+                if conveyor.package_about_to_fall(package):
+                    if conveyor.finish_floor.player is not None:
+                        current_player = conveyor.finish_floor.player
+                        if conveyor.next_step is None:
+                            raise DomainError("next step is not defined for the conveyor")
+                        else:
+                            conveyor.next_step.put_package(package)
+                            current_player.pick_package(package)
+                            # FIXME short break between picking and putting package. maybe 1 second tick or 2 move ticks
+                            current_player.put_package()
+                            conveyor.packages.remove(package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()
@@ -54,18 +55,21 @@ class Game:
 
     def move_player_up(self, player: Player) -> None:
         player_positions = self.players_positions[player]
-        player_current_floor = Floor(player.x, player.y)
+        current_position_index = None
+        for possible_player_position in player_positions:
+            if possible_player_position.x == player.x and possible_player_position.y == player.y:
+                current_position_index = player_positions.index(possible_player_position)
 
-        if player_current_floor == player_positions[-1]:
-            raise DomainError("cannot raise the player because is on the top")
+        if current_position_index is None:
+            raise DomainError("Could not find the players current floor")
 
-        for position_index in range(len(player_positions) - 1):
-            if player_current_floor == player_positions[position_index]:
-                new_player_position = player_positions[position_index + 1]
-                player.move(new_player_position.x, new_player_position.y)
-                return
-
-        raise DomainError("player has invalid position")
+        if current_position_index == (len(player_positions)-1):
+            return None
+        else:
+            player.move(player_positions[current_position_index+1].x, player_positions[current_position_index+1].y)
+            player_positions[current_position_index].player = None
+            player_positions[current_position_index+1].player = player
+            return None
 
     def create_package(self):
         for factory in self.factories:
@@ -73,15 +77,24 @@ class Game:
 
     def move_player_down(self, player: Player) -> None:
         player_positions = self.players_positions[player]
-        player_current_floor = Floor(player.x, player.y)
+        current_position_index = None
+        for possible_player_position in player_positions:
+            if possible_player_position.x == player.x and possible_player_position.y == player.y:
+                current_position_index = player_positions.index(possible_player_position)
 
-        if player_current_floor == player_positions[0]:
-            raise DomainError("cannot lower the player because is on the bottom")
+        if current_position_index is None:
+            raise DomainError("Could not find the players current floor")
 
-        for position_index in range(1, len(player_positions)):
-            if player_current_floor == player_positions[position_index]:
-                new_player_position = player_positions[position_index - 1]
-                player.move(new_player_position.x, new_player_position.y)
-                return
+        if current_position_index == 0:
+            return None
+        else:
+            player.move(player_positions[current_position_index - 1].x, player_positions[current_position_index - 1].y)
+            player_positions[current_position_index].player = None
+            player_positions[current_position_index - 1].player = player
+            return None
 
-        raise DomainError("player has invalid position")
+    def give_points(self, game, amount: int):
+        if not isinstance(game, Game):
+            raise DomainError("game is not a Game class")
+        else:
+            game.points += amount

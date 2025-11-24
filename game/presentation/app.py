@@ -10,6 +10,7 @@ from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 from game.domain.exceptions import DomainError
+from game.domain.player import Player
 
 
 
@@ -31,6 +32,8 @@ class PyxelApp:
         self.create_package_tick = create_package_tick
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
+        self.taking_a_break = False # FIXME implement the breaks when truck leaves and etc.
+                                    # Idea: maybe use counter and not bools for the break
 
         resource_path = (
             Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
@@ -89,6 +92,11 @@ class PyxelApp:
         if self.game.live_amount < 0:
             raise DomainError("no more lives left")
 
+        for element in self.elements:
+            # FIXME change sprite if player has a package in hands
+            if isinstance(element.element, Player) and element.element.package is not None:
+                "bla bla bla"
+
         current_time = perf_counter()
         if (
             current_time - self._last_move_package_time
@@ -96,12 +104,15 @@ class PyxelApp:
         ):
             self._last_move_package_time = current_time
             self.game.move_packages()
-
         if self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
         current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick):
             self._last_create_package_time = current_time
             self.game.create_package()
-            self.create_package_tick = 15
+            self.create_package_tick = (self.move_package_tick * 100) * (
+                selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
+# the number of ticks it takes to make a new package changes based on the minimum number of packages. The formula is:
+    # (Time it takes for a package to reach a new belt) * (minimum packages + 1 / number of belts)
+    # This makes it so that the distance between packages is ideally equal
 
     def draw(self):
         pyxel.cls(0)

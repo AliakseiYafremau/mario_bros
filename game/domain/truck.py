@@ -6,6 +6,7 @@ class Truck(MotionElement):
     def __init__(self, x, y, length, height) -> None:
         self.packages: list = []
         self.velocity: int = 1
+        self.sprite_to_be_changed_back = False
         self.has_returned: bool = False
         self.has_turned: bool = False
         super().__init__(x, y, length, height)
@@ -31,3 +32,4 @@ class Truck(MotionElement):
             self.x = original_x
         if original_x == self.x:
             self.has_returned = True
+            self.has_turned = False

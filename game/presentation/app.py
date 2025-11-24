@@ -98,14 +98,14 @@ class PyxelApp:
             raise DomainError("no more lives left")
 
         if self.game.truck.is_full():
-            for element in self.elements:
+            for element in self.elements[:]:
                 if (isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(element.element, Truck):
                     self.elements.remove(element)
             self.game.truck.has_returned = False
-            self.game.truck.y -= 2
+            self.game.truck.sprite_to_be_changed_back = True
             self.game.truck.packages = []
             self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32))))
-            self._taking_a_break = perf_counter() + 5
+            self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
 
@@ -124,7 +124,7 @@ class PyxelApp:
                 self.game.move_packages()
 
             if self._took_a_break:
-                self._last_create_package_time += 5
+                self._last_create_package_time += 8
                 self._took_a_break = False
 
             if (
@@ -141,6 +141,16 @@ class PyxelApp:
             ) and not self.game.truck.has_returned:
                 self._last_move_truck_time = perf_counter()
                 self.game.truck.truck_in_movement(self.game.original_truck_x)
+                if self.game.truck.has_turned and self.game.truck.sprite_to_be_changed_back:
+                    self.game.truck.sprite_to_be_changed_back = False
+                    for element in self.elements:
+                        if isinstance(element.element, Truck):
+                            print("to be removed")
+                            self.elements.remove(element)
+                            print("removed")
+                            self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(
+                                0, 131, 1, 45, 30))))
+
 
 
     def draw(self):

@@ -126,10 +126,10 @@ class Conveyor(Element):
         return self.x <= package.x + (package.length//2) + 1 <= self.x + self.length
 
     def _package_changes_stage(self, package: Package) -> bool:
-        if self.conveyor_id - 1 == package.stage:
-            return package.x <= self.x + (self.length//2)
-        else:
-            return False
+        if self.conveyor_id%2 != 0:
+            return self.conveyor_id - 1 == package.stage and package.x <= self.x + (self.length//2)
+        elif self.conveyor_id%2 == 0:
+            return self.conveyor_id - 1 == package.stage and package.x + package.length >= self.x + (self.length//2)
 
     def _package_is_offscreen(self, package: Package) -> bool:
         if package.y >= selected_difficulty.difficulty_values()["window_height"] or (

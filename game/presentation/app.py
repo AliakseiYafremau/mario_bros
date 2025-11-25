@@ -5,10 +5,10 @@ import pyxel
 
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
-from game.presentation.gui import running_window
+from game.presentation.gui import running_window, PointsCounter
 from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
-from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
+from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, Grid, PyxelElement
 from game.domain.exceptions import DomainError
 from game.domain.player import Player
 from game.domain.truck import Truck
@@ -49,7 +49,7 @@ class PyxelApp:
 
         if self.game.points % (selected_difficulty.difficulty_values()["increase"]) == 0:
             self.game.minimum_number_packages = 1 + self.game.points // (
-            selected_difficulty.difficulty_values()["increase"])
+                selected_difficulty.difficulty_values()["increase"])
 
         if selected_difficulty.difficulty_values()["eliminates"] != 0 and (
                 self.game.stored_deliveries >= selected_difficulty.difficulty_values()["eliminates"]) and (
@@ -99,7 +99,9 @@ class PyxelApp:
 
         if self.game.truck.is_full():
             for element in self.elements[:]:
-                if (isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(element.element, Truck):
+                if (isinstance(element.element,
+                               Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(
+                        element.element, Truck):
                     self.elements.remove(element)
             self.game.truck.has_returned = False
             self.game.truck.sprite_to_be_changed_back = True
@@ -108,6 +110,19 @@ class PyxelApp:
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
+            self.game.points_to_be_updated = True
+
+        if self.game.points_to_be_updated:
+            self.game.points_to_be_updated = False
+            self.game.point_counter.update_points(self.game.points)
+            for element in self.elements:
+                if isinstance(element.element, PointsCounter):
+                    self.elements.append(BoardedPyxelElement(PyxelElement(element.element,Frame(
+                        0, 53, 16+16*element.element.digit4_value, 8, 13),
+                        Frame(0, 53, 16+16*element.element.digit3_value, 8, 13),
+                        Frame(0, 53, 16+16*element.element.digit2_value, 8, 13),
+                        Frame(0, 53, 16+16*element.element.digit1_value, 6, 13), grid=Grid.ROW)))
+                    self.elements.remove(element)
 
         if self._taking_a_break < perf_counter():
 
@@ -137,7 +152,7 @@ class PyxelApp:
                         selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
         else:
             if (
-                perf_counter() - self._last_move_truck_time >= self.tick_second * self.move_truck_tick
+                    perf_counter() - self._last_move_truck_time >= self.tick_second * self.move_truck_tick
             ) and not self.game.truck.has_returned:
                 self._last_move_truck_time = perf_counter()
                 self.game.truck.truck_in_movement(self.game.original_truck_x)
@@ -150,8 +165,6 @@ class PyxelApp:
                             print("removed")
                             self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(
                                 0, 131, 1, 45, 30))))
-
-
 
     def draw(self):
         pyxel.cls(0)

@@ -6,6 +6,7 @@ from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
 from game.domain.logging import get_logger
+from game.presentation.gui import PointsCounter
 
 logger = get_logger(__name__, layer="DOMAIN")
 
@@ -15,7 +16,8 @@ class Game:
         players: dict[Player, list[Floor, ...]],
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
-        truck: Truck = None
+        truck: Truck = None,
+        point_counter: PointsCounter = None,
     ) -> None:
         self.tick = 0
         self.newly_created_packages: list[Package] = []
@@ -39,6 +41,8 @@ class Game:
         self.truck = truck
         self.original_truck_x = truck.x
         self.first_package_moved = False
+        self.point_counter = point_counter
+        self.points_to_be_updated = False
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
@@ -53,6 +57,7 @@ class Game:
                                 conveyor.next_step.put_package(package)
                                 logger.debug("%s package has been put in the truck", package)
                                 self.points += 2
+                                self.points_to_be_updated = True
                                 conveyor.packages.remove(package)
                                 self.packages_at_play -= 1
                             else:
@@ -61,6 +66,7 @@ class Game:
                                 logger.debug("%s package has changed conveyor", package)
                                 current_player.pick_package(package)
                                 self.points += 1
+                                self.points_to_be_updated = True
                                 # FIXME short break between picking and putting package. maybe 2 move ticks
                                 current_player.put_package()
                                 conveyor.packages.remove(package)

@@ -18,7 +18,7 @@ class Truck(MotionElement):
         self.packages.append(package)
 
     def is_full(self) -> bool:
-        return len(self.packages) >= 1
+        return len(self.packages) >= 8
 
     def truck_in_movement(self, original_x: int) -> None:
         if not self.has_returned and self.x + self.length + 5 <= 0 :

@@ -2,7 +2,7 @@ import pyxel
 
 from game.domain.conveyor import Conveyor
 from game.domain.difficulty import selected_difficulty
-from game.presentation.gui import running_window
+from game.presentation.gui import running_window, PointsCounter
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -60,6 +60,8 @@ def main():
         height=30,
     )
 
+    point_counter = PointsCounter(x=running_window.width-75, y=15, length=45, height=15)
+
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         if i != (selected_difficulty.difficulty_values()["belts"] - 1):
             conveyors[i].next_step = conveyors[i + 1]
@@ -73,7 +75,7 @@ def main():
                                      40,
                                      12,
                                      8,
-                                     conveyor=conveyors[-1])
+                                     conveyor=factory_conveyor)
 
     game = Game(
         players={
@@ -82,7 +84,8 @@ def main():
         },
         conveyors=[factory_conveyor, *conveyors],
         factories=[package_factory],
-        truck=truck
+        truck=truck,
+        point_counter=point_counter
     )
 
     move_up_mario = MoveUpPlayer(
@@ -129,6 +132,12 @@ def main():
                                               Frame(1, 0, 32, 16, 8),
                                               grid=Grid.ROW)),
              BoardedPyxelElement(PyxelElement(truck, Frame(0, 131, 1, 45, 30))),
+             BoardedPyxelElement(PyxelElement(point_counter,
+                                            Frame(0, 53, 16, 8, 13),
+                                              Frame(0, 53, 16, 8, 13),
+                                              Frame(0, 53, 16, 8, 13),
+                                              Frame(0, 53, 16, 6, 13),
+                                              grid=Grid.ROW)) ,
              buttons={
                  pyxel.KEY_UP: move_up_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_mario,
                  pyxel.KEY_DOWN: move_down_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_mario,
@@ -138,7 +147,7 @@ def main():
              game=game,
              tick_second=1,
              move_truck_tick=0.07,
-             move_package_tick=0.05,
+             move_package_tick=0.15,
              create_package_tick=5,
              )
 

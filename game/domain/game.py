@@ -49,32 +49,33 @@ class Game:
             for package in conveyor.packages:
                 if conveyor.package_about_to_fall(package):
                     if conveyor.finish_floor.player is not None:
-                        current_player = conveyor.finish_floor.player
                         if conveyor.next_step is None:
                             raise DomainError("next step is not defined for the conveyor")
-                        else:
-                            if isinstance(conveyor.next_step, Truck):
-                                conveyor.next_step.put_package(package)
-                                logger.debug("%s package has been put in the truck", package)
-                                self.points += 2
-                                self.points_to_be_updated = True
-                                conveyor.packages.remove(package)
-                                self.packages_at_play -= 1
-                            else:
-                                self.first_package_moved = True
-                                conveyor.next_step.put_package(package)
-                                logger.debug("%s package has changed conveyor", package)
-                                current_player.pick_package(package)
-                                self.points += 1
-                                self.points_to_be_updated = True
-                                # FIXME short break between picking and putting package. maybe 2 move ticks
-                                current_player.put_package()
-                                conveyor.packages.remove(package)
+                        elif conveyor.finish_floor.player.pick_package(package):
+                            conveyor.packages.remove(package)
+                            logger.debug("%s picked up by player", package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()
 
         self.tick += 1
+
+    def player_put_down_package(self, player: Player) -> None:
+        for conveyor in self.conveyors:
+            if conveyor.finish_floor.player == player:
+                player.package_to_be_put = False
+                conveyor.next_step.put_package(player.package)
+                player.put_package()
+                if isinstance(conveyor.next_step, Truck):
+                    logger.debug("%s package has been put in the truck", player.package)
+                    self.packages_at_play -= 1
+                    self.points += 2
+                else:
+                    logger.debug("%s put down on next conveyor", player.package)
+                    self.first_package_moved = True
+                    self.points += 1
+                self.points_to_be_updated = True
+
 
     def move_player_up(self, player: Player) -> None:
         player_positions = self.players_positions[player]

@@ -60,7 +60,7 @@ class PyxelApp:
 
         if self._taking_a_break < perf_counter():
             for button in self.buttons:
-                if pyxel.btnp(button):
+                if pyxel.btnp(button) and not self.buttons[button].player.is_moving_package:
                     self.buttons[button].execute()
 
         for new_package in self.game.newly_created_packages:
@@ -99,9 +99,8 @@ class PyxelApp:
 
         if self.game.truck.is_full():
             for element in self.elements[:]:
-                if (isinstance(element.element,
-                               Package) and element.element.state == PackageState.ON_TRUCK) or isinstance(
-                        element.element, Truck):
+                if ((isinstance(element.element, Package) and element.element.state == PackageState.ON_TRUCK)
+                        or isinstance(element.element, Truck)):
                     self.elements.remove(element)
             self.game.truck.has_returned = False
             self.game.truck.sprite_to_be_changed_back = True
@@ -117,19 +116,19 @@ class PyxelApp:
             self.game.point_counter.update_points(self.game.points)
             for element in self.elements:
                 if isinstance(element.element, PointsCounter):
-                    self.elements.append(BoardedPyxelElement(PyxelElement(element.element,Frame(
-                        0, 53, 16+16*element.element.digit4_value, 8, 13),
-                        Frame(0, 53, 16+16*element.element.digit3_value, 8, 13),
-                        Frame(0, 53, 16+16*element.element.digit2_value, 8, 13),
-                        Frame(0, 53, 16+16*element.element.digit1_value, 6, 13), grid=Grid.ROW)))
+                    self.elements.append(BoardedPyxelElement(PyxelElement(element.element,
+                Frame(0, 53, 16 + 16 * element.element.digit4_value, 8, 13),
+                        Frame(0, 53, 16 + 16 * element.element.digit3_value, 8, 13),
+                        Frame(0, 53, 16 + 16 * element.element.digit2_value, 8, 13),
+                        Frame(0, 53, 16 + 16 * element.element.digit1_value, 6, 13), grid=Grid.ROW)))
                     self.elements.remove(element)
 
         if self._taking_a_break < perf_counter():
 
-            for element in self.elements:
-                # FIXME change sprite if player has a package in hands
-                if isinstance(element.element, Player) and element.element.package is not None:
-                    "bla bla bla"
+            for player in self.game.players:
+                if player.is_moving_package and player.package_picked_up_at + self.move_package_tick * 2 <= perf_counter():
+                    player.is_moving_package = False
+                    self.game.player_put_down_package(player)
 
             current_time = perf_counter()
             if (
@@ -142,29 +141,31 @@ class PyxelApp:
                 self._last_create_package_time += 8
                 self._took_a_break = False
 
+            if self.game.first_package_moved and (
+                    self.create_package_tick != (self.move_package_tick * 100) * (
+                    selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
+            ):
+                self.create_package_tick = (self.move_package_tick * 100) * (
+                        selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
             if (
                     self.game.packages_at_play < self.game.minimum_number_packages + 1 and (
                     current_time - self._last_create_package_time >= self.tick_second * self.create_package_tick)
-            ) or (self.game.packages_at_play == 0 and self.game.first_package_moved):
+            ) or (self.game.packages_at_play < self.game.minimum_number_packages and self.game.first_package_moved):
                 self._last_create_package_time = current_time
                 self.game.create_package()
-                self.create_package_tick = (self.move_package_tick * 100) * (
-                        selected_difficulty.difficulty_values()["belts"] / (self.game.minimum_number_packages + 1))
-        else:
-            if (
-                    perf_counter() - self._last_move_truck_time >= self.tick_second * self.move_truck_tick
-            ) and not self.game.truck.has_returned:
-                self._last_move_truck_time = perf_counter()
-                self.game.truck.truck_in_movement(self.game.original_truck_x)
-                if self.game.truck.has_turned and self.game.truck.sprite_to_be_changed_back:
-                    self.game.truck.sprite_to_be_changed_back = False
-                    for element in self.elements:
-                        if isinstance(element.element, Truck):
-                            print("to be removed")
-                            self.elements.remove(element)
-                            print("removed")
-                            self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(
-                                0, 131, 1, 45, 30))))
+
+        elif (
+                perf_counter() - self._last_move_truck_time >= self.tick_second * self.move_truck_tick
+        ) and not self.game.truck.has_returned:
+            self._last_move_truck_time = perf_counter()
+            self.game.truck.truck_in_movement(self.game.original_truck_x)
+            if self.game.truck.has_turned and self.game.truck.sprite_to_be_changed_back:
+                self.game.truck.sprite_to_be_changed_back = False
+                for element in self.elements:
+                    if isinstance(element.element, Truck):
+                        self.elements.remove(element)
+                        self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(
+                            0, 131, 1, 45, 30))))
 
     def draw(self):
         pyxel.cls(0)

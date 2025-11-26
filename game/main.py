@@ -40,7 +40,7 @@ def main():
                           x=100,
                           y=(running_window.height - 75 - i * 50),
                           length=(running_window.width - 200),
-                          height=20,
+                          height=8,
                           speed=speed,
                           finish_floor=floors[i%2][i]
                           ) for i in range(selected_difficulty.difficulty_values()["belts"])]
@@ -49,7 +49,7 @@ def main():
                                 x=running_window.width - 75,
                                 y=running_window.height - 75,
                                 length=60,
-                                height=20,
+                                height=8,
                                 speed=speed,
                                 finish_floor=floors_mario[0])
 

@@ -1,8 +1,9 @@
 import pyxel
 
+from game.domain.elements import Element
 from game.domain.conveyor import Conveyor
 from game.domain.difficulty import selected_difficulty
-from game.presentation.gui import running_window, PointsCounter
+from game.presentation.gui import running_window, PointsCounter, LivesCounter
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -60,7 +61,9 @@ def main():
         height=30,
     )
 
-    point_counter = PointsCounter(x=running_window.width-75, y=15, length=45, height=15)
+    point_counter_background = Element(x=running_window.width-75, y=17, length=47, height=17)
+    point_counter = PointsCounter(x=(point_counter_background.x+4), y=20, length=39, height=11)
+    lives_counter = LivesCounter(x=point_counter_background.x+(point_counter_background.length-32), y=(point_counter_background.y+point_counter_background.height), length=32, height=21)
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         if i != (selected_difficulty.difficulty_values()["belts"] - 1):
@@ -106,38 +109,31 @@ def main():
     )
 
     conveyor_middle_frames = [Frame(1, 16, 88, 16, 8) for i in range(35)]
-    rendered_conveyors = [BoardedPyxelElement(PyxelElement(conveyors[i],
+    rendered_conveyors = [PyxelElement(conveyors[i],
                                                            Frame(1, 0, 24, 8, 8),
                                                            *conveyor_middle_frames,
                                                            Frame(1, 0, 32, 16, 8),
-                                                           grid=Grid.ROW, )) for i in
+                                                           grid=Grid.ROW, ) for i in
                           range(selected_difficulty.difficulty_values()["belts"])]
 
-    PyxelApp(BoardedPyxelElement(PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
-             BoardedPyxelElement(PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
-             BoardedPyxelElement(
-                 PyxelElement(
-                     package_factory,
-                     Frame(0, 64, 96, 60, 40, ),
-                 )
-             ),
+    PyxelApp((PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
+             (PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
+             (PyxelElement(package_factory, Frame(0, 64, 96, 60, 40))),
              *rendered_conveyors,
-             BoardedPyxelElement(PyxelElement(factory_conveyor,
-                                              Frame(1, 0, 24, 8, 8),
+             PyxelElement(factory_conveyor, Frame(1, 0, 24, 8, 8),
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 16, 88, 16, 8),
                                               Frame(1, 16, 88, 16, 8),
-                                              Frame(1, 0, 32, 16, 8),
-                                              grid=Grid.ROW)),
-             BoardedPyxelElement(PyxelElement(truck, Frame(0, 131, 1, 45, 30))),
-             BoardedPyxelElement(PyxelElement(point_counter,
-                                            Frame(0, 53, 16, 8, 13),
-                                              Frame(0, 53, 16, 8, 13),
-                                              Frame(0, 53, 16, 8, 13),
-                                              Frame(0, 53, 16, 6, 13),
-                                              grid=Grid.ROW)) ,
+                                              Frame(1, 0, 32, 16, 8), grid=Grid.ROW),
+             PyxelElement(truck, Frame(0, 131, 1, 45, 30)),
+             PyxelElement(point_counter_background, Frame(0, 96, 144, 47, 17)),
+             PyxelElement(point_counter, Frame(0, 53, 18, 6, 11,11),
+                                              Frame(0, 53, 18, 6, 11, 11),
+                                              Frame(0, 53, 18, 6, 11, 11),
+                                              Frame(0, 53, 18, 6, 11, 11), grid=Grid.ROW),
+             PyxelElement(lives_counter, Frame(0, 64, 139, 32, 21)),
              buttons={
                  pyxel.KEY_UP: move_up_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_down_mario,
                  pyxel.KEY_DOWN: move_down_mario if not selected_difficulty.difficulty_values()["reversed_controls"] else move_up_mario,

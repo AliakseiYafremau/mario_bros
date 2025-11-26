@@ -60,6 +60,7 @@ class Game:
 
         self.tick += 1
 
+#FIXME change in sprites for picking and putting
     def player_put_down_package(self, player: Player) -> None:
         for conveyor in self.conveyors:
             if conveyor.finish_floor.player == player:
@@ -75,7 +76,6 @@ class Game:
                     self.first_package_moved = True
                     self.points += 1
                 self.points_to_be_updated = True
-
 
     def move_player_up(self, player: Player) -> None:
         player_positions = self.players_positions[player]

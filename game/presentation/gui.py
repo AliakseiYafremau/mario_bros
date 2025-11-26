@@ -35,6 +35,9 @@ class PointsCounter(Element):
             self.digit1_value = int(str(points)[-1])
 
 
+class LivesCounter(Element):
+    def __init__(self, x: int, y: int, length: int, height: int) -> None:
+        super().__init__(x, y, length, height)
 
 class RenderedElements:
 

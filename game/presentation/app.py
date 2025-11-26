@@ -65,28 +65,31 @@ class PyxelApp:
 
         for new_package in self.game.newly_created_packages:
             self.elements.append(
-                BoardedPyxelElement(PyxelElement(new_package, Frame(0, 66, 3, 12, 8)))
+                (PyxelElement(new_package, Frame(0, 66, 3, 12, 8, 0)))
             )
             self.game.newly_created_packages.remove(new_package)
             self.game.packages_at_play += 1
 
+# FIXME optimize this
         for element in self.elements:
             if isinstance(element.element, Package) and element.element.stage_to_be_changed_to != 0:
-                self.elements.append(BoardedPyxelElement(PyxelElement(element.element, Frame(
-                    element.decorated.frames[0].image,
-                    element.decorated.frames[0].u,
+                self.elements.append((PyxelElement(element.element, Frame(
+                    element.frames[0].image,
+                    element.frames[0].u,
                     3 + (16 * element.element.stage_to_be_changed_to),
-                    element.decorated.frames[0].w,
-                    element.decorated.frames[0].h))))
+                    element.frames[0].w,
+                    element.frames[0].h,
+                    element.frames[0].colkey))))
                 self.elements.remove(element)
                 element.element.stage_to_be_changed_to = 0
             if isinstance(element.element, Package) and element.element.state_to_be_changed_to != 0:
-                self.elements.append(BoardedPyxelElement(PyxelElement(element.element, Frame(
-                    element.decorated.frames[0].image,
-                    element.decorated.frames[0].u + (element.element.state_to_be_changed_to * 16),
-                    element.decorated.frames[0].v,
-                    element.decorated.frames[0].w,
-                    element.decorated.frames[0].h))))
+                self.elements.append((PyxelElement(element.element, Frame(
+                    element.frames[0].image,
+                    element.frames[0].u + (element.element.state_to_be_changed_to * 16),
+                    element.frames[0].v,
+                    element.frames[0].w,
+                    element.frames[0].h,
+                    element.frames[0].colkey))))
                 self.elements.remove(element)
                 element.element.state_to_be_changed_to = 0
                 self.game.packages_at_play -= 1
@@ -105,7 +108,7 @@ class PyxelApp:
             self.game.truck.has_returned = False
             self.game.truck.sprite_to_be_changed_back = True
             self.game.truck.packages = []
-            self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32))))
+            self.elements.append((PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32))))
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
@@ -116,12 +119,11 @@ class PyxelApp:
             self.game.point_counter.update_points(self.game.points)
             for element in self.elements:
                 if isinstance(element.element, PointsCounter):
-                    self.elements.append(BoardedPyxelElement(PyxelElement(element.element,
-                Frame(0, 53, 16 + 16 * element.element.digit4_value, 8, 13),
-                        Frame(0, 53, 16 + 16 * element.element.digit3_value, 8, 13),
-                        Frame(0, 53, 16 + 16 * element.element.digit2_value, 8, 13),
-                        Frame(0, 53, 16 + 16 * element.element.digit1_value, 6, 13), grid=Grid.ROW)))
-                    self.elements.remove(element)
+                    element.frames[0].v += 16*element.element.digit4_value
+                    element.frames[1].v += 16*element.element.digit3_value
+                    element.frames[2].v += 16*element.element.digit2_value
+                    element.frames[3].v += 16*element.element.digit1_value
+
 
         if self._taking_a_break < perf_counter():
 
@@ -164,7 +166,7 @@ class PyxelApp:
                 for element in self.elements:
                     if isinstance(element.element, Truck):
                         self.elements.remove(element)
-                        self.elements.append(BoardedPyxelElement(PyxelElement(self.game.truck, Frame(
+                        self.elements.append((PyxelElement(self.game.truck, Frame(
                             0, 131, 1, 45, 30))))
 
     def draw(self):

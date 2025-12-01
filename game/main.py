@@ -15,6 +15,7 @@ from game.presentation.pyxel_elements import (
     Frame,
     Grid,
     PyxelElement,
+    PyxelStaticElement,
 )
 
 
@@ -137,6 +138,14 @@ def main():
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
+    static_conveyor_frames = [
+        PyxelStaticElement(
+            running_window.width // 2,
+            (running_window.height - 87 - i * 50),
+            Frame(1, 32, 16, 16, 16, scale=2),
+        )
+        for i in range(selected_difficulty.difficulty_values()["belts"])
+    ]
 
     PyxelApp(
         (PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
@@ -165,6 +174,8 @@ def main():
             grid=Grid.ROW,
         ),
         PyxelElement(lives_counter, Frame(0, 64, 139, 32, 21)),
+        # Static elements
+        *static_conveyor_frames,
         buttons={
             pyxel.KEY_UP: move_up_mario
             if not selected_difficulty.difficulty_values()["reversed_controls"]

@@ -80,14 +80,13 @@ class PyxelElement(Element):
 
 class PyxelStaticElement(PyxelElement):
     def __init__(self, x: int, y: int, *frames: Frame, grid: Grid = Grid.ROW):
-        self.x = x
-        self.y = y
+        self.element = Element(x, y, 0, 0)
         self.frames = frames
         self.grid = grid
 
     def draw(self):
-        element_x = self.x
-        element_y = self.y
+        element_x = self.element.x
+        element_y = self.element.y
 
         for frame in self.frames:
             pyxel.blt(

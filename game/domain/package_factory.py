@@ -27,12 +27,12 @@ class PackageFactory(Element):
 
     def create_package(self) -> Package:
         package = Package(
-            x=0, #Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
-            y=0, #Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
+            x=0,  # Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
+            y=0,  # Since the start coordinates are later set in put_package inside conveyor, this first one can be set at 0 as it will be disregarded
             length=self.new_package_length,
             height=self.new_package_height,
             state=PackageState.ON_CONVEYOR,
-            stage=0
+            stage=0,
         )
         self.conveyor.put_package(package)
         logger.debug("%s created package %s", self.__repr__(), package)

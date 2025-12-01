@@ -36,8 +36,8 @@ class Player(MotionElement):
             return False
         else:
             package.state = PackageState.PICKED
-            package.x = self.x + ((self.length-package.length)//2)
-            package.y = self.y + ((self.height-package.height)//2)
+            package.x = self.x + ((self.length - package.length) // 2)
+            package.y = self.y + ((self.height - package.height) // 2)
             self.package = package
             self.is_moving_package = True
             self.package_picked_up_at = perf_counter()

@@ -10,6 +10,7 @@ from game.presentation.gui import PointsCounter
 
 logger = get_logger(__name__, layer="DOMAIN")
 
+
 class Game:
     def __init__(
         self,
@@ -50,7 +51,9 @@ class Game:
                 if conveyor.package_about_to_fall(package):
                     if conveyor.finish_floor.player is not None:
                         if conveyor.next_step is None:
-                            raise DomainError("next step is not defined for the conveyor")
+                            raise DomainError(
+                                "next step is not defined for the conveyor"
+                            )
                         elif conveyor.finish_floor.player.pick_package(package):
                             conveyor.packages.remove(package)
                             logger.debug("%s picked up by player", package)
@@ -60,7 +63,7 @@ class Game:
 
         self.tick += 1
 
-#FIXME change in sprites for picking and putting
+    # FIXME change in sprites for picking and putting
     def player_put_down_package(self, player: Player) -> None:
         for conveyor in self.conveyors:
             if conveyor.finish_floor.player == player:
@@ -81,18 +84,26 @@ class Game:
         player_positions = self.players_positions[player]
         current_position_index = None
         for possible_player_position in player_positions:
-            if possible_player_position.x == player.x and possible_player_position.y == player.y:
-                current_position_index = player_positions.index(possible_player_position)
+            if (
+                possible_player_position.x == player.x
+                and possible_player_position.y == player.y
+            ):
+                current_position_index = player_positions.index(
+                    possible_player_position
+                )
 
         if current_position_index is None:
             raise DomainError("Could not find the players current floor")
 
-        if current_position_index == (len(player_positions)-1):
+        if current_position_index == (len(player_positions) - 1):
             return None
         else:
-            player.move(player_positions[current_position_index+1].x, player_positions[current_position_index+1].y)
+            player.move(
+                player_positions[current_position_index + 1].x,
+                player_positions[current_position_index + 1].y,
+            )
             player_positions[current_position_index].player = None
-            player_positions[current_position_index+1].player = player
+            player_positions[current_position_index + 1].player = player
             return None
 
     def create_package(self):
@@ -103,8 +114,13 @@ class Game:
         player_positions = self.players_positions[player]
         current_position_index = None
         for possible_player_position in player_positions:
-            if possible_player_position.x == player.x and possible_player_position.y == player.y:
-                current_position_index = player_positions.index(possible_player_position)
+            if (
+                possible_player_position.x == player.x
+                and possible_player_position.y == player.y
+            ):
+                current_position_index = player_positions.index(
+                    possible_player_position
+                )
 
         if current_position_index is None:
             raise DomainError("Could not find the players current floor")
@@ -112,7 +128,10 @@ class Game:
         if current_position_index == 0:
             return None
         else:
-            player.move(player_positions[current_position_index - 1].x, player_positions[current_position_index - 1].y)
+            player.move(
+                player_positions[current_position_index - 1].x,
+                player_positions[current_position_index - 1].y,
+            )
             player_positions[current_position_index].player = None
             player_positions[current_position_index - 1].player = player
             return None

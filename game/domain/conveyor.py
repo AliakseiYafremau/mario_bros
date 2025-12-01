@@ -57,9 +57,9 @@ class Conveyor(Element):
         self.next_step = next_step
         self.packages: list[Package] = []
         if conveyor_id == 0:
-            self.start_position: tuple[int, int] = (x+length-16, y)
+            self.start_position: tuple[int, int] = (x + length - 16, y)
         elif self.direction == Direction.LEFT:
-            self.start_position: tuple[int, int] = (x+length-12, y)
+            self.start_position: tuple[int, int] = (x + length - 12, y)
         else:
             self.start_position: tuple[int, int] = (x, y)
         super().__init__(x, y, length, height)
@@ -108,7 +108,7 @@ class Conveyor(Element):
                 package.state = PackageState.FALLING
                 if package.x < self.x:
                     package.state_to_be_changed_to = 1
-                elif package.x + package.length > self.x+self.length:
+                elif package.x + package.length > self.x + self.length:
                     package.state_to_be_changed_to = 2
                 self.lift_package(package)
         for package in self.falling_packages:
@@ -123,20 +123,31 @@ class Conveyor(Element):
         self.packages.remove(package)
 
     def _is_package_on_conveyor(self, package: Package) -> bool:
-        return self.x <= package.x + (package.length//2) + 1 <= self.x + self.length
+        return self.x <= package.x + (package.length // 2) + 1 <= self.x + self.length
 
     def _package_changes_stage(self, package: Package) -> bool:
-        if self.conveyor_id%2 != 0:
-            return self.conveyor_id - 1 == package.stage and package.x <= self.x + (self.length//2)
-        elif self.conveyor_id%2 == 0:
-            return self.conveyor_id - 1 == package.stage and package.x + package.length >= self.x + (self.length//2)
+        if self.conveyor_id % 2 != 0:
+            return self.conveyor_id - 1 == package.stage and package.x <= self.x + (
+                self.length // 2
+            )
+        elif self.conveyor_id % 2 == 0:
+            return (
+                self.conveyor_id - 1 == package.stage
+                and package.x + package.length >= self.x + (self.length // 2)
+            )
+        raise ValueError("conveyor id is not valid")
 
     def _package_is_offscreen(self, package: Package) -> bool:
-        if package.y >= selected_difficulty.difficulty_values()["window_height"] or (
-                package.x + package.length <= 0) or (package.x >= selected_difficulty.difficulty_values()["window_width"]):
+        if (
+            package.y >= selected_difficulty.difficulty_values()["window_height"]
+            or (package.x + package.length <= 0)
+            or (package.x >= selected_difficulty.difficulty_values()["window_width"])
+        ):
             return True
         else:
             return False
 
     def package_about_to_fall(self, package: Package) -> bool:
-        return package.x <= (self.x - 1) or (self.x + self.length + 1) <= (package.x + package.length)
+        return package.x <= (self.x - 1) or (self.x + self.length + 1) <= (
+            package.x + package.length
+        )

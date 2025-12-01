@@ -1,12 +1,14 @@
 from game.domain.difficulty import selected_difficulty
 from game.domain.elements import Element
-from game.presentation.pyxel_elements import BoardedPyxelElement, Frame, PyxelElement
 from game.domain.exceptions import DomainError
 
 
 class Window:
-    def __init__(self, width: int = selected_difficulty.difficulty_values()["window_width"],
-                 height: int = selected_difficulty.difficulty_values()["window_height"]):
+    def __init__(
+        self,
+        width: int = selected_difficulty.difficulty_values()["window_width"],
+        height: int = selected_difficulty.difficulty_values()["window_height"],
+    ):
         self.width = width
         self.height = height
 
@@ -39,7 +41,7 @@ class LivesCounter(Element):
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         super().__init__(x, y, length, height)
 
-class RenderedElements:
 
+class RenderedElements:
     def __init__(self):
         "TO BE IMPLEMENTED"

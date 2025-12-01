@@ -5,7 +5,7 @@ from game.domain.package import Package, PackageState
 class Truck(MotionElement):
     def __init__(self, x, y, length, height) -> None:
         self.packages: list = []
-        self.velocity: int = 1
+        self.velocity: float = 1
         self.sprite_to_be_changed_back = False
         self.has_returned: bool = False
         self.has_turned: bool = False
@@ -21,14 +21,14 @@ class Truck(MotionElement):
         return len(self.packages) >= 8
 
     def truck_in_movement(self, original_x: int) -> None:
-        if not self.has_returned and self.x + self.length + 5 <= 0 :
+        if not self.has_returned and self.x + self.length + 5 <= 0:
             self.velocity = 0.5
             self.has_turned = True
         elif not self.has_returned and not self.has_turned:
             self.velocity = -1
-        if self.x + int(4*self.velocity) <= original_x:
-            self.x += int(4*self.velocity)
-        elif self.x != original_x and self.x + int(4*self.velocity) > original_x:
+        if self.x + int(4 * self.velocity) <= original_x:
+            self.x += int(4 * self.velocity)
+        elif self.x != original_x and self.x + int(4 * self.velocity) > original_x:
             self.x = original_x
         if original_x == self.x:
             self.has_returned = True

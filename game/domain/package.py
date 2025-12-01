@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from enum import Enum
 from typing import Protocol
 from game.domain.elements import MotionElement
@@ -18,6 +18,7 @@ class PackageState(Enum):
     PICKED = "picked"
     FALLING = "falling"
     ON_TRUCK = "truck"
+
 
 class Package(MotionElement):
     """The movable package in the game world.
@@ -39,16 +40,24 @@ class Package(MotionElement):
     """
 
     def __init__(
-        self, x, y, length, height, state: PackageState = PackageState.ON_CONVEYOR, stage: int = 0
+        self,
+        x,
+        y,
+        length,
+        height,
+        state: PackageState = PackageState.ON_CONVEYOR,
+        stage: int = 0,
     ) -> None:
         if not isinstance(state, PackageState):
             raise TypeError("state must be an instance of PackageState")
         if not isinstance(stage, int) or not (0 <= stage <= 5):
-            raise TypeError("stage must be an instance of int and between 0 and 5 inclusive")
+            raise TypeError(
+                "stage must be an instance of int and between 0 and 5 inclusive"
+            )
         self.state = state
         self.stage = stage
-        self.stage_to_be_changed_to = 0 # 0 means no change but a value diffrent form 0 means it gets changed to that respective stage
-        self.state_to_be_changed_to = 0 # 0 means no change, 1 means it falls to the left, 2 means it falls to the right
+        self.stage_to_be_changed_to = 0  # 0 means no change but a value diffrent form 0 means it gets changed to that respective stage
+        self.state_to_be_changed_to = 0  # 0 means no change, 1 means it falls to the left, 2 means it falls to the right
         self.offscreen = False
         super().__init__(x, y, length, height)
 

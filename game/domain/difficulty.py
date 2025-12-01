@@ -1,7 +1,7 @@
 import random
 
-class Difficulty:
 
+class Difficulty:
     def __init__(self, difficulty: int = 0):
         self.difficulty = difficulty
 
@@ -18,10 +18,12 @@ class Difficulty:
 
     def difficulty_values(self):
         BELTS = (5, 7, 9, 5)
-        CONVEYOR_SPEED = ((1, 1, 1),
-                          (1, 1, 1.5),
-                          (1, 1.5, 2),
-                          (1, random.uniform(1, 2), random.uniform(1, 2)))
+        CONVEYOR_SPEED = (
+            (1, 1, 1),
+            (1, 1, 1.5),
+            (1, 1.5, 2),
+            (1, random.uniform(1, 2), random.uniform(1, 2)),
+        )
         INCREASE = (50, 30, 30, 20)
         ELIMINATES = (3, 5, 5, 0)
         WINDOW_HEIGHT = (325, 425, 525, 325)
@@ -38,8 +40,11 @@ class Difficulty:
             "eliminates": ELIMINATES[self.difficulty],
             "reversed_controls": reversed_controls,
             "window_height": WINDOW_HEIGHT[self.difficulty],
-            "window_width": WINDOW_WIDTH[self.difficulty]
+            "window_width": WINDOW_WIDTH[self.difficulty],
         }
 
-selected_difficulty = Difficulty(0)  # Hard set since we are not going to actually implement a difficulty selector,
-                                     # but the game would be ready for it.
+
+selected_difficulty = Difficulty(
+    0
+)  # Hard set since we are not going to actually implement a difficulty selector,
+# but the game would be ready for it.

@@ -71,9 +71,9 @@ class PyxelElement(Element):
             )
 
             if self.grid == Grid.ROW:
-                element_x += frame.h
+                element_x += frame.h * (frame.scale if frame.scale else 1)
             elif self.grid == Grid.COLUMN:
-                element_y += frame.w
+                element_y += frame.w * (frame.scale if frame.scale else 1)
             else:
                 raise ValueError("Invalid Grid type")
 
@@ -103,9 +103,9 @@ class PyxelStaticElement(PyxelElement):
             )
 
             if self.grid == Grid.ROW:
-                element_x += frame.h
+                element_x += frame.h * (frame.scale if frame.scale else 1)
             elif self.grid == Grid.COLUMN:
-                element_y += frame.w
+                element_y += frame.w * (frame.scale if frame.scale else 1)
             else:
                 raise ValueError("Invalid Grid type")
 

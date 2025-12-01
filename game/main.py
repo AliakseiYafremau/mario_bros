@@ -91,7 +91,7 @@ def main():
 
     package_factory = PackageFactory(
         running_window.width - 115 + factory_conveyor.length - 20,
-        running_window.height - 95,
+        running_window.height - 110,
         60,
         40,
         12,
@@ -138,6 +138,7 @@ def main():
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
+    # Static elements
     static_conveyor_frames = [
         PyxelStaticElement(
             running_window.width // 2,
@@ -146,10 +147,37 @@ def main():
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
+    static_ladders_frames = [
+        PyxelStaticElement(
+            50,
+            (running_window.height - 97 - i * 50),
+            Frame(1, 0, 88, 16, 16, scale=2),
+        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+    ]
+    static_ladders_frames.pop(-1)
+    static_ladders_platforms = [
+        PyxelStaticElement(
+            75,
+            (running_window.height - 70 - i * 50),
+            Frame(1, 0, 104, 16, 3, scale=2),
+        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+    ]
+    static_ladders_platforms_for_ladders = [
+        PyxelStaticElement(
+            50,
+            (running_window.height - 70 - i * 50),
+            Frame(1, 0, 104, 16, 3, scale=2),
+        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+    ]
+    static_ladders_platforms_for_ladders.pop(-1)
 
     PyxelApp(
-        (PyxelElement(mario, Frame(0, 16, 0, 16, 16))),
-        (PyxelElement(luigi, Frame(0, 0, 0, 16, 16))),
+        *static_conveyor_frames,
+        *static_ladders_frames,
+        *static_ladders_platforms,
+        *static_ladders_platforms_for_ladders,
+        (PyxelElement(mario, Frame(0, 16, 0, 16, 16, scale=2))),
+        (PyxelElement(luigi, Frame(0, 0, 0, 16, 16, scale=2))),
         (PyxelElement(package_factory, Frame(0, 64, 96, 60, 40))),
         *rendered_conveyors,
         PyxelElement(
@@ -174,8 +202,6 @@ def main():
             grid=Grid.ROW,
         ),
         PyxelElement(lives_counter, Frame(0, 64, 139, 32, 21)),
-        # Static elements
-        *static_conveyor_frames,
         buttons={
             pyxel.KEY_UP: move_up_mario
             if not selected_difficulty.difficulty_values()["reversed_controls"]

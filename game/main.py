@@ -156,7 +156,8 @@ def main():
             50,
             (running_window.height - 97 - i * 50),
             Frame(1, 0, 88, 16, 16, scale=2),
-        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+        )
+        for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
     static_ladders_frames.pop(-1)
     static_ladders_platforms = [
@@ -164,14 +165,16 @@ def main():
             75,
             (running_window.height - 70 - i * 50),
             Frame(1, 0, 104, 16, 3, scale=2),
-        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+        )
+        for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
     static_ladders_platforms_for_ladders = [
         PyxelStaticElement(
             50,
             (running_window.height - 70 - i * 50),
             Frame(1, 0, 104, 16, 3, scale=2),
-        ) for i in range(selected_difficulty.difficulty_values()["belts"])
+        )
+        for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
     static_ladders_platforms_for_ladders.pop(-1)
 

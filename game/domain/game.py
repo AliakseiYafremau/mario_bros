@@ -14,11 +14,11 @@ logger = get_logger(__name__, layer="DOMAIN")
 class Game:
     def __init__(
         self,
-        players: dict[Player, list[Floor, ...]],
+        players: dict[Player, list[Floor]],
+        truck: Truck,
         conveyors: list[Conveyor] | None = None,
         factories: list[PackageFactory] | None = None,
-        truck: Truck = None,
-        point_counter: PointsCounter = None,
+        point_counter: PointsCounter | None = None,
     ) -> None:
         self.tick = 0
         self.newly_created_packages: list[Package] = []
@@ -67,15 +67,19 @@ class Game:
     def player_put_down_package(self, player: Player) -> None:
         for conveyor in self.conveyors:
             if conveyor.finish_floor.player == player:
-                player.package_to_be_put = False
-                conveyor.next_step.put_package(player.package)
+                package = player.package
+                if package is None:
+                    raise DomainError("player does not carry a package")
+                if conveyor.next_step is None:
+                    raise DomainError("next step is not defined for the conveyor")
+                conveyor.next_step.put_package(package)
                 player.put_package()
                 if isinstance(conveyor.next_step, Truck):
-                    logger.debug("%s package has been put in the truck", player.package)
+                    logger.debug("%s package has been put in the truck", package)
                     self.packages_at_play -= 1
                     self.points += 2
                 else:
-                    logger.debug("%s put down on next conveyor", player.package)
+                    logger.debug("%s put down on next conveyor", package)
                     self.first_package_moved = True
                     self.points += 1
                 self.points_to_be_updated = True

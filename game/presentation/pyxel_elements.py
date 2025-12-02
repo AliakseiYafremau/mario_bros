@@ -71,23 +71,22 @@ class PyxelElement(Element):
             )
 
             if self.grid == Grid.ROW:
-                element_x += frame.h
+                element_x += frame.h * (frame.scale if frame.scale else 1)
             elif self.grid == Grid.COLUMN:
-                element_y += frame.w
+                element_y += frame.w * (frame.scale if frame.scale else 1)
             else:
                 raise ValueError("Invalid Grid type")
 
 
 class PyxelStaticElement(PyxelElement):
     def __init__(self, x: int, y: int, *frames: Frame, grid: Grid = Grid.ROW):
-        self.x = x
-        self.y = y
+        self.element = Element(x, y, 0, 0)
         self.frames = frames
         self.grid = grid
 
     def draw(self):
-        element_x = self.x
-        element_y = self.y
+        element_x = self.element.x
+        element_y = self.element.y
 
         for frame in self.frames:
             pyxel.blt(
@@ -104,9 +103,9 @@ class PyxelStaticElement(PyxelElement):
             )
 
             if self.grid == Grid.ROW:
-                element_x += frame.h
+                element_x += frame.h * (frame.scale if frame.scale else 1)
             elif self.grid == Grid.COLUMN:
-                element_y += frame.w
+                element_y += frame.w * (frame.scale if frame.scale else 1)
             else:
                 raise ValueError("Invalid Grid type")
 

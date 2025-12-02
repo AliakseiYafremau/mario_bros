@@ -96,39 +96,35 @@ Decorator for any `PyxelElement` that draws a rectangular border sized after the
 `PyxelApp` wires the Pyxel event loop to the game simulation: it loads sprite resources, keeps a list of `PyxelElement` instances to draw, binds `Controller`s to keyboard buttons, and advances `Game` ticks according to configurable delays for package movement and creation. On every update it polls the buttons, extends the render list with freshly spawned packages, and calls `Game.move_packages()` / `Game.create_package()` when the elapsed time exceeds the configured cadence before redrawing the scene.
 
 # Main Algorithms
+- `Game.move_packages()` is the heart of the loop. First, it inspects every `Conveyor` for a `falling_package`. If the target `finish_floor` hosts a `Player`, the player briefly picks that package, drops it toward the `next_conveyor`, and the controller inserts it onto the next belt; otherwise a dropped package decrements `live_amount`. After resolving transfers it calls `Conveyor.move_packages()` on each belt and increments the global `tick`.
+- `Conveyor.move_packages()` iterates through its `_packages`, offsets each package horizontally by `velocity` toward `direction`, and checks `_is_package_on_conveyor()`. Packages that have moved beyond the physical span are marked `FALLING`, recorded as `falling_package`, and removed via `lift_package()` so they can be caught by the next floor.
+- `Game.move_player_up()` / `move_player_down()` take a `Player`, find their current `Floor` within the allowed tuple, and move exactly one step toward the target tier. They guard against moving past the ends of the tuple and raise a `DomainError` if a player's coordinates no longer match any known floor.
+- `Game.create_package()` asks every `PackageFactory` to `create_package()`, which in turn spawns a `Package` at the configured coordinates and places it on a belt so it joins the next simulation step automatically.
+- `Truck.put_package()` is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
 
-## `Game.move_packages()` 
 
-It is the heart of the loop. First, it inspects every `Conveyor` for a `falling_package`. If the target `finish_floor` hosts a `Player`, the player briefly picks that package, drops it toward the `next_conveyor`, and the controller inserts it onto the next belt; otherwise a dropped package decrements `live_amount`. After resolving transfers it calls `Conveyor.move_packages()` on each belt and increments the global `tick`.
+# Performed work
 
-## `Conveyor.move_packages()`
+Throughout the project, we tried to make it as easy to understand and scalable as possible. We divided the project into two layers. The domain, which is responsible for the business logic (game rules), and the presentation, which uses the `pyxel` library to display the game and interact with the user. All game initialisation settings are located in main.py.
 
-It iterates through its `_packages`, offsets each package horizontally by `velocity` toward `direction`, and checks `_is_package_on_conveyor()`. Packages that have moved beyond the physical span are marked `FALLING`, recorded as `falling_package`, and removed via `lift_package()` so they can be caught by the next floor.
+All objects in the game are subclasses of the `Element` class. The game has players controlled by the user (in this case, _Mario_ and _Luigi_). Players are intermediaries between conveyors. Each conveyor knows about the next conveyor to which it will pass the package. The factory is responsible for creating packages. If the player is not in the required position when the end of the conveyor is reached, the package begins to fall. When it hits the floor, the user loses a life (the number of lives is displayed on the counter at the top right).
 
-## `Game.move_player_up()` / `move_player_down()`
+A difficulty level has also been implemented, which determines the number of conveyors, the size of the window, and the speed of the conveyors.
 
-They take a `Player`, find their current `Floor` within the allowed tuple, and move exactly one step toward the target tier. They guard against moving past the ends of the tuple and raise a `DomainError` if a player's coordinates no longer match any known floor.
+# User manual
 
-## `Game.create_package()`
+All user actions are controlled via `Controllers`. Each `Controller` is responsible for a specific trigger (for example, moving a specific player in a specific direction (up/down)). The __W__ and __S__ buttons are used to control _Luigi_, and the ____ and ____ buttons are used to control _Mario_.
 
-It asks every `PackageFactory` to `create_package()`, which in turn spawns a `Package` at the configured coordinates and places it on a belt so it joins the next simulation step automatically.
+# Conclusions
 
-## `Truck.put_package()`
+It was an interesting project with an interesting task. All the necessary functionality was implemented. Emphasis was placed on code readability and scalability. The main problem was the difficulty of separating logic from presentation.
 
-It is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
+The code itself is formatted and correct due to checks using `ruff` and `mypy`. The code contains type annotations that make it easier to understand.
 
-## `Tick` (`PyxelApp.tick_second`)
+## Personal comments
 
-To emulate the movement of older consoles, the concept of ticks was implemented. The number of ticks per second indicates the number of updates that will be made in one second.
+While working on the project, we were inspired by works such as _"Design Patterns: Elements of Reusable Object-Oriented Software"_ and _"Clean Architecture"_. They helped us implement certain parts of the project and gave us a general vision of how to divide responsibilities in the code.
 
-# Work carried out
+Teamwork was implemented through `git` and __Github__, which facilitated development by working through different branches and pull requests.
 
-To facilitate development and increase scalability, the project's business logic was moved to the domain and separated from the libraries.
-
-A class with corresponding methods was created for each entity in the game. The _player_ represents the movable player in the game. The _conveyor_ is responsible for moving _packages_, and the _package factory_ is responsible for creating them.
-
-To facilitate working with the _domain_ API, a `Game` facade was created, which includes the basic methods for working with the game.
-
-Since the [`pyxel`](https://github.com/kitao/pyxel) library only provides basic display functionality, several secondary classes were created to facilitate working with the library. `Controller` (Command pattern) provides a unified interface for all user input. `PyxelElement` allows you to create complex elements from multiple images (`Frames`).
-
-To speed up development and debugging, a logging system and decorator `BoardedPyxelElement` (draws a white line around the perimeter of the element) were implemented.
+Despite all the work that has been done, there are some aspects that could be improved. Currently, Window and Difficulty bring in the global state (the game depends on the global value specified in `domain/difficulty.py` and `presentation/gui.py`).

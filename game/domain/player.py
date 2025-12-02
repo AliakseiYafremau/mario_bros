@@ -1,6 +1,7 @@
 from game.domain.elements import MotionElement
 from game.domain.exceptions import DomainError
 from game.domain.package import Package, PackageState
+from time import perf_counter
 
 
 class Player(MotionElement):
@@ -25,29 +26,26 @@ class Player(MotionElement):
 
     def __init__(self, x, y, length, height, name) -> None:
         self.name = name
-        self._package: Package | None = None
+        self.package: Package | None = None
+        self.is_moving_package: bool = False
+        self.package_picked_up_at: float = 0.0
         super().__init__(x, y, length, height)
 
-    @property
-    def package(self) -> Package | None:
-        return self._package
-
-    @package.setter
-    def package(self, value):
-        if not isinstance(value, Package) or (value is not None):
-            raise TypeError("package must be a Package instance or None")
-        self._package = value
-
-    def pick_package(self, package: Package) -> None:
+    def pick_package(self, package: Package) -> bool:
         if self.package is not None:
-            raise DomainError("player already has a package")
-        package.state = PackageState.PICKED
-        self.package = package
+            return False
+        else:
+            package.state = PackageState.PICKED
+            package.x = self.x + ((self.length - package.length) // 2)
+            package.y = self.y + ((self.height - package.height) // 2)
+            self.package = package
+            self.is_moving_package = True
+            self.package_picked_up_at = perf_counter()
+            return True
 
     def put_package(self) -> None:
         if self.package is None:
             raise DomainError("player does not have any package")
-        self.package.state = PackageState.FALLING
         self.package = None
 
     def move(self, x=0, y=0) -> None:

@@ -169,6 +169,7 @@ def main():
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
+    static_ladders_platforms[-1].frames[0].scale = 4
     static_ladders_platforms_for_ladders = [
         PyxelStaticElement(
             50,
@@ -180,10 +181,34 @@ def main():
     static_ladders_platforms_for_ladders.pop(-1)
 
     PyxelApp(
+        # Static elements
         *static_conveyor_frames,
         *static_ladders_frames,
         *static_ladders_platforms,
         *static_ladders_platforms_for_ladders,
+        PyxelStaticElement(
+            30, 55, Frame(1, 0, 104, 16, 3, scale=4)
+        ),
+        PyxelStaticElement(
+            10, 208, Frame(1, 0, 104, 16, 3, scale=20, rotate=90)
+        ),
+        PyxelStaticElement(
+            63, running_window.height - 16 * 4 + 27, Frame(1, 19, 1, 10, 15, scale=4)
+        ),
+        PyxelStaticElement(
+            300, running_window.height - 16 * 4 + 21, Frame(1, 48, 8, 40, 24, scale=3)
+        ),
+        PyxelStaticElement(
+            396, running_window.height - 16 * 4 + 21, Frame(1, 72, 8, 16, 24, scale=3)
+        ),
+        PyxelStaticElement(
+            444, running_window.height - 16 * 4 + 21, Frame(1, 72, 8, 16, 24, scale=3)
+        ),
+        PyxelStaticElement(
+            444 + 16 * 3, running_window.height - 16 * 4 + 21, Frame(1, 72, 8, 16, 24, scale=3)
+        ),
+
+        # Dynamic elements
         (PyxelElement(mario, Frame(0, 16, 0, 16, 16, scale=2))),
         (PyxelElement(luigi, Frame(0, 0, 0, 16, 16, scale=2))),
         (PyxelElement(package_factory, Frame(0, 64, 96, 60, 40))),

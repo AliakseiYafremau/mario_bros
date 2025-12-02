@@ -1,2 +1,4 @@
 mkdocs-material==9.7.0
 mkdocs-to-pdf==0.10.1
+mypy==1.19.0
+ruff==0.14.7

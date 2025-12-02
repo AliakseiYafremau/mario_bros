@@ -57,11 +57,12 @@ class Conveyor(Element):
         self.next_step = next_step
         self.packages: list[Package] = []
         if conveyor_id == 0:
-            self.start_position: tuple[int, int] = (x + length - 16, y)
+            start_position: tuple[int, int] = (x + length - 16, y)
         elif self.direction == Direction.LEFT:
-            self.start_position: tuple[int, int] = (x + length - 12, y)
+            start_position = (x + length - 12, y)
         else:
-            self.start_position: tuple[int, int] = (x, y)
+            start_position = (x, y)
+        self.start_position: tuple[int, int] = start_position
         super().__init__(x, y, length, height)
 
     def put_package(self, package: Package) -> None:

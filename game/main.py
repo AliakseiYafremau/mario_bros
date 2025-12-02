@@ -139,11 +139,15 @@ def main():
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
     # Static elements
+    conveyor_transformers_frames = [
+        Frame(1, 32, 16 + i * 16, 16, 16, scale=2)
+        for i in range(selected_difficulty.difficulty_values()["belts"])
+    ]
     static_conveyor_frames = [
         PyxelStaticElement(
             running_window.width // 2,
             (running_window.height - 87 - i * 50),
-            Frame(1, 32, 16, 16, 16, scale=2),
+            conveyor_transformers_frames[i],
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]

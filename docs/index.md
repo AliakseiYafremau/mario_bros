@@ -88,9 +88,11 @@ Class that renders an object in the application based on game elements and frame
 `Frame` stores information about images. It is used to display several photos for one element at once (since an element can be complex and consist of more than one image (for example, a conveyor belt)).
 
 ### BoardedPyxelElement
+
 Decorator for any `PyxelElement` that draws a rectangular border sized after the element's `length` and `height` (plus optional padding) before delegating to the wrapped element's `draw()`. It is intended as a _development_ aid when you need to highlight, align, or debug sprites during Pyxel scene tuning.
 
 ### PyxelApp
+
 `PyxelApp` wires the Pyxel event loop to the game simulation: it loads sprite resources, keeps a list of `PyxelElement` instances to draw, binds `Controller`s to keyboard buttons, and advances `Game` ticks according to configurable delays for package movement and creation. On every update it polls the buttons, extends the render list with freshly spawned packages, and calls `Game.move_packages()` / `Game.create_package()` when the elapsed time exceeds the configured cadence before redrawing the scene.
 
 # Main Algorithms

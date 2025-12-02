@@ -1,6 +1,6 @@
 # Mario Bros game
 
-You can find documentation in [`docs` folder](docs/index.md).
+You can find report in [`docs`](docs/index.md) folder.
 
 ## Setup project
 

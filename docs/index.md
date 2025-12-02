@@ -99,3 +99,30 @@ Decorator for any `PyxelElement` that draws a rectangular border sized after the
 - `Game.move_player_up()` / `move_player_down()` take a `Player`, find their current `Floor` within the allowed tuple, and move exactly one step toward the target tier. They guard against moving past the ends of the tuple and raise a `DomainError` if a player's coordinates no longer match any known floor.
 - `Game.create_package()` asks every `PackageFactory` to `create_package()`, which in turn spawns a `Package` at the configured coordinates and places it on a belt so it joins the next simulation step automatically.
 - `Truck.put_package()` is the terminal sink: whenever an external actor loads a package on the truck, it flips the package state to `ON_TRUCK` and enforces the eight-package capacity via `is_full()`.
+
+
+# Performed work
+
+Throughout the project, we tried to make it as easy to understand and scalable as possible. We divided the project into two layers. The domain, which is responsible for the business logic (game rules), and the presentation, which uses the `pyxel` library to display the game and interact with the user. All game initialisation settings are located in main.py.
+
+All objects in the game are subclasses of the `Element` class. The game has players controlled by the user (in this case, _Mario_ and _Luigi_). Players are intermediaries between conveyors. Each conveyor knows about the next conveyor to which it will pass the package. The factory is responsible for creating packages. If the player is not in the required position when the end of the conveyor is reached, the package begins to fall. When it hits the floor, the user loses a life (the number of lives is displayed on the counter at the top right).
+
+A difficulty level has also been implemented, which determines the number of conveyors, the size of the window, and the speed of the conveyors.
+
+# User manual
+
+All user actions are controlled via `Controllers`. Each `Controller` is responsible for a specific trigger (for example, moving a specific player in a specific direction (up/down)). The __W__ and __S__ buttons are used to control _Luigi_, and the ____ and ____ buttons are used to control _Mario_.
+
+# Conclusions
+
+It was an interesting project with an interesting task. All the necessary functionality was implemented. Emphasis was placed on code readability and scalability. The main problem was the difficulty of separating logic from presentation.
+
+The code itself is formatted and correct due to checks using `ruff` and `mypy`. The code contains type annotations that make it easier to understand.
+
+## Personal comments
+
+While working on the project, we were inspired by works such as _"Design Patterns: Elements of Reusable Object-Oriented Software"_ and _"Clean Architecture"_. They helped us implement certain parts of the project and gave us a general vision of how to divide responsibilities in the code.
+
+Teamwork was implemented through `git` and __Github__, which facilitated development by working through different branches and pull requests.
+
+Despite all the work that has been done, there are some aspects that could be improved. Currently, Window and Difficulty bring in the global state (the game depends on the global value specified in `domain/difficulty.py` and `presentation/gui.py`).

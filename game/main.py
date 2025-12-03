@@ -195,12 +195,8 @@ def main():
         *static_ladders_platforms,
         *static_ladders_platforms_for_ladders,
         *static_ladders_pomost,
-        PyxelStaticElement(
-            30, 55, Frame(1, 0, 104, 16, 3, scale=4)
-        ),
-        PyxelStaticElement(
-            10, 208, Frame(1, 0, 104, 16, 3, scale=20, rotate=90)
-        ),
+        PyxelStaticElement(30, 55, Frame(1, 0, 104, 16, 3, scale=4)),
+        PyxelStaticElement(10, 208, Frame(1, 0, 104, 16, 3, scale=20, rotate=90)),
         PyxelStaticElement(
             63, running_window.height - 16 * 4 + 27, Frame(1, 19, 1, 10, 15, scale=4)
         ),
@@ -214,10 +210,10 @@ def main():
             444, running_window.height - 16 * 4 + 21, Frame(1, 72, 8, 16, 24, scale=3)
         ),
         PyxelStaticElement(
-            444 + 16 * 3, running_window.height - 16 * 4 + 21, Frame(1, 72, 8, 16, 24, scale=3)
+            444 + 16 * 3,
+            running_window.height - 16 * 4 + 21,
+            Frame(1, 72, 8, 16, 24, scale=3),
         ),
-
-
         # Dynamic elements
         (PyxelElement(mario, Frame(0, 19, 1, 11, 14, scale=2))),
         (PyxelElement(luigi, Frame(0, 2, 1, 10, 14, scale=2))),

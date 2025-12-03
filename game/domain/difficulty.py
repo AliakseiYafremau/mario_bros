@@ -27,7 +27,7 @@ class Difficulty:
         INCREASE = (50, 30, 30, 20)
         ELIMINATES = (3, 5, 5, 0)
         WINDOW_HEIGHT = (325, 425, 525, 325)
-        WINDOW_WIDTH = (500, 650, 800, 500)
+        WINDOW_WIDTH = (500, 500, 500, 500)
 
         if self.difficulty == 3:
             reversed_controls = True
@@ -43,7 +43,7 @@ class Difficulty:
             "window_width": WINDOW_WIDTH[self.difficulty],
         }
 
-
+# FIXME the game doesnt properly work for all difficulties. We also gotta make the difficulty selector for extra grade
 selected_difficulty = Difficulty(
     0
 )  # Hard set since we are not going to actually implement a difficulty selector,

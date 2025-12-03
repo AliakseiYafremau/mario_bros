@@ -5,7 +5,7 @@ import pyxel
 
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
-from game.presentation.gui import running_window, PointsCounter
+from game.presentation.gui import running_window, PointsCounter, LivesCounter, DeliveriesCounter
 from game.domain.difficulty import selected_difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import (
@@ -95,7 +95,7 @@ class PyxelApp:
             self.game.newly_created_packages.remove(new_package)
             self.game.packages_at_play += 1
 
-        # FIXME optimize this
+        # FIXME optimize this by only changing relevant values
         for element in self.elements:
             if (
                 isinstance(element.element, Package)
@@ -142,11 +142,9 @@ class PyxelApp:
                 element.element.state_to_be_changed_to = 0
                 self.game.packages_at_play -= 1
                 self.game.live_amount -= 1
+                self.game.lives_to_be_updated = True
             if isinstance(element.element, Package) and element.element.offscreen:
                 self.elements.remove(element)
-
-        if self.game.live_amount < 0:
-            raise DomainError("no more lives left")
 
         if self.game.truck.is_full():
             for element in self.elements[:]:
@@ -164,6 +162,9 @@ class PyxelApp:
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
+            if self.game.stored_deliveries < 9:
+                self.game.stored_deliveries += 1
+                self.game.deliveries_to_be_updated = True
             self.game.points_to_be_updated = True
 
         if self.game.points_to_be_updated:
@@ -175,6 +176,24 @@ class PyxelApp:
                     element.frames[1].v += 16 * element.element.digit3_value
                     element.frames[2].v += 16 * element.element.digit2_value
                     element.frames[3].v += 16 * element.element.digit1_value
+
+        if self.game.deliveries_to_be_updated:
+            self.game.deliveries_to_be_updated = False
+            for element in self.elements:
+                #FIXME make it so that the hert is its own element
+                if isinstance(element.element, LivesCounter):
+                    if selected_difficulty.difficulty_values()["eliminates"] == 3:
+                        element.frames[0].u = 184
+                        element.frames[0].v += 16
+
+        if self.game.lives_to_be_updated:
+            self.game.lives_to_be_updated = False
+            for element in self.elements:
+                if isinstance(element.element, LivesCounter):
+                    element.frames[0].v += 16
+
+        if self.game.live_amount <= 0:
+            raise DomainError("no more lives left")
 
         if self._taking_a_break < perf_counter():
             for player in self.game.players:

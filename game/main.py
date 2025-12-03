@@ -4,7 +4,7 @@ import pyxel
 from game.domain.elements import Element
 from game.domain.conveyor import Conveyor
 from game.domain.difficulty import selected_difficulty
-from game.presentation.gui import running_window, PointsCounter, LivesCounter
+from game.presentation.gui import running_window, PointsCounter, LivesCounter, DeliveriesCounter
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -26,7 +26,6 @@ def main():
     )
     luigi = Player(75, (running_window.height - 150), 16, 16, "Luigi")
 
-    # FIXME some floors(floor 1 for luigi for example) to be removed cause the player will never need to be there
     floors_mario = [
         Floor(x=mario.x, y=(running_window.height - 100 - i * 50), player=None)
         for i in range(selected_difficulty.difficulty_values()["belts"] - 1)
@@ -71,17 +70,30 @@ def main():
     )
 
     point_counter_background = Element(
-        x=running_window.width - 75, y=17, length=47, height=17
+        x=running_window.width - 75, y=17, length=47, height=21
     )
     point_counter = PointsCounter(
-        x=(point_counter_background.x + 4), y=20, length=39, height=11
+        x=(point_counter_background.x + 4), y=25, length=39, height=11
     )
+    deliveries_counter_background = Element(x=point_counter_background.x,
+                                            y=(point_counter_background.y + point_counter_background.height)+4,
+                                            length=47,
+                                            height=17)
+    deliveries_counter = DeliveriesCounter(x=deliveries_counter_background.x+35,
+                                           y=deliveries_counter_background.y+3,
+                                           length=6,
+                                           height=11)
+    deliveries_counter_hanger = Element(x=deliveries_counter_background.x,
+                                        y=deliveries_counter_background.y-4,
+                                        length=47,
+                                        height=4)
     lives_counter = LivesCounter(
-        x=point_counter_background.x + (point_counter_background.length - 32),
-        y=(point_counter_background.y + point_counter_background.height),
+        x=deliveries_counter_background.x + (deliveries_counter_background.length - 32),
+        y=(deliveries_counter_background.y + deliveries_counter_background.height)+5,
         length=32,
-        height=21,
+        height=16,
     )
+    lives_counter_hanger = Element(x=lives_counter.x, y=lives_counter.y-5, length=lives_counter.length, height=5)
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         if i != (selected_difficulty.difficulty_values()["belts"] - 1):
@@ -235,7 +247,7 @@ def main():
             grid=Grid.ROW,
         ),
         PyxelElement(truck, Frame(0, 131, 1, 45, 30)),
-        PyxelElement(point_counter_background, Frame(0, 96, 144, 47, 17)),
+        PyxelElement(point_counter_background, Frame(0, 96, 139, 47, 21)),
         PyxelElement(
             point_counter,
             Frame(0, 53, 18, 6, 11, 11),
@@ -244,7 +256,11 @@ def main():
             Frame(0, 53, 18, 6, 11, 11),
             grid=Grid.ROW,
         ),
-        PyxelElement(lives_counter, Frame(0, 64, 139, 32, 21)),
+        PyxelElement(lives_counter_hanger, Frame(0, 64, 139, 32, 5)),
+        PyxelElement(lives_counter, Frame(0, 64, 144, 32, 16)),
+        PyxelElement(deliveries_counter_hanger, Frame(0, 96, 139, 47, 4)),
+        PyxelElement(deliveries_counter_background, Frame(0, 96, 176, 47, 17)),
+        PyxelElement(deliveries_counter, Frame(0, 53, 18, 5,11, 11)),
         buttons={
             pyxel.KEY_UP: move_up_mario
             if not selected_difficulty.difficulty_values()["reversed_controls"]

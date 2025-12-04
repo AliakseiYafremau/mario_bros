@@ -14,18 +14,19 @@ from game.presentation.pyxel_elements import (
 )
 from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
+from game.domain.elements import Element
 
 
 class PyxelApp:
     def __init__(
-        self,
-        *elements: PyxelElement,
-        buttons: dict[int, Controller],
-        game: Game,
-        tick_second: float,
-        move_package_tick: float,
-        move_truck_tick: float,
-        create_package_tick: float,
+            self,
+            *elements: PyxelElement,
+            buttons: dict[int, Controller],
+            game: Game,
+            tick_second: float,
+            move_package_tick: float,
+            move_truck_tick: float,
+            create_package_tick: float,
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -40,8 +41,10 @@ class PyxelApp:
         self._last_move_truck_time = perf_counter()
         self._took_a_break = False
 
+        self._fix_eliminates_elements()
+
         resource_path = (
-            Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
+                Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
         pyxel.init(
             running_window.width,
@@ -53,40 +56,70 @@ class PyxelApp:
         pyxel.load(str(resource_path))
         pyxel.run(self.update, self.draw)
 
+    def _fix_eliminates_elements(self):
+        for element in self.elements:
+            if selected_difficulty.difficulty_values()["eliminates"] == 0:
+                if (
+                        isinstance(element.element, Element)
+                        and element.element.x == 428
+                        and element.element.y == 45
+                ):
+                    element.element.length = 41
+                    element.element.height = 11
+                    element.frames[0].u = 99
+                    element.frames[0].v = 195
+                    element.frames[0].w = 41
+            if selected_difficulty.difficulty_values()["eliminates"] == 3:
+                if (
+                        isinstance(element.element, Element)
+                        and element.element.x == 428
+                        and element.element.y == 45
+                ):
+                    element.frames[0].v = 66
+            if selected_difficulty.difficulty_values()["eliminates"] == 5:
+                if (
+                        isinstance(element.element, Element)
+                        and element.element.x == 428
+                        and element.element.y == 45
+                ):
+                    element.frames[0].v = 98
+
     def update(self):
         if (
-            self.game.points % (selected_difficulty.difficulty_values()["increase"])
-            == 0
+                self.game.points % (selected_difficulty.difficulty_values()["increase"])
+                == 0
         ):
             self.game.minimum_number_packages = (
-                1
-                + self.game.points
-                // (selected_difficulty.difficulty_values()["increase"])
+                    1
+                    + self.game.points
+                    // (selected_difficulty.difficulty_values()["increase"])
             )
 
         if (
-            selected_difficulty.difficulty_values()["eliminates"] != 0
-            and (
+                selected_difficulty.difficulty_values()["eliminates"] != 0
+                and (
                 self.game.stored_deliveries
                 >= selected_difficulty.difficulty_values()["eliminates"]
-            )
-            and (
+        )
+                and (
                 self.game.stored_deliveries
                 % selected_difficulty.difficulty_values()["eliminates"]
                 == 0
-            )
-            and (self.game.live_amount < 3)
+        )
+                and (self.game.live_amount < 3)
         ):
             self.game.live_amount += 1
             self.game.stored_deliveries -= selected_difficulty.difficulty_values()[
                 "eliminates"
             ]
+            self.game.deliveries_to_be_updated = True
+            self.game.lives_to_be_updated = True
 
         if self._taking_a_break < perf_counter():
             for button in self.buttons:
                 if (
-                    pyxel.btnp(button)
-                    and not self.buttons[button].player.is_moving_package
+                        pyxel.btnp(button)
+                        and not self.buttons[button].player.is_moving_package
                 ):
                     self.buttons[button].execute()
 
@@ -98,8 +131,8 @@ class PyxelApp:
         # FIXME optimize this by only changing relevant values
         for element in self.elements:
             if (
-                isinstance(element.element, Package)
-                and element.element.stage_to_be_changed_to != 0
+                    isinstance(element.element, Package)
+                    and element.element.stage_to_be_changed_to != 0
             ):
                 self.elements.append(
                     (
@@ -119,8 +152,8 @@ class PyxelApp:
                 self.elements.remove(element)
                 element.element.stage_to_be_changed_to = 0
             if (
-                isinstance(element.element, Package)
-                and element.element.state_to_be_changed_to != 0
+                    isinstance(element.element, Package)
+                    and element.element.state_to_be_changed_to != 0
             ):
                 self.elements.append(
                     (
@@ -149,8 +182,8 @@ class PyxelApp:
         if self.game.truck.is_full():
             for element in self.elements[:]:
                 if (
-                    isinstance(element.element, Package)
-                    and element.element.state == PackageState.ON_TRUCK
+                        isinstance(element.element, Package)
+                        and element.element.state == PackageState.ON_TRUCK
                 ) or isinstance(element.element, Truck):
                     self.elements.remove(element)
             self.game.truck.has_returned = False
@@ -162,7 +195,7 @@ class PyxelApp:
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
-            if self.game.stored_deliveries < 9:
+            if self.game.stored_deliveries < 9 and selected_difficulty.difficulty_values()["eliminates"] != 0:
                 self.game.stored_deliveries += 1
                 self.game.deliveries_to_be_updated = True
             self.game.points_to_be_updated = True
@@ -177,20 +210,17 @@ class PyxelApp:
                     element.frames[2].v += 16 * element.element.digit2_value
                     element.frames[3].v += 16 * element.element.digit1_value
 
-        if self.game.deliveries_to_be_updated:
+        if self.game.deliveries_to_be_updated and selected_difficulty.difficulty_values()["eliminates"] != 0:
             self.game.deliveries_to_be_updated = False
             for element in self.elements:
-                #FIXME make it so that the hert is its own element
-                if isinstance(element.element, LivesCounter):
-                    if selected_difficulty.difficulty_values()["eliminates"] == 3:
-                        element.frames[0].u = 184
-                        element.frames[0].v += 16
+                if isinstance(element.element, DeliveriesCounter):
+                    element.frames[0].v = 18 + (self.game.stored_deliveries * 16)
 
         if self.game.lives_to_be_updated:
             self.game.lives_to_be_updated = False
             for element in self.elements:
                 if isinstance(element.element, LivesCounter):
-                    element.frames[0].v += 16
+                    element.frames[0].v = 144 + 16*(3 - self.game.live_amount)
 
         if self.game.live_amount <= 0:
             raise DomainError("no more lives left")
@@ -198,17 +228,17 @@ class PyxelApp:
         if self._taking_a_break < perf_counter():
             for player in self.game.players:
                 if (
-                    player.is_moving_package
-                    and player.package_picked_up_at + self.move_package_tick * 2
-                    <= perf_counter()
+                        player.is_moving_package
+                        and player.package_picked_up_at + self.move_package_tick * 2
+                        <= perf_counter()
                 ):
                     player.is_moving_package = False
                     self.game.player_put_down_package(player)
 
             current_time = perf_counter()
             if (
-                current_time - self._last_move_package_time
-                >= self.tick_second * self.move_package_tick
+                    current_time - self._last_move_package_time
+                    >= self.tick_second * self.move_package_tick
             ):
                 self._last_move_package_time = current_time
                 self.game.move_packages()
@@ -218,33 +248,33 @@ class PyxelApp:
                 self._took_a_break = False
 
             if self.game.first_package_moved and (
-                self.create_package_tick
-                != (self.move_package_tick * 100)
-                * (
-                    selected_difficulty.difficulty_values()["belts"]
-                    / (self.game.minimum_number_packages + 1)
-                )
+                    self.create_package_tick
+                    != (self.move_package_tick * 100)
+                    * (
+                            selected_difficulty.difficulty_values()["belts"]
+                            / (self.game.minimum_number_packages + 1)
+                    )
             ):
                 self.create_package_tick = (self.move_package_tick * 100) * (
-                    selected_difficulty.difficulty_values()["belts"]
-                    / (self.game.minimum_number_packages + 1)
+                        selected_difficulty.difficulty_values()["belts"]
+                        / (self.game.minimum_number_packages + 1)
                 )
             if (
-                self.game.packages_at_play < self.game.minimum_number_packages + 1
-                and (
-                    current_time - self._last_create_package_time
-                    >= self.tick_second * self.create_package_tick
-                )
+                    self.game.packages_at_play < self.game.minimum_number_packages + 1
+                    and (
+                            current_time - self._last_create_package_time
+                            >= self.tick_second * self.create_package_tick
+                    )
             ) or (
-                self.game.packages_at_play < self.game.minimum_number_packages
-                and self.game.first_package_moved
+                    self.game.packages_at_play < self.game.minimum_number_packages
+                    and self.game.first_package_moved
             ):
                 self._last_create_package_time = current_time
                 self.game.create_package()
 
         elif (
-            perf_counter() - self._last_move_truck_time
-            >= self.tick_second * self.move_truck_tick
+                perf_counter() - self._last_move_truck_time
+                >= self.tick_second * self.move_truck_tick
         ) and not self.game.truck.has_returned:
             self._last_move_truck_time = perf_counter()
             self.game.truck.truck_in_movement(self.game.original_truck_x)

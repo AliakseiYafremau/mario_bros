@@ -76,24 +76,29 @@ def main():
         x=(point_counter_background.x + 4), y=25, length=39, height=11
     )
     deliveries_counter_background = Element(x=point_counter_background.x,
-                                            y=(point_counter_background.y + point_counter_background.height)+4,
+                                            y=(point_counter_background.y + point_counter_background.height) + 4,
                                             length=47,
                                             height=17)
-    deliveries_counter = DeliveriesCounter(x=deliveries_counter_background.x+35,
-                                           y=deliveries_counter_background.y+3,
+    deliveries_counter = DeliveriesCounter(x=deliveries_counter_background.x + 38,
+                                           y=deliveries_counter_background.y + 3,
                                            length=6,
                                            height=11)
     deliveries_counter_hanger = Element(x=deliveries_counter_background.x,
-                                        y=deliveries_counter_background.y-4,
+                                        y=deliveries_counter_background.y - 4,
                                         length=47,
                                         height=4)
     lives_counter = LivesCounter(
         x=deliveries_counter_background.x + (deliveries_counter_background.length - 32),
-        y=(deliveries_counter_background.y + deliveries_counter_background.height)+5,
+        y=(deliveries_counter_background.y + deliveries_counter_background.height) + 5,
         length=32,
         height=16,
     )
-    lives_counter_hanger = Element(x=lives_counter.x, y=lives_counter.y-5, length=lives_counter.length, height=5)
+    lives_counter_hanger = Element(x=lives_counter.x, y=lives_counter.y - 5, length=lives_counter.length, height=5)
+    eliminates_deliveries_amount = Element(x=deliveries_counter_background.x+3,
+                                           y=deliveries_counter.y,
+                                           length=6,
+                                           height=11)
+    rendered_eliminates_deliveries_amount = PyxelElement(eliminates_deliveries_amount, Frame(0, 53, 18, 6, 11, 11))
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         if i != (selected_difficulty.difficulty_values()["belts"] - 1):
@@ -256,7 +261,8 @@ def main():
         PyxelElement(lives_counter, Frame(0, 64, 144, 32, 16)),
         PyxelElement(deliveries_counter_hanger, Frame(0, 96, 139, 47, 4)),
         PyxelElement(deliveries_counter_background, Frame(0, 96, 176, 47, 17)),
-        PyxelElement(deliveries_counter, Frame(0, 53, 18, 5,11, 11)),
+        PyxelElement(deliveries_counter, Frame(0, 53, 18, 5, 11, 11)),
+        rendered_eliminates_deliveries_amount,
         buttons={
             pyxel.KEY_UP: move_up_mario
             if not selected_difficulty.difficulty_values()["reversed_controls"]

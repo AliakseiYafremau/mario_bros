@@ -124,54 +124,24 @@ class PyxelApp:
                     self.buttons[button].execute()
 
         for new_package in self.game.newly_created_packages:
-            self.elements.append((PyxelElement(new_package, Frame(0, 66, 3, 12, 8, 0))))
+            self.elements.insert(-15, (PyxelElement(new_package, Frame(0, 66, 3, 12, 8, colkey=0))))
             self.game.newly_created_packages.remove(new_package)
             self.game.packages_at_play += 1
 
-        # FIXME optimize this by only changing relevant values
         for element in self.elements:
             if (
                     isinstance(element.element, Package)
                     and element.element.stage_to_be_changed_to != 0
             ):
-                self.elements.append(
-                    (
-                        PyxelElement(
-                            element.element,
-                            Frame(
-                                element.frames[0].image,
-                                element.frames[0].u,
-                                3 + (16 * element.element.stage_to_be_changed_to),
-                                element.frames[0].w,
-                                element.frames[0].h,
-                                element.frames[0].colkey,
-                            ),
-                        )
-                    )
-                )
-                self.elements.remove(element)
+                element.frames[0].v = 3 + (16 * element.element.stage_to_be_changed_to)
                 element.element.stage_to_be_changed_to = 0
             if (
                     isinstance(element.element, Package)
                     and element.element.state_to_be_changed_to != 0
             ):
-                self.elements.append(
-                    (
-                        PyxelElement(
-                            element.element,
-                            Frame(
-                                element.frames[0].image,
-                                element.frames[0].u
-                                + (element.element.state_to_be_changed_to * 16),
-                                element.frames[0].v,
-                                element.frames[0].w,
-                                element.frames[0].h,
-                                element.frames[0].colkey,
-                            ),
-                        )
-                    )
-                )
-                self.elements.remove(element)
+                element.frames[0].u += (element.element.state_to_be_changed_to * 16)
+                element.frames[0].h = 10
+                element.frames[0].v -= 2
                 element.element.state_to_be_changed_to = 0
                 self.game.packages_at_play -= 1
                 self.game.live_amount -= 1
@@ -190,7 +160,7 @@ class PyxelApp:
             self.game.truck.sprite_to_be_changed_back = True
             self.game.truck.packages = []
             self.elements.append(
-                (PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32)))
+                (PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32, colkey=11)))
             )
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
@@ -284,10 +254,22 @@ class PyxelApp:
                     if isinstance(element.element, Truck):
                         self.elements.remove(element)
                         self.elements.append(
-                            (PyxelElement(self.game.truck, Frame(0, 131, 1, 45, 30)))
+                            (PyxelElement(self.game.truck, Frame(0, 131, 1, 45, 30, colkey=11)))
                         )
 
     def draw(self):
-        pyxel.cls(0)
+        pyxel.cls(15)
+        for i in range(3):
+            pyxel.rect(running_window.width-69+16*i, 0, 4, 30, 1)
+        pyxel.rect(0, running_window.height - 67, running_window.width-254, 5, 4)
+        pyxel.rect(0, 50, 44, running_window.height, 4)
+        pyxel.rect(0, 50, 100, 13, 4)
+        pyxel.rect(0, running_window.height - 5, running_window.width, 5, 4)
+        pyxel.rect(running_window.width - 13, 0, 13, running_window.height, 4)
+        pyxel.rect(running_window.width - 150, running_window.height - 67, 150, 67, 4)
+        pyxel.rect(running_window.width - 96, running_window.height - 79, 20, 79, 13)
+        pyxel.rect(running_window.width - 106, running_window.height - 65, 40, 67, 13)
+        pyxel.rect(running_window.width // 2 - 4, 0, 24, running_window.height-62, 13)
+        pyxel.rect(running_window.width-50, running_window.height-229, 39, 116, 4)
         for element in self.elements:
             element.draw()

@@ -5,10 +5,8 @@ from game.domain.package import Package
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
-from game.domain.logging import get_logger
 from game.presentation.gui import PointsCounter
 
-logger = get_logger(__name__, layer="DOMAIN")
 
 
 class Game:
@@ -58,14 +56,12 @@ class Game:
                             )
                         elif conveyor.finish_floor.player.pick_package(package):
                             conveyor.packages.remove(package)
-                            logger.debug("%s picked up by player", package)
 
         for conveyor in self.conveyors:
             conveyor.move_packages()
 
         self.tick += 1
 
-    # FIXME change in sprites for picking and putting
     def player_put_down_package(self, player: Player) -> None:
         for conveyor in self.conveyors:
             if conveyor.finish_floor.player == player:
@@ -77,11 +73,9 @@ class Game:
                 conveyor.next_step.put_package(package)
                 player.put_package()
                 if isinstance(conveyor.next_step, Truck):
-                    logger.debug("%s package has been put in the truck", package)
                     self.packages_at_play -= 1
                     self.points += 2
                 else:
-                    logger.debug("%s put down on next conveyor", package)
                     self.first_package_moved = True
                     self.points += 1
                 self.points_to_be_updated = True

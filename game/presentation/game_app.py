@@ -161,9 +161,7 @@ class GameApp:
 
         if self.game.points_to_be_updated:
             self.game.points_to_be_updated = False
-            print(self.game.point_counter.digit1_value)
             self.game.point_counter.update_points(self.game.points)
-            print(self.game.point_counter.digit1_value)
             for element in self.elements:
                 if isinstance(element.element, PointsCounter):
                     element.frames[0].v = 18 + 16 * element.element.digit4_value

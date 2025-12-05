@@ -1,10 +1,13 @@
-from game.domain.directions import Direction
+from enum import Enum
+
 from game.domain.elements import Element
 from game.domain.floor import Floor
-from game.domain.logging import get_logger
 from game.domain.package import CanRecievePackage, Package, PackageState
 
-logger = get_logger(__name__, layer="DOMAIN")
+
+class Direction(Enum):
+    RIGHT = "RIGHT"
+    LEFT = "LEFT"
 
 
 class Conveyor(Element):
@@ -78,23 +81,18 @@ class Conveyor(Element):
                 if package.stage == 0:
                     package.stage = 1
                     package.stage_to_be_changed_to = 1
-                    logger.debug("%s increased stage to 1 of", package)
                 elif package.stage == 1:
                     package.stage = 2
                     package.stage_to_be_changed_to = 2
-                    logger.debug("%s increased stage to 1 of", package)
                 elif package.stage == 2:
                     package.stage = 3
                     package.stage_to_be_changed_to = 3
-                    logger.debug("%s increased stage to 1 of", package)
                 elif package.stage == 3:
                     package.stage = 4
                     package.stage_to_be_changed_to = 4
-                    logger.debug("%s increased stage to 1 of", package)
                 elif package.stage == 4:
                     package.stage = 5
                     package.stage_to_be_changed_to = 5
-                    logger.debug("%s increased stage to 1 of", package)
 
             if not package.state == PackageState.FALLING:
                 if self.direction == Direction.LEFT:
@@ -103,7 +101,6 @@ class Conveyor(Element):
                     package.move_x(package.x + self.velocity * 4)
 
             if not self._is_package_on_conveyor(package):
-                logger.debug("%s felt", package)
                 self.falling_packages.append(package)
                 package.state = PackageState.FALLING
                 if package.x < self.x:
@@ -114,7 +111,6 @@ class Conveyor(Element):
         for package in self.falling_packages:
             if package.y >= self.floor_y:
                 self.falling_packages.remove(package)
-                logger.debug("%s due to being offscreen removed package", package)
                 package.offscreen = True
             else:
                 package.move_y(package.y + 4)

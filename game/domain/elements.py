@@ -1,9 +1,3 @@
-from game.domain.logging import get_logger
-
-
-logger = get_logger(__name__, layer="DOMAIN")
-
-
 class Element:
     """Base class for all game elements.
 
@@ -19,7 +13,6 @@ class Element:
         self.y = y
         self.length = length
         self.height = height
-        logger.debug("%s was created", self.__repr__())
 
     def is_touched(self, element: "Element") -> bool:
         """Check if this element is touching another element.
@@ -63,12 +56,6 @@ class MotionElement(Element):
     """
 
     def move(self, x: int = 0, y: int = 0) -> None:
-        logger.debug(
-            "%s moves from %s to %s",
-            self.__repr__(),
-            (self.x, self.y),
-            (x, y),
-        )
         self.x = x
         self.y = y
 

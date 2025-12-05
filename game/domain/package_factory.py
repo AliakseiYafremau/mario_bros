@@ -1,10 +1,8 @@
 from game.domain.conveyor import Conveyor
 from game.domain.elements import Element
-from game.domain.logging import get_logger
 from game.domain.package import Package, PackageState
 
 
-logger = get_logger(__name__, "DOMAIN")
 
 
 class PackageFactory(Element):
@@ -35,5 +33,4 @@ class PackageFactory(Element):
             stage=0,
         )
         self.conveyor.put_package(package)
-        logger.debug("%s created package %s", self.__repr__(), package)
         return package

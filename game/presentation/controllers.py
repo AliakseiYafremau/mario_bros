@@ -2,11 +2,7 @@ from abc import abstractmethod, ABC
 
 from game.domain.exceptions import DomainError
 from game.domain.game import Game
-from game.domain.logging import get_logger
 from game.domain.player import Player
-
-
-logger = get_logger(__name__, layer="PRESENTATION")
 
 
 class Controller(ABC):
@@ -24,7 +20,6 @@ class MoveUpPlayer(Controller):
 
     def execute(self):
         try:
-            logger.debug("MoveUpPlayer button was pressed")
             self.game.move_player_up(self.player)
         except DomainError:
             return
@@ -37,7 +32,6 @@ class MoveDownPlayer(Controller):
 
     def execute(self):
         try:
-            logger.debug("MoveDownPlayer button was pressed")
             self.game.move_player_down(self.player)
         except DomainError:
             return

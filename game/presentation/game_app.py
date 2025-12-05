@@ -15,9 +15,11 @@ from game.presentation.pyxel_elements import (
 from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
 from game.domain.elements import Element
+from game.presentation.main_app import App
+from game.presentation.screen import Screen
 
 
-class PyxelApp:
+class GameApp(Screen):
     def __init__(
             self,
             *elements: PyxelElement,
@@ -27,6 +29,7 @@ class PyxelApp:
             move_package_tick: float,
             move_truck_tick: float,
             create_package_tick: float,
+            app: App,
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -46,6 +49,9 @@ class PyxelApp:
         resource_path = (
                 Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
+
+        super().__init__(app)
+
         pyxel.init(
             running_window.width,
             running_window.height,
@@ -83,6 +89,10 @@ class PyxelApp:
                         and element.element.y == 45
                 ):
                     element.frames[0].v = 98
+
+    def get_values(self):
+        #fixme
+        ""
 
     def update(self):
         if (
@@ -172,13 +182,15 @@ class PyxelApp:
 
         if self.game.points_to_be_updated:
             self.game.points_to_be_updated = False
+            print(self.game.point_counter.digit1_value)
             self.game.point_counter.update_points(self.game.points)
+            print(self.game.point_counter.digit1_value)
             for element in self.elements:
                 if isinstance(element.element, PointsCounter):
-                    element.frames[0].v += 16 * element.element.digit4_value
-                    element.frames[1].v += 16 * element.element.digit3_value
-                    element.frames[2].v += 16 * element.element.digit2_value
-                    element.frames[3].v += 16 * element.element.digit1_value
+                    element.frames[0].v = 18 + 16 * element.element.digit4_value
+                    element.frames[1].v = 18 + 16 * element.element.digit3_value
+                    element.frames[2].v = 18 + 16 * element.element.digit2_value
+                    element.frames[3].v = 18 + 16 * element.element.digit1_value
 
         if self.game.deliveries_to_be_updated and selected_difficulty.difficulty_values()["eliminates"] != 0:
             self.game.deliveries_to_be_updated = False

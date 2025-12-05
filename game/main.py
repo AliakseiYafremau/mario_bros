@@ -10,7 +10,7 @@ from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
-from game.presentation.app import PyxelApp
+from game.presentation.game_app import GameApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
 from game.presentation.pyxel_elements import (
     Frame,
@@ -18,6 +18,7 @@ from game.presentation.pyxel_elements import (
     PyxelElement,
     PyxelStaticElement,
 )
+from game.presentation.main_app import App
 
 
 def main():
@@ -222,7 +223,7 @@ def main():
     ]
     static_ladders_platforms_for_ladders.pop(-1)
 
-    PyxelApp(
+    GameApp(
         #fixme make it so that packages are behind middle thing
         *luigi_static_ladders_frames,
         *mario_static_ladder_frames,
@@ -282,8 +283,9 @@ def main():
         game=game,
         tick_second=1,
         move_truck_tick=0.07,
-        move_package_tick=0.10,
+        move_package_tick=0.05,
         create_package_tick=5,
+        app=App()
     )
 
 

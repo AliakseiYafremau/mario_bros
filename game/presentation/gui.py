@@ -29,11 +29,17 @@ class PointsCounter(Element):
             raise DomainError("Thats it, you won, you have more than 9999 points.")
         if len(str(points)) == 4:
             self.digit4_value = int(str(points)[-4])
-        if len(str(points)) == 3:
             self.digit3_value = int(str(points)[-3])
-        if len(str(points)) == 2:
             self.digit2_value = int(str(points)[-2])
-        if len(str(points)) == 1:
+            self.digit1_value = int(str(points)[-1])
+        elif len(str(points)) == 3:
+            self.digit3_value = int(str(points)[-3])
+            self.digit2_value = int(str(points)[-2])
+            self.digit1_value = int(str(points)[-1])
+        elif len(str(points)) == 2:
+            self.digit2_value = int(str(points)[-2])
+            self.digit1_value = int(str(points)[-1])
+        elif len(str(points)) == 1:
             self.digit1_value = int(str(points)[-1])
 
 

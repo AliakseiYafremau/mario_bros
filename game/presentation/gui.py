@@ -1,11 +1,13 @@
 from game.domain.difficulty import selected_difficulty
 from game.domain.elements import Element
 from game.domain.exceptions import DomainError
+from game.domain.difficulty import Difficulty
 
 
 class Window:
     def __init__(
         self,
+        difficulty: Difficulty = Difficulty(0),
         width: int = selected_difficulty.difficulty_values()["window_width"],
         height: int = selected_difficulty.difficulty_values()["window_height"],
     ):

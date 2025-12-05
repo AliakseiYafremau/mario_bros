@@ -15,11 +15,9 @@ from game.presentation.pyxel_elements import (
 from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
 from game.domain.elements import Element
-from game.presentation.main_app import App
-from game.presentation.screen import Screen
 
 
-class GameApp(Screen):
+class GameApp:
     def __init__(
             self,
             *elements: PyxelElement,
@@ -28,8 +26,7 @@ class GameApp(Screen):
             tick_second: float,
             move_package_tick: float,
             move_truck_tick: float,
-            create_package_tick: float,
-            app: App,
+            create_package_tick: float
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -45,22 +42,6 @@ class GameApp(Screen):
         self._took_a_break = False
 
         self._fix_eliminates_elements()
-
-        resource_path = (
-                Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
-        )
-
-        super().__init__(app)
-
-        pyxel.init(
-            running_window.width,
-            running_window.height,
-            title="Pyxel APP",
-            fps=60,
-            quit_key=pyxel.KEY_ESCAPE,
-        )
-        pyxel.load(str(resource_path))
-        pyxel.run(self.update, self.draw)
 
     def _fix_eliminates_elements(self):
         for element in self.elements:

@@ -1,12 +1,8 @@
 import pyxel
 
-from game.presentation.screen import Screen
-from game.presentation.main_app import App
 
-
-class GameOverScreen(Screen):
-    def __init__(self, app: App):
-        super().__init__(app)
+class GameOverScreen:
+    def __init__(self):
         self.wants_to_retry: bool = False
 
     def update(self):

@@ -1,6 +1,6 @@
 class Screen:
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
+        pass
 
     def update(self):
         pass

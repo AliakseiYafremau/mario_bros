@@ -1,12 +1,11 @@
-from pathlib import Path
 from time import perf_counter
 
 import pyxel
 
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
-from game.presentation.gui import running_window, PointsCounter, LivesCounter, DeliveriesCounter
-from game.domain.difficulty import selected_difficulty
+from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter, Window
+from game.domain.difficulty import Difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import (
     Frame,
@@ -26,7 +25,8 @@ class GameApp:
             tick_second: float,
             move_package_tick: float,
             move_truck_tick: float,
-            create_package_tick: float
+            create_package_tick: float,
+            selected_difficulty: Difficulty
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -40,12 +40,14 @@ class GameApp:
         self._last_move_package_time = perf_counter()
         self._last_move_truck_time = perf_counter()
         self._took_a_break = False
+        self.selected_difficulty = selected_difficulty
+        self.running_window = Window(selected_difficulty)
 
         self._fix_eliminates_elements()
 
     def _fix_eliminates_elements(self):
         for element in self.elements:
-            if selected_difficulty.difficulty_values()["eliminates"] == 0:
+            if self.selected_difficulty.difficulty_values()["eliminates"] == 0:
                 if (
                         isinstance(element.element, Element)
                         and element.element.x == 428
@@ -56,14 +58,14 @@ class GameApp:
                     element.frames[0].u = 99
                     element.frames[0].v = 195
                     element.frames[0].w = 41
-            if selected_difficulty.difficulty_values()["eliminates"] == 3:
+            if self.selected_difficulty.difficulty_values()["eliminates"] == 3:
                 if (
                         isinstance(element.element, Element)
                         and element.element.x == 428
                         and element.element.y == 45
                 ):
                     element.frames[0].v = 66
-            if selected_difficulty.difficulty_values()["eliminates"] == 5:
+            if self.selected_difficulty.difficulty_values()["eliminates"] == 5:
                 if (
                         isinstance(element.element, Element)
                         and element.element.x == 428
@@ -71,36 +73,32 @@ class GameApp:
                 ):
                     element.frames[0].v = 98
 
-    def get_values(self):
-        #fixme
-        ""
-
     def update(self):
         if (
-                self.game.points % (selected_difficulty.difficulty_values()["increase"])
+                self.game.points % (self.selected_difficulty.difficulty_values()["increase"])
                 == 0
         ):
             self.game.minimum_number_packages = (
                     1
                     + self.game.points
-                    // (selected_difficulty.difficulty_values()["increase"])
+                    // (self.selected_difficulty.difficulty_values()["increase"])
             )
 
         if (
-                selected_difficulty.difficulty_values()["eliminates"] != 0
+                self.selected_difficulty.difficulty_values()["eliminates"] != 0
                 and (
                 self.game.stored_deliveries
-                >= selected_difficulty.difficulty_values()["eliminates"]
+                >= self.selected_difficulty.difficulty_values()["eliminates"]
         )
                 and (
                 self.game.stored_deliveries
-                % selected_difficulty.difficulty_values()["eliminates"]
+                % self.selected_difficulty.difficulty_values()["eliminates"]
                 == 0
         )
                 and (self.game.live_amount < 3)
         ):
             self.game.live_amount += 1
-            self.game.stored_deliveries -= selected_difficulty.difficulty_values()[
+            self.game.stored_deliveries -= self.selected_difficulty.difficulty_values()[
                 "eliminates"
             ]
             self.game.deliveries_to_be_updated = True
@@ -156,7 +154,7 @@ class GameApp:
             self._taking_a_break = perf_counter() + 8
             self._took_a_break = True
             self.game.points += 10
-            if self.game.stored_deliveries < 9 and selected_difficulty.difficulty_values()["eliminates"] != 0:
+            if self.game.stored_deliveries < 9 and self.selected_difficulty.difficulty_values()["eliminates"] != 0:
                 self.game.stored_deliveries += 1
                 self.game.deliveries_to_be_updated = True
             self.game.points_to_be_updated = True
@@ -173,7 +171,7 @@ class GameApp:
                     element.frames[2].v = 18 + 16 * element.element.digit2_value
                     element.frames[3].v = 18 + 16 * element.element.digit1_value
 
-        if self.game.deliveries_to_be_updated and selected_difficulty.difficulty_values()["eliminates"] != 0:
+        if self.game.deliveries_to_be_updated and self.selected_difficulty.difficulty_values()["eliminates"] != 0:
             self.game.deliveries_to_be_updated = False
             for element in self.elements:
                 if isinstance(element.element, DeliveriesCounter):
@@ -214,12 +212,12 @@ class GameApp:
                     self.create_package_tick
                     != (self.move_package_tick * 100)
                     * (
-                            selected_difficulty.difficulty_values()["belts"]
+                            self.selected_difficulty.difficulty_values()["belts"]
                             / (self.game.minimum_number_packages + 1)
                     )
             ):
                 self.create_package_tick = (self.move_package_tick * 100) * (
-                        selected_difficulty.difficulty_values()["belts"]
+                        self.selected_difficulty.difficulty_values()["belts"]
                         / (self.game.minimum_number_packages + 1)
                 )
             if (
@@ -253,16 +251,16 @@ class GameApp:
     def draw(self):
         pyxel.cls(15)
         for i in range(3):
-            pyxel.rect(running_window.width-69+16*i, 0, 4, 30, 1)
-        pyxel.rect(0, running_window.height - 67, running_window.width-254, 5, 4)
-        pyxel.rect(0, 50, 44, running_window.height, 4)
+            pyxel.rect(self.running_window.width-69+16*i, 0, 4, 30, 1)
+        pyxel.rect(0, self.running_window.height - 67, self.running_window.width-254, 5, 4)
+        pyxel.rect(0, 50, 44, self.running_window.height, 4)
         pyxel.rect(0, 50, 100, 13, 4)
-        pyxel.rect(0, running_window.height - 5, running_window.width, 5, 4)
-        pyxel.rect(running_window.width - 13, 0, 13, running_window.height, 4)
-        pyxel.rect(running_window.width - 150, running_window.height - 67, 150, 67, 4)
-        pyxel.rect(running_window.width - 96, running_window.height - 79, 20, 79, 13)
-        pyxel.rect(running_window.width - 106, running_window.height - 65, 40, 67, 13)
-        pyxel.rect(running_window.width // 2 - 4, 0, 24, running_window.height-62, 13)
-        pyxel.rect(running_window.width-50, running_window.height-229, 39, 116, 4)
+        pyxel.rect(0, self.running_window.height - 5, self.running_window.width, 5, 4)
+        pyxel.rect(self.running_window.width - 13, 0, 13, self.running_window.height, 4)
+        pyxel.rect(self.running_window.width - 150, self.running_window.height - 67, 150, 67, 4)
+        pyxel.rect(self.running_window.width - 96, self.running_window.height - 79, 20, 79, 13)
+        pyxel.rect(self.running_window.width - 106, self.running_window.height - 65, 40, 67, 13)
+        pyxel.rect(self.running_window.width // 2 - 4, 0, 24, self.running_window.height-62, 13)
+        pyxel.rect(self.running_window.width-50, self.running_window.height-229, 39, 116, 4)
         for element in self.elements:
             element.draw()

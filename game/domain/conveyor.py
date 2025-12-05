@@ -3,8 +3,6 @@ from game.domain.elements import Element
 from game.domain.floor import Floor
 from game.domain.logging import get_logger
 from game.domain.package import CanRecievePackage, Package, PackageState
-from game.domain.difficulty import selected_difficulty
-
 
 logger = get_logger(__name__, layer="DOMAIN")
 
@@ -22,7 +20,6 @@ class Conveyor(Element):
         height (int): Height of the conveyor in the Y axis.
         direction (Direction): Direction in which the conveyor moves packages.
         velocity (int): Speed at which the conveyor moves packages.
-        start_floor (Floor): The floor where the conveyor starts.
         finish_floor (Floor): The floor where the conveyor ends.
 
     Raises:
@@ -39,6 +36,7 @@ class Conveyor(Element):
         height: int,
         speed: tuple,
         finish_floor: Floor,
+        floor_y: int,
         next_step: CanRecievePackage | None = None,
     ) -> None:
         self.conveyor_id = conveyor_id
@@ -63,6 +61,7 @@ class Conveyor(Element):
         else:
             start_position = (x, y)
         self.start_position: tuple[int, int] = start_position
+        self.floor_y = floor_y
         super().__init__(x, y, length, height)
 
     def put_package(self, package: Package) -> None:
@@ -113,7 +112,7 @@ class Conveyor(Element):
                     package.state_to_be_changed_to = 2
                 self.lift_package(package)
         for package in self.falling_packages:
-            if self._package_is_offscreen(package):
+            if package.y >= self.floor_y:
                 self.falling_packages.remove(package)
                 logger.debug("%s due to being offscreen removed package", package)
                 package.offscreen = True
@@ -138,15 +137,6 @@ class Conveyor(Element):
             )
         raise ValueError("conveyor id is not valid")
 
-    def _package_is_offscreen(self, package: Package) -> bool:
-        if (
-            package.y >= selected_difficulty.difficulty_values()["window_height"]
-            or (package.x + package.length <= 0)
-            or (package.x >= selected_difficulty.difficulty_values()["window_width"])
-        ):
-            return True
-        else:
-            return False
 
     def package_about_to_fall(self, package: Package) -> bool:
         return package.x <= (self.x - 1) or (self.x + self.length + 1) <= (

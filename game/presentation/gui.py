@@ -1,4 +1,3 @@
-from game.domain.difficulty import selected_difficulty
 from game.domain.elements import Element
 from game.domain.exceptions import DomainError
 from game.domain.difficulty import Difficulty
@@ -7,15 +6,16 @@ from game.domain.difficulty import Difficulty
 class Window:
     def __init__(
         self,
-        difficulty: Difficulty = Difficulty(0),
-        width: int = selected_difficulty.difficulty_values()["window_width"],
-        height: int = selected_difficulty.difficulty_values()["window_height"],
+        difficulty: Difficulty | None = None,
+        width: int = 0,
+        height: int = 0,
     ):
-        self.width = width
-        self.height = height
-
-
-running_window = Window()  # Manually altering window resolution is not recommended
+        if difficulty is None:
+            self.width = width
+            self.height = height
+        else:
+            self.width = difficulty.difficulty_values()["window_width"]
+            self.height = difficulty.difficulty_values()["window_height"]
 
 
 class PointsCounter(Element):

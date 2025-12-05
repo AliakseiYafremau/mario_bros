@@ -2,8 +2,8 @@ import pyxel
 
 from game.domain.elements import Element
 from game.domain.conveyor import Conveyor
-from game.domain.difficulty import selected_difficulty, Difficulty
-from game.presentation.gui import running_window, PointsCounter, LivesCounter, DeliveriesCounter
+from game.domain.difficulty import Difficulty
+from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter, Window
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
@@ -20,6 +20,7 @@ from game.presentation.pyxel_elements import (
 
 
 def create_game_app(selected_difficulty: Difficulty) -> GameApp:
+    running_window = Window(difficulty=selected_difficulty)
     mario = Player(
         (running_window.width - 96), (running_window.height - 150), 16, 16, "Mario"
     )
@@ -47,6 +48,7 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
             height=8,
             speed=speed,
             finish_floor=floors[i % 2][i],
+            floor_y=running_window.height
         )
         for i in range(selected_difficulty.difficulty_values()["belts"])
     ]
@@ -59,6 +61,7 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
         height=8,
         speed=speed,
         finish_floor=floors_mario[0],
+        floor_y=running_window.height
     )
 
     truck = Truck(
@@ -222,7 +225,6 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
     static_ladders_platforms_for_ladders.pop(-1)
 
     game_app = GameApp(
-        # fixme make it so that packages are behind middle thing
         *luigi_static_ladders_frames,
         *mario_static_ladder_frames,
         *luigi_static_ladders_platforms,
@@ -282,7 +284,8 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
         tick_second=1,
         move_truck_tick=0.07,
         move_package_tick=0.05,
-        create_package_tick=5
+        create_package_tick=5,
+        selected_difficulty=selected_difficulty
     )
 
     return game_app

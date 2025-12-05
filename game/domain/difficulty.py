@@ -42,9 +42,3 @@ class Difficulty:
             "window_height": WINDOW_HEIGHT[self.difficulty],
             "window_width": WINDOW_WIDTH[self.difficulty],
         }
-
-# FIXME the game doesnt properly work for all difficulties. We also gotta make the difficulty selector for extra grade
-selected_difficulty = Difficulty(
-    0
-)  # Hard set since we are not going to actually implement a difficulty selector,
-# but the game would be ready for it.

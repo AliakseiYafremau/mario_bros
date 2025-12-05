@@ -6,26 +6,21 @@ from game.domain.difficulty import Difficulty
 class DifficultySelectorScreen:
     def __init__(self, app):
         self.app = app
-        self.selected_difficulty: Difficulty | None = None
-        self.has_been_selected: bool = False
+        self.selected_difficulty_value: int | None = None
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_ESCAPE):
             pyxel.quit()
         elif pyxel.btnp(pyxel.KEY_1):
-            self.selected_difficulty = Difficulty(0)
-            self.has_been_selected = True
+            self.selected_difficulty_value = 0
         elif pyxel.btnp(pyxel.KEY_2):
-            self.selected_difficulty = Difficulty(1)
-            self.has_been_selected = True
+            self.selected_difficulty_value = 1
         elif pyxel.btnp(pyxel.KEY_3):
-            self.selected_difficulty = Difficulty(2)
-            self.has_been_selected = True
+            self.selected_difficulty_value = 2
         elif pyxel.btnp(pyxel.KEY_4):
-            self.selected_difficulty = Difficulty(3)
-            self.has_been_selected = True
-        if self.has_been_selected:
-            self.app.change_to_game(self.selected_difficulty)
+            self.selected_difficulty_value = 3
+        if self.selected_difficulty_value is not None:
+            self.app.change_to_game(self.selected_difficulty_value)
 
     def draw(self):
         pyxel.cls(0)

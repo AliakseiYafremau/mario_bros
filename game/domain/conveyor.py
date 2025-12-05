@@ -137,7 +137,6 @@ class Conveyor(Element):
             )
         raise ValueError("conveyor id is not valid")
 
-
     def package_about_to_fall(self, package: Package) -> bool:
         return package.x <= (self.x - 1) or (self.x + self.length + 1) <= (
             package.x + package.length

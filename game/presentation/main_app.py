@@ -46,13 +46,14 @@ class App:
     def change_to_game(self, difficulty_value) -> None:
         new_running_window = Window(difficulty=Difficulty(difficulty_value))
 
-        main_path = Path(__file__).resolve().parents[1] / "main.py"
+        project_root = Path(__file__).resolve().parents[2]
 
         subprocess.Popen([
             sys.executable,
-            str(main_path),
+            "-m", "game.main",
             str(new_running_window.width),
             str(new_running_window.height),
             str(difficulty_value)
-        ])
+        ], cwd=project_root)
+
         sys.exit(0)

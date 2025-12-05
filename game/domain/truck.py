@@ -13,8 +13,8 @@ class Truck(MotionElement):
 
     def put_package(self, package: Package) -> None:
         package.state = PackageState.ON_TRUCK
-        package.x = self.x + 13 + ((package.length + 1) * (len(self.packages) // 3))
-        package.y = self.y + 14 - ((package.height + 1) * (len(self.packages) % 3))
+        package.x = self.x + 13 + (package.length * (len(self.packages) // 3))
+        package.y = self.y + 14 - (package.height * (len(self.packages) % 3))
         self.packages.append(package)
 
     def is_full(self) -> bool:

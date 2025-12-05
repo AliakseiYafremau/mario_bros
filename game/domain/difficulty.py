@@ -19,10 +19,10 @@ class Difficulty:
     def difficulty_values(self):
         BELTS = (5, 7, 9, 5)
         CONVEYOR_SPEED = (
-            (1, 1, 1),
-            (1, 1, 1.5),
-            (1, 1.5, 2),
-            (1, random.uniform(1, 2), random.uniform(1, 2)),
+            (0.75, 1, 1),
+            (0.75, 1, 1.5),
+            (0.75, 1.5, 2),
+            (0.75, random.uniform(1, 2), random.uniform(1, 2)),
         )
         INCREASE = (50, 30, 30, 20)
         ELIMINATES = (3, 5, 5, 0)

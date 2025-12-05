@@ -34,6 +34,7 @@ class App:
             fps=60,
             quit_key=pyxel.KEY_ESCAPE,
         )
+        pyxel.fullscreen(True)
         pyxel.load(str(resource_path))
         pyxel.run(self.update, self.draw)
 

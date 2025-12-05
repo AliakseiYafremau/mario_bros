@@ -283,7 +283,7 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
         game=game,
         tick_second=1,
         move_truck_tick=0.07,
-        move_package_tick=0.05,
+        move_package_tick=0.09,
         create_package_tick=5,
         selected_difficulty=selected_difficulty
     )

@@ -55,6 +55,7 @@ class Game:
                                 "next step is not defined for the conveyor"
                             )
                         elif conveyor.finish_floor.player.pick_package(package):
+                            conveyor.finish_floor.player.sprite_to_be_changed = True
                             conveyor.packages.remove(package)
 
         for conveyor in self.conveyors:

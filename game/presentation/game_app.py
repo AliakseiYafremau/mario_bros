@@ -14,6 +14,7 @@ from game.presentation.pyxel_elements import (
 from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
 from game.domain.elements import Element
+from game.domain.player import Player
 
 
 class GameApp:
@@ -137,6 +138,27 @@ class GameApp:
                 self.game.lives_to_be_updated = True
             if isinstance(element.element, Package) and element.element.offscreen:
                 self.elements.remove(element)
+            if isinstance(element.element, Player):
+                if element.element.sprite_to_be_changed and not (
+                        (element.element.name == "Mario" and element.element.y == self.running_window.height - 100) or (
+                        element.element.name == "Luigi" and element.element.y == 25)):
+                    element.element.sprite_to_be_changed = False
+                    if element.element.package is not None:
+                        element.frames[0].v = 17
+                    else:
+                        element.frames[0].v = 1
+                elif element.element.sprite_to_be_changed and (
+                        (element.element.name == "Mario" and element.element.y == self.running_window.height - 100) or (
+                        element.element.name == "Luigi" and element.element.y == 25)):
+                    element.element.sprite_to_be_changed = False
+                    element.frames[0].w *= -1
+                if element.element.name == "Mario":
+                    if element.element.y == self.running_window.height - 100 and not element.element.on_the_factory_level:
+                        element.element.on_the_factory_level = True
+                        element.frames[0].w *= -1
+                    if element.element.on_the_factory_level and element.element.y != self.running_window.height - 100:
+                        element.element.on_the_factory_level = False
+                        element.frames[0].w *= -1
 
         if self.game.truck.is_full():
             for element in self.elements[:]:
@@ -179,7 +201,7 @@ class GameApp:
             self.game.lives_to_be_updated = False
             for element in self.elements:
                 if isinstance(element.element, LivesCounter):
-                    element.frames[0].v = 144 + 16*(3 - self.game.live_amount)
+                    element.frames[0].v = 144 + 16 * (3 - self.game.live_amount)
 
         if self.game.live_amount <= 0:
             raise DomainError("no more lives left")
@@ -188,10 +210,11 @@ class GameApp:
             for player in self.game.players:
                 if (
                         player.is_moving_package
-                        and player.package_picked_up_at + self.move_package_tick * 2
+                        and player.package_picked_up_at + self.move_package_tick * 3
                         <= perf_counter()
                 ):
                     player.is_moving_package = False
+                    player.sprite_to_be_changed = True
                     self.game.player_put_down_package(player)
 
             current_time = perf_counter()
@@ -249,8 +272,8 @@ class GameApp:
     def draw(self):
         pyxel.cls(15)
         for i in range(3):
-            pyxel.rect(self.running_window.width-69+16*i, 0, 4, 30, 1)
-        pyxel.rect(0, self.running_window.height - 67, self.running_window.width-254, 5, 4)
+            pyxel.rect(self.running_window.width - 69 + 16 * i, 0, 4, 30, 1)
+        pyxel.rect(0, self.running_window.height - 67, self.running_window.width - 254, 5, 4)
         pyxel.rect(0, 50, 44, self.running_window.height, 4)
         pyxel.rect(0, 50, 100, 13, 4)
         pyxel.rect(0, self.running_window.height - 5, self.running_window.width, 5, 4)
@@ -258,7 +281,7 @@ class GameApp:
         pyxel.rect(self.running_window.width - 150, self.running_window.height - 67, 150, 67, 4)
         pyxel.rect(self.running_window.width - 96, self.running_window.height - 79, 20, 79, 13)
         pyxel.rect(self.running_window.width - 106, self.running_window.height - 65, 40, 67, 13)
-        pyxel.rect(self.running_window.width // 2 - 4, 0, 24, self.running_window.height-62, 13)
-        pyxel.rect(self.running_window.width-50, self.running_window.height-229, 39, 116, 4)
+        pyxel.rect(self.running_window.width // 2 - 4, 0, 24, self.running_window.height - 62, 13)
+        pyxel.rect(self.running_window.width - 50, self.running_window.height - 229, 39, 116, 4)
         for element in self.elements:
             element.draw()

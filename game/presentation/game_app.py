@@ -2,9 +2,13 @@ from time import perf_counter
 
 import pyxel
 
-from game.presentation.screen import Screen
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
+from game.domain.truck import Truck
+from game.domain.elements import Element
+from game.domain.player import Player
+from game.domain.door import Door
+from game.domain.boss import Boss
 from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter
 from game.presentation.window import Window
 from game.domain.difficulty import Difficulty
@@ -13,11 +17,7 @@ from game.presentation.pyxel_elements import (
     Frame,
     PyxelElement
 )
-from game.domain.truck import Truck
-from game.domain.elements import Element
-from game.domain.player import Player
-from game.domain.door import Door
-from game.domain.boss import Boss
+from game.presentation.screen import Screen
 
 
 class GameApp(Screen):

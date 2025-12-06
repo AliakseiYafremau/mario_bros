@@ -3,7 +3,8 @@ import pyxel
 from game.domain.elements import Element
 from game.domain.conveyor import Conveyor
 from game.domain.difficulty import Difficulty
-from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter, Window
+from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter
+from game.presentation.window import Window
 from game.domain.floor import Floor
 from game.domain.game import Game
 from game.domain.package_factory import PackageFactory

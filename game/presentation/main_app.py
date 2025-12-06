@@ -5,7 +5,7 @@ from pathlib import Path
 
 from game.domain.difficulty import Difficulty
 from game.game_setup import create_game_app
-from game.presentation.gui import Window
+from game.presentation.window import Window
 from game.presentation.difficulty_selector import DifficultySelectorScreen
 from game.presentation.game_over import GameOverScreen
 

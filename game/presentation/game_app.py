@@ -5,7 +5,8 @@ import pyxel
 from game.presentation.screen import Screen
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
-from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter, Window
+from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter
+from game.presentation.window import Window
 from game.domain.difficulty import Difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import (

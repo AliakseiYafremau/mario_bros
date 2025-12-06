@@ -306,6 +306,6 @@ class GameApp(Screen):
         pyxel.rect(self.running_window.width - 96, self.running_window.height - 79, 20, 79, 13)
         pyxel.rect(self.running_window.width - 106, self.running_window.height - 65, 40, 67, 13)
         pyxel.rect(self.running_window.width // 2 - 4, 0, 24, self.running_window.height - 62, 13)
-        pyxel.rect(self.running_window.width - 50, self.running_window.height - 229, 39, 116, 4)
+        pyxel.rect(self.running_window.width - 50, 96, 39, self.running_window.height - 209, 4)
         for element in self.elements:
             element.draw()

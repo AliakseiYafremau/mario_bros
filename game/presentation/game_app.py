@@ -2,6 +2,7 @@ from time import perf_counter
 
 import pyxel
 
+from game.presentation.screen import Screen
 from game.domain.game import Game
 from game.domain.package import Package, PackageState
 from game.presentation.gui import PointsCounter, LivesCounter, DeliveriesCounter, Window
@@ -11,7 +12,6 @@ from game.presentation.pyxel_elements import (
     Frame,
     PyxelElement
 )
-from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
 from game.domain.elements import Element
 from game.domain.player import Player
@@ -19,7 +19,7 @@ from game.domain.door import Door
 from game.domain.boss import Boss
 
 
-class GameApp:
+class GameApp(Screen):
     def __init__(
             self,
             *elements: PyxelElement,
@@ -45,7 +45,7 @@ class GameApp:
         self._last_move_truck_time = perf_counter()
         self.selected_difficulty = selected_difficulty
         self.running_window = Window(selected_difficulty)
-        self.app = app
+        super().__init__(app)
 
         self._fix_eliminates_elements()
 

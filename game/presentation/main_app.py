@@ -47,7 +47,8 @@ class App:
     def draw(self):
         self.current_screen.draw()
 
-    def change_to_game(self, difficulty_value) -> None:
+    @staticmethod
+    def change_to_game(difficulty_value) -> None:
         new_running_window = Window(difficulty=Difficulty(difficulty_value))
 
         project_root = Path(__file__).resolve().parents[2]
@@ -62,7 +63,8 @@ class App:
 
         sys.exit(0)
 
-    def change_to_game_over(self) -> None:
+    @staticmethod
+    def change_to_game_over() -> None:
         new_running_window = Window(width=200, height=175)
 
         project_root = Path(__file__).resolve().parents[2]
@@ -77,7 +79,8 @@ class App:
 
         sys.exit(0)
 
-    def change_to_difficulty_selector(self) -> None:
+    @staticmethod
+    def change_to_difficulty_selector() -> None:
         new_running_window = Window(width=200, height=175)
 
         project_root = Path(__file__).resolve().parents[2]

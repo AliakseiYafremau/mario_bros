@@ -1,9 +1,11 @@
 import pyxel
 
+from game.presentation.screen import Screen
 
-class GameOverScreen:
+
+class GameOverScreen(Screen):
     def __init__(self, app):
-        self.app = app
+        super().__init__(app)
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_ESCAPE):

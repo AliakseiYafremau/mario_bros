@@ -1,11 +1,11 @@
 import pyxel
 
-from game.domain.difficulty import Difficulty
+from game.presentation.screen import Screen
 
 
-class DifficultySelectorScreen:
+class DifficultySelectorScreen(Screen):
     def __init__(self, app):
-        self.app = app
+        super().__init__(app)
         self.selected_difficulty_value: int | None = None
 
     def update(self):

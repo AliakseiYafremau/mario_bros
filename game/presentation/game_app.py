@@ -41,12 +41,14 @@ class GameApp(Screen):
         self.create_package_tick = create_package_tick
         self.move_truck_tick = move_truck_tick
         self._game_starts_at = perf_counter()
-        self._taking_a_break_time = perf_counter()
+        self._taking_a_break_until = perf_counter()
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
         self._last_move_truck_time = perf_counter()
         self.selected_difficulty = selected_difficulty
         self.running_window = Window(selected_difficulty)
+        self._has_lost = False
+        self._has_lost_at = perf_counter()
         super().__init__(app)
 
         self._fix_eliminates_elements()
@@ -110,7 +112,7 @@ class GameApp(Screen):
             self.game.deliveries_to_be_updated = True
             self.game.lives_to_be_updated = True
 
-        if self._taking_a_break_time < perf_counter():
+        if self._taking_a_break_until < perf_counter() and not self._has_lost:
             for button in self.buttons:
                 if (
                         pyxel.btnp(button)
@@ -143,11 +145,11 @@ class GameApp(Screen):
                 self.game.lives_to_be_updated = True
                 self.game.boss_comes_in = True
             if isinstance(element.element, Player):
-                if self._taking_a_break_time > perf_counter() and not element.element.is_resting:
+                if self._taking_a_break_until > perf_counter() and not element.element.is_resting:
                     element.frames[0].v = 113
                     element.frames[0].w += 1
                     element.element.is_resting = True
-                if element.element.is_resting and self._taking_a_break_time < perf_counter():
+                if element.element.is_resting and self._taking_a_break_until < perf_counter():
                     element.element.is_resting = False
                     element.frames[0].v = 1
                     element.frames[0].w -= 1
@@ -203,7 +205,7 @@ class GameApp(Screen):
             self.elements.append(
                 (PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32, colkey=11)))
             )
-            self._taking_a_break_time = perf_counter() + 8
+            self._taking_a_break_until = perf_counter() + 8
             self._last_create_package_time += 8
             self.game.points += 10
             if self.game.stored_deliveries < 9 and self.selected_difficulty.difficulty_values()["eliminates"] != 0:
@@ -233,10 +235,16 @@ class GameApp(Screen):
                 if isinstance(element.element, LivesCounter):
                     element.frames[0].v = 144 + 16 * (3 - self.game.live_amount)
 
-        if self.game.live_amount <= 0:
-            self.app.change_to_game_over(points=self.game.points, seconds_alive=int(perf_counter()-self._game_starts_at))
+        if self.game.live_amount <= 0 and not self._has_lost:
+            self._has_lost_at = perf_counter()
+            self._has_lost = True
 
-        if self._taking_a_break_time < perf_counter():
+        if self._has_lost and self._has_lost_at + 1.6 < perf_counter():
+            self.app.change_to_game_over(
+                points=self.game.points,
+                seconds_alive=int(perf_counter()-self._game_starts_at-1.6))
+
+        if self._taking_a_break_until < perf_counter() and not self._has_lost:
             for player in self.game.players:
                 if (
                         player.is_moving_package
@@ -283,7 +291,7 @@ class GameApp(Screen):
         elif (
                 perf_counter() - self._last_move_truck_time
                 >= self.tick_second * self.move_truck_tick
-        ) and not self.game.truck.has_returned:
+        ) and not self.game.truck.has_returned and not self._has_lost:
             self._last_move_truck_time = perf_counter()
             self.game.truck.truck_in_movement(self.game.original_truck_x)
             if self.game.truck.has_turned and self.game.truck.sprite_to_be_changed_back:

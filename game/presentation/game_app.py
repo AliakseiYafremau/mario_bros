@@ -39,6 +39,7 @@ class GameApp(Screen):
         self.move_package_tick = move_package_tick
         self.create_package_tick = create_package_tick
         self.move_truck_tick = move_truck_tick
+        self._game_starts_at = perf_counter()
         self._taking_a_break_time = perf_counter()
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
@@ -231,8 +232,8 @@ class GameApp(Screen):
                 if isinstance(element.element, LivesCounter):
                     element.frames[0].v = 144 + 16 * (3 - self.game.live_amount)
 
-        if self.game.live_amount <= 0:
-            self.app.change_to_game_over()
+        if self.game.live_amount <= 2:
+            self.app.change_to_game_over(points=self.game.points, seconds_alive=int(perf_counter()-self._game_starts_at))
 
         if self._taking_a_break_time < perf_counter():
             for player in self.game.players:

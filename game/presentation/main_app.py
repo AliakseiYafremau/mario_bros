@@ -13,7 +13,9 @@ from game.presentation.game_over import GameOverScreen
 class App:
     def __init__(self, new_width: int | None,
                  new_height: int | None,
-                 new_difficulty_value: int | None):
+                 new_difficulty_value: int | None,
+                 points: int | None,
+                 seconds_alive: float | None):
         resource_path = (
                 Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
@@ -21,7 +23,7 @@ class App:
         if new_difficulty_value is not None and new_difficulty_value != -1:
             self.current_screen = create_game_app(selected_difficulty=Difficulty(new_difficulty_value), app=self)
         elif new_difficulty_value is not None and new_difficulty_value == -1:
-            self.current_screen = GameOverScreen(app=self)
+            self.current_screen = GameOverScreen(app=self, points=points, seconds_alive=seconds_alive)
         else:
             self.current_screen = DifficultySelectorScreen(app=self)
 
@@ -64,7 +66,7 @@ class App:
         sys.exit(0)
 
     @staticmethod
-    def change_to_game_over() -> None:
+    def change_to_game_over(points: int, seconds_alive: float) -> None:
         new_running_window = Window(width=200, height=175)
 
         project_root = Path(__file__).resolve().parents[2]
@@ -74,7 +76,9 @@ class App:
             "-m", "game.main",
             str(new_running_window.width),
             str(new_running_window.height),
-            str(-1)
+            str(-1),
+            str(points),
+            str(seconds_alive)
         ], cwd=project_root)
 
         sys.exit(0)

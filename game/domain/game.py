@@ -18,7 +18,6 @@ class Game:
         factories: list[PackageFactory] | None = None,
         point_counter: PointsCounter | None = None,
     ) -> None:
-        self.tick = 0
         self.newly_created_packages: list[Package] = []
         self.live_amount = 3
         self.points = 0
@@ -61,8 +60,6 @@ class Game:
 
         for conveyor in self.conveyors:
             conveyor.move_packages()
-
-        self.tick += 1
 
     def player_put_down_package(self, player: Player) -> None:
         for conveyor in self.conveyors:

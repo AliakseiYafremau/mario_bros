@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
 from game.domain.exceptions import DomainError
 from game.domain.game import Game
@@ -6,11 +6,10 @@ from game.domain.player import Player
 
 
 class Controller(ABC):
-    """Controller interface for handling user inputs."""
 
     @abstractmethod
     def execute(self):
-        raise NotImplementedError
+        pass
 
 
 class MoveUpPlayer(Controller):

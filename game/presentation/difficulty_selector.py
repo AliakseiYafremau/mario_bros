@@ -24,7 +24,7 @@ class DifficultySelectorScreen(Screen):
 
     def draw(self):
         pyxel.cls(0)
-        pyxel.text(45, 10, "Mario Bros. --- Game & Watch", 4)
+        pyxel.text(44, 10, "Mario Bros. --- Game & Watch", 4)
         pyxel.text(20, 40, "-> Press ESC to quit.", 8)
         pyxel.text(20, 75, "-> Press 1 to play on EASY difficulty.", 11)
         pyxel.text(20, 100, "-> Press 2 to play on MEDIUM difficulty.", 11)

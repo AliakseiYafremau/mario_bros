@@ -54,8 +54,3 @@ class LivesCounter(Element):
 class DeliveriesCounter(Element):
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         super().__init__(x, y, length, height)
-
-
-class RenderedElements:
-    def __init__(self):
-        "TO BE IMPLEMENTED"

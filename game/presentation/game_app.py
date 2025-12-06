@@ -111,6 +111,7 @@ class GameApp(Screen):
             ]
             self.game.deliveries_to_be_updated = True
             self.game.lives_to_be_updated = True
+            pyxel.play(1, 4)
 
         if self._taking_a_break_until < perf_counter() and not self._has_lost:
             for button in self.buttons:
@@ -142,6 +143,7 @@ class GameApp(Screen):
                 element.element.state_to_be_changed_to = 0
                 self.game.packages_at_play -= 1
                 self.game.live_amount -= 1
+                pyxel.play(0, 1)
                 self.game.lives_to_be_updated = True
                 self.game.boss_comes_in = True
             if isinstance(element.element, Player):
@@ -199,6 +201,7 @@ class GameApp(Screen):
                         and element.element.state == PackageState.ON_TRUCK
                 ) or isinstance(element.element, Truck):
                     self.elements.remove(element)
+            self.game.package_put_in_truck = False
             self.game.truck.has_returned = False
             self.game.truck.sprite_to_be_changed_back = True
             self.game.truck.packages = []
@@ -208,6 +211,7 @@ class GameApp(Screen):
             self._taking_a_break_until = perf_counter() + 8
             self._last_create_package_time += 8
             self.game.points += 10
+            pyxel.play(0, 5)
             if self.game.stored_deliveries < 9 and self.selected_difficulty.difficulty_values()["eliminates"] != 0:
                 self.game.stored_deliveries += 1
                 self.game.deliveries_to_be_updated = True
@@ -238,6 +242,7 @@ class GameApp(Screen):
         if self.game.live_amount <= 0 and not self._has_lost:
             self._has_lost_at = perf_counter()
             self._has_lost = True
+            pyxel.play(0, 2)
 
         if self._has_lost and self._has_lost_at + 1.6 < perf_counter():
             self.app.change_to_game_over(
@@ -302,6 +307,13 @@ class GameApp(Screen):
                         self.elements.append(
                             (PyxelElement(self.game.truck, Frame(0, 131, 1, 45, 30, colkey=11)))
                         )
+
+        if self.game.package_changes_conveyor:
+            pyxel.play(0, 0)
+            self.game.package_changes_conveyor = False
+        if self.game.package_put_in_truck:
+            pyxel.play(0, 3)
+            self.game.package_put_in_truck = False
 
     def draw(self):
         pyxel.cls(15)

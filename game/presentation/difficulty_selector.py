@@ -1,3 +1,5 @@
+from time import perf_counter
+
 import pyxel
 
 from game.presentation.screen import Screen
@@ -7,20 +9,27 @@ class DifficultySelectorScreen(Screen):
     def __init__(self, app):
         super().__init__(app)
         self.selected_difficulty_value: int | None = None
+        self.sound_plays_at: float = 0.0
 
     def update(self):
+        if self.selected_difficulty_value is not None and self.sound_plays_at + 1 < perf_counter():
+            self.app.change_to_game(self.selected_difficulty_value)
         if pyxel.btnp(pyxel.KEY_ESCAPE):
             pyxel.quit()
         elif pyxel.btnp(pyxel.KEY_1):
             self.selected_difficulty_value = 0
+            pyxel.play(0, 6)
         elif pyxel.btnp(pyxel.KEY_2):
             self.selected_difficulty_value = 1
+            pyxel.play(0, 6)
         elif pyxel.btnp(pyxel.KEY_3):
             self.selected_difficulty_value = 2
+            pyxel.play(0, 6)
         elif pyxel.btnp(pyxel.KEY_4):
             self.selected_difficulty_value = 3
-        if self.selected_difficulty_value is not None:
-            self.app.change_to_game(self.selected_difficulty_value)
+            pyxel.play(0, 6)
+        if self.selected_difficulty_value is not None and self.sound_plays_at == 0.0:
+            self.sound_plays_at = perf_counter()
 
     def draw(self):
         pyxel.cls(0)

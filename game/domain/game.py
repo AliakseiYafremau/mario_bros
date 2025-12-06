@@ -44,6 +44,8 @@ class Game:
         self.lives_to_be_updated = False
         self.deliveries_to_be_updated = False
         self.boss_comes_in = False
+        self.package_changes_conveyor = False
+        self.package_put_in_truck = False
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:
@@ -57,6 +59,8 @@ class Game:
                         elif conveyor.finish_floor.player.pick_package(package):
                             conveyor.finish_floor.player.sprite_to_be_changed = True
                             conveyor.packages.remove(package)
+                            if conveyor.next_step != self.truck:
+                                self.package_changes_conveyor = True
 
         for conveyor in self.conveyors:
             conveyor.move_packages()
@@ -74,6 +78,7 @@ class Game:
                 if isinstance(conveyor.next_step, Truck):
                     self.packages_at_play -= 1
                     self.points += 2
+                    self.package_put_in_truck = True
                 else:
                     self.first_package_moved = True
                     self.points += 1

@@ -29,7 +29,8 @@ class GameApp:
             move_package_tick: float,
             move_truck_tick: float,
             create_package_tick: float,
-            selected_difficulty: Difficulty
+            selected_difficulty: Difficulty,
+            app
     ):
         self.elements = list(elements)
         self.buttons = buttons
@@ -44,6 +45,7 @@ class GameApp:
         self._last_move_truck_time = perf_counter()
         self.selected_difficulty = selected_difficulty
         self.running_window = Window(selected_difficulty)
+        self.app = app
 
         self._fix_eliminates_elements()
 
@@ -230,7 +232,7 @@ class GameApp:
                     element.frames[0].v = 144 + 16 * (3 - self.game.live_amount)
 
         if self.game.live_amount <= 0:
-            raise DomainError("no more lives left")
+            self.app.change_to_game_over()
 
         if self._taking_a_break_time < perf_counter():
             for player in self.game.players:

@@ -7,6 +7,7 @@ from game.domain.difficulty import Difficulty
 from game.game_setup import create_game_app
 from game.presentation.gui import Window
 from game.presentation.difficulty_selector import DifficultySelectorScreen
+from game.presentation.game_over import GameOverScreen
 
 
 class App:
@@ -17,8 +18,10 @@ class App:
                 Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
 
-        if new_difficulty_value is not None:
-            self.current_screen = create_game_app(selected_difficulty=Difficulty(new_difficulty_value))
+        if new_difficulty_value is not None and new_difficulty_value != -1:
+            self.current_screen = create_game_app(selected_difficulty=Difficulty(new_difficulty_value), app=self)
+        elif new_difficulty_value is not None and new_difficulty_value == -1:
+            self.current_screen = GameOverScreen(app=self)
         else:
             self.current_screen = DifficultySelectorScreen(app=self)
 
@@ -55,6 +58,35 @@ class App:
             str(new_running_window.width),
             str(new_running_window.height),
             str(difficulty_value)
+        ], cwd=project_root)
+
+        sys.exit(0)
+
+    def change_to_game_over(self) -> None:
+        new_running_window = Window(width=200, height=175)
+
+        project_root = Path(__file__).resolve().parents[2]
+
+        subprocess.Popen([
+            sys.executable,
+            "-m", "game.main",
+            str(new_running_window.width),
+            str(new_running_window.height),
+            str(-1)
+        ], cwd=project_root)
+
+        sys.exit(0)
+
+    def change_to_difficulty_selector(self) -> None:
+        new_running_window = Window(width=200, height=175)
+
+        project_root = Path(__file__).resolve().parents[2]
+
+        subprocess.Popen([
+            sys.executable,
+            "-m", "game.main",
+            str(new_running_window.width),
+            str(new_running_window.height)
         ], cwd=project_root)
 
         sys.exit(0)

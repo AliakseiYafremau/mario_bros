@@ -21,7 +21,7 @@ from game.presentation.pyxel_elements import (
 )
 
 
-def create_game_app(selected_difficulty: Difficulty) -> GameApp:
+def create_game_app(selected_difficulty: Difficulty, app) -> GameApp:
     running_window = Window(difficulty=selected_difficulty)
     mario = Player(
         (running_window.width - 96), (running_window.height - 150), 16, 16, "Mario"
@@ -292,7 +292,8 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
         move_truck_tick=0.07,
         move_package_tick=0.09,
         create_package_tick=5,
-        selected_difficulty=selected_difficulty
+        selected_difficulty=selected_difficulty,
+        app=app
     )
 
     return game_app

@@ -30,8 +30,8 @@ class Player(MotionElement):
         self.is_moving_package: bool = False
         self.package_picked_up_at: float = 0.0
         self.sprite_to_be_changed: bool = False
-        if self.name == "Mario":
-            self.on_the_factory_level: bool = False
+        self.on_the_factory_level: bool = False
+        self.is_resting: bool = False
         super().__init__(x, y, length, height)
 
     def pick_package(self, package: Package) -> bool:

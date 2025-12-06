@@ -9,6 +9,8 @@ from game.domain.game import Game
 from game.domain.package_factory import PackageFactory
 from game.domain.player import Player
 from game.domain.truck import Truck
+from game.domain.boss import Boss
+from game.domain.door import Door
 from game.presentation.game_app import GameApp
 from game.presentation.controllers import MoveDownPlayer, MoveUpPlayer
 from game.presentation.pyxel_elements import (
@@ -100,7 +102,11 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
                                            y=deliveries_counter.y,
                                            length=6,
                                            height=11)
-    rendered_eliminates_deliveries_amount = PyxelElement(eliminates_deliveries_amount, Frame(0, 53, 18, 6, 11, 11))
+    rendered_eliminates_deliveries_amount = PyxelElement(eliminates_deliveries_amount,
+                                                         Frame(0, 53, 18, 6, 11, 11))
+
+    boss = Boss(57, running_window.height - 29, 12, 14)
+    door = Door(57, running_window.height - 35, 10, 15, boss=boss)
 
     for i in range(selected_difficulty.difficulty_values()["belts"]):
         if i != (selected_difficulty.difficulty_values()["belts"] - 1):
@@ -225,19 +231,19 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
     static_ladders_platforms_for_ladders.pop(-1)
 
     game_app = GameApp(
+        # Static Elements
         *luigi_static_ladders_frames,
         *mario_static_ladder_frames,
         *luigi_static_ladders_platforms,
         *mario_static_ladders_platforms,
         *static_ladders_platforms_for_ladders,
         *static_ladders_pomost,
-        PyxelStaticElement(
-            57, running_window.height - 16 * 4 + 27, Frame(1, 19, 1, 10, 15, colkey=0, scale=4)
-        ),
+        # Stairs
         PyxelStaticElement(
             300, running_window.height - 16 * 4 + 21, Frame(1, 48, 8, 40, 24, colkey=0, scale=3)
         ),
-        # Dynamic elements
+
+        # Dynamic Elements
         (PyxelElement(mario, Frame(0, 19, 1, 11, 14, scale=2, colkey=0))),
         (PyxelElement(luigi, Frame(0, 2, 1, 10, 14, scale=2, colkey=0))),
         (PyxelElement(package_factory, Frame(0, 64, 96, 60, 40, colkey=11))),
@@ -265,6 +271,7 @@ def create_game_app(selected_difficulty: Difficulty) -> GameApp:
         PyxelElement(deliveries_counter_background, Frame(0, 96, 176, 47, 17)),
         PyxelElement(deliveries_counter, Frame(0, 53, 18, 5, 11, 11)),
         rendered_eliminates_deliveries_amount,
+        PyxelElement(door, Frame(1, 19, 1, 10, 15, colkey=0, scale=3)),
         *static_conveyor_frames,
         buttons={
             pyxel.KEY_UP: move_up_mario

@@ -9,12 +9,14 @@ from game.domain.difficulty import Difficulty
 from game.presentation.controllers import Controller
 from game.presentation.pyxel_elements import (
     Frame,
-    PyxelElement,
+    PyxelElement
 )
 from game.domain.exceptions import DomainError
 from game.domain.truck import Truck
 from game.domain.elements import Element
 from game.domain.player import Player
+from game.domain.door import Door
+from game.domain.boss import Boss
 
 
 class GameApp:
@@ -36,11 +38,10 @@ class GameApp:
         self.move_package_tick = move_package_tick
         self.create_package_tick = create_package_tick
         self.move_truck_tick = move_truck_tick
-        self._taking_a_break = perf_counter()
+        self._taking_a_break_time = perf_counter()
         self._last_create_package_time = perf_counter()
         self._last_move_package_time = perf_counter()
         self._last_move_truck_time = perf_counter()
-        self._took_a_break = False
         self.selected_difficulty = selected_difficulty
         self.running_window = Window(selected_difficulty)
 
@@ -105,7 +106,7 @@ class GameApp:
             self.game.deliveries_to_be_updated = True
             self.game.lives_to_be_updated = True
 
-        if self._taking_a_break < perf_counter():
+        if self._taking_a_break_time < perf_counter():
             for button in self.buttons:
                 if (
                         pyxel.btnp(button)
@@ -136,9 +137,17 @@ class GameApp:
                 self.game.packages_at_play -= 1
                 self.game.live_amount -= 1
                 self.game.lives_to_be_updated = True
-            if isinstance(element.element, Package) and element.element.offscreen:
-                self.elements.remove(element)
+                self.game.boss_comes_in = True
             if isinstance(element.element, Player):
+                if self._taking_a_break_time > perf_counter() and not element.element.is_resting:
+                    element.frames[0].v = 113
+                    element.frames[0].w += 1
+                    element.element.is_resting = True
+                if element.element.is_resting and self._taking_a_break_time < perf_counter():
+                    element.element.is_resting = False
+                    element.frames[0].v = 1
+                    element.frames[0].w -= 1
+                    self.game.boss_comes_in = True
                 if element.element.sprite_to_be_changed and not (
                         (element.element.name == "Mario" and element.element.y == self.running_window.height - 100) or (
                         element.element.name == "Luigi" and element.element.y == 25)):
@@ -155,10 +164,27 @@ class GameApp:
                 if element.element.name == "Mario":
                     if element.element.y == self.running_window.height - 100 and not element.element.on_the_factory_level:
                         element.element.on_the_factory_level = True
+                        element.frames[0].w += 1
                         element.frames[0].w *= -1
                     if element.element.on_the_factory_level and element.element.y != self.running_window.height - 100:
                         element.element.on_the_factory_level = False
                         element.frames[0].w *= -1
+                        element.frames[0].w -= 1
+            if isinstance(element.element, Door):
+                if self.game.boss_comes_in:
+                    if element.frames[0].v != 17:
+                        self.elements.append(PyxelElement(element.element.boss, Frame(0, 35, 65, 12, 14, colkey=0, scale=2)))
+                        element.frames[0].v = 17
+                    element.element.boss.comes_in_time = perf_counter()
+                    self.game.boss_comes_in = False
+                if element.frames[0].v == 17 and element.element.boss.comes_in_time + 1.5 < perf_counter():
+                    element.element.boss.has_to_leave = True
+                    element.frames[0].v = 1
+            if isinstance(element.element, Boss) and element.element.has_to_leave:
+                element.element.has_to_leave = False
+                self.elements.remove(element)
+            if isinstance(element.element, Package) and element.element.offscreen:
+                self.elements.remove(element)
 
         if self.game.truck.is_full():
             for element in self.elements[:]:
@@ -173,8 +199,8 @@ class GameApp:
             self.elements.append(
                 (PyxelElement(self.game.truck, Frame(0, 131, 63, 52, 32, colkey=11)))
             )
-            self._taking_a_break = perf_counter() + 8
-            self._took_a_break = True
+            self._taking_a_break_time = perf_counter() + 8
+            self._last_create_package_time += 8
             self.game.points += 10
             if self.game.stored_deliveries < 9 and self.selected_difficulty.difficulty_values()["eliminates"] != 0:
                 self.game.stored_deliveries += 1
@@ -206,7 +232,7 @@ class GameApp:
         if self.game.live_amount <= 0:
             raise DomainError("no more lives left")
 
-        if self._taking_a_break < perf_counter():
+        if self._taking_a_break_time < perf_counter():
             for player in self.game.players:
                 if (
                         player.is_moving_package
@@ -224,10 +250,6 @@ class GameApp:
             ):
                 self._last_move_package_time = current_time
                 self.game.move_packages()
-
-            if self._took_a_break:
-                self._last_create_package_time += 8
-                self._took_a_break = False
 
             if self.game.first_package_moved and (
                     self.create_package_tick

@@ -44,6 +44,7 @@ class Game:
         self.points_to_be_updated = False
         self.lives_to_be_updated = False
         self.deliveries_to_be_updated = False
+        self.boss_comes_in = False
 
     def move_packages(self) -> None:
         for conveyor in self.conveyors:

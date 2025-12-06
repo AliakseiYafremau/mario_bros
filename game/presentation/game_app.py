@@ -233,7 +233,7 @@ class GameApp(Screen):
                 if isinstance(element.element, LivesCounter):
                     element.frames[0].v = 144 + 16 * (3 - self.game.live_amount)
 
-        if self.game.live_amount <= 2:
+        if self.game.live_amount <= 0:
             self.app.change_to_game_over(points=self.game.points, seconds_alive=int(perf_counter()-self._game_starts_at))
 
         if self._taking_a_break_time < perf_counter():

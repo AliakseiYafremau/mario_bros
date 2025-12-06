@@ -21,3 +21,5 @@ class GameOverScreen(Screen):
         pyxel.text(35, 30, "YOU LOSE!!! You ran out of lives!", 7)
         pyxel.text(20, 80, "-> Press ESC to quit.", 8)
         pyxel.text(20, 105, "-> Press SPACE to play again.", 11)
+        pyxel.text(20, 145, "[ Your final score was: " + str(self.points) + " points! ]", 10)
+        pyxel.text(20, 160, "[ You played for: " + str(self.seconds_alive) + " seconds! ]", 10)

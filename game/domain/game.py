@@ -10,6 +10,8 @@ from game.presentation.gui import PointsCounter
 
 
 class Game:
+    """Core domain service that coordinates conveyors, players, factories, and the truck."""
+
     def __init__(
         self,
         players: dict[Player, list[Floor]],

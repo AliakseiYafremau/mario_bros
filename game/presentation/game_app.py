@@ -21,6 +21,8 @@ from game.presentation.screen import Screen
 
 
 class GameApp(Screen):
+    """Primary screen that runs the gameplay loop and renders Pyxel elements."""
+
     def __init__(
             self,
             *elements: PyxelElement,
@@ -54,6 +56,7 @@ class GameApp(Screen):
         self._fix_eliminates_elements()
 
     def _fix_eliminates_elements(self):
+        """Adjust the eliminator sprite based on the difficulty configuration."""
         for element in self.elements:
             if self.selected_difficulty.difficulty_values()["eliminates"] == 0:
                 if (

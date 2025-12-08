@@ -2,6 +2,8 @@ from game.domain.player import Player
 
 
 class Floor:
+    """Stationary platform that optionally hosts a player."""
+
     def __init__(self, x: int, y: int, player: Player | None = None) -> None:
         self.x = x
         self.y = y

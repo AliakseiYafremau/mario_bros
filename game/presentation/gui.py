@@ -3,6 +3,8 @@ from game.domain.exceptions import DomainError
 
 
 class PointsCounter(Element):
+    """HUD element that tracks and displays a four-digit score."""
+
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         super().__init__(x, y, length, height)
         self.digit1_value = 0
@@ -11,6 +13,7 @@ class PointsCounter(Element):
         self.digit4_value = 0
 
     def update_points(self, points: int):
+        """Cache each digit of the score for rendering."""
         if len(str(points)) > 4:
             raise DomainError("Thats it, you won, you have more than 9999 points.")
         if len(str(points)) == 4:
@@ -30,11 +33,15 @@ class PointsCounter(Element):
 
 
 class LivesCounter(Element):
+    """HUD element that anchors the lives indicator sprites."""
+
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         super().__init__(x, y, length, height)
 
 
 # FIXME this will make it so that lives are regened
 class DeliveriesCounter(Element):
+    """HUD element that anchors the delivered-packages counter."""
+
     def __init__(self, x: int, y: int, length: int, height: int) -> None:
         super().__init__(x, y, length, height)

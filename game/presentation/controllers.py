@@ -6,13 +6,17 @@ from game.domain.player import Player
 
 
 class Controller(ABC):
+    """Base command that binds keyboard events to in-game actions."""
 
     @abstractmethod
     def execute(self):
+        """Execute the controller action."""
         pass
 
 
 class MoveUpPlayer(Controller):
+    """Controller that moves a bound player up one floor."""
+
     def __init__(self, game: Game, player: Player):
         self.game = game
         self.player = player
@@ -25,6 +29,8 @@ class MoveUpPlayer(Controller):
 
 
 class MoveDownPlayer(Controller):
+    """Controller that moves a bound player down one floor."""
+
     def __init__(self, game: Game, player: Player):
         self.game = game
         self.player = player

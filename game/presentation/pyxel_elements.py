@@ -5,11 +5,15 @@ from game.domain.elements import Element
 
 
 class Grid(Enum):
+    """Frame layout variants for multi-frame Pyxel elements."""
+
     ROW = "row"
     COLUMN = "column"
 
 
 class Frame:
+    """Lightweight container that stores Pyxel blit parameters."""
+
     def __init__(
         self,
         image: int,
@@ -32,6 +36,8 @@ class Frame:
 
 
 class PyxelElement(Element):
+    """Bridge that draws a domain `Element` using one or more sprite frames."""
+
     def __init__(
         self,
         element: Element,
@@ -43,6 +49,7 @@ class PyxelElement(Element):
         self.grid = grid
 
     def draw(self):
+        """Blit every frame using the configured grid alignment."""
         element_x = self.element.x
         element_y = self.element.y
 
@@ -69,6 +76,8 @@ class PyxelElement(Element):
 
 
 class PyxelStaticElement(PyxelElement):
+    """`PyxelElement` variant for HUD/decoration sprites without backing domain objects."""
+
     def __init__(self, x: int, y: int, *frames: Frame, grid: Grid = Grid.ROW):
         self.element = Element(x, y, 0, 0)
         self.frames = frames
@@ -101,6 +110,8 @@ class PyxelStaticElement(PyxelElement):
 
 
 class BoardedPyxelElement(PyxelElement):
+    """Decorator that renders a border around another `PyxelElement`."""
+
     def __init__(
         self,
         element: PyxelElement,

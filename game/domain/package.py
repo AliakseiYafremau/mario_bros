@@ -63,6 +63,8 @@ class Package(MotionElement):
 
 
 class CanRecievePackage(Protocol):
+    """Protocol describing any object that can receive packages."""
+
     @abstractmethod
     def put_package(self, package: Package) -> None:
         raise NotImplementedError

@@ -6,6 +6,8 @@ from game.domain.package import CanRecievePackage, Package, PackageState
 
 
 class Direction(Enum):
+    """Directional options for conveyor belts."""
+
     RIGHT = "RIGHT"
     LEFT = "LEFT"
 

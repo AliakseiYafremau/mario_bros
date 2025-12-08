@@ -3,6 +3,8 @@ from game.domain.boss import Boss
 
 
 class Door(Element):
+    """Doorway that controls when the `Boss` sprite enters the scene."""
+
     def __init__(self,
                  x: int,
                  y: int,

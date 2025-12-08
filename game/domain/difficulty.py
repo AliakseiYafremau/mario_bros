@@ -2,6 +2,8 @@ import random
 
 
 class Difficulty:
+    """Difficulty preset selector that exposes derived gameplay constants."""
+
     def __init__(self, difficulty: int = 0):
         self.difficulty = difficulty
 

@@ -48,9 +48,15 @@ class Player(MotionElement):
 ### Package
 `Package` is the physical crate (`Element`) that rides conveyors. Has several states: `ON_CONVEYOR`, `PICKED`, `FALLING`, and `ON_TRUCK`.
 
+### PackageState
+`PackageState` is the enum that records the life-cycle of a crate. The four values—`ON_CONVEYOR`, `PICKED`, `FALLING`, and `ON_TRUCK`—drive which subsystem may act on the package and which sprite frame should be rendered.
+
 ### Conveyor
 `Conveyor` defines each belt span in the warehouse and specifies which way crates travel, how fast they ride, and where they should land next. By tracking the active package queue, its `finish_floor`, and the downstream `next_conveyor`, it is the component that hands cargo off from one work station to another.
 Key attributes: `direction` (left or right travel), `velocity` (tiles per tick), `_packages` (queue of packages currently on the belt), `finish_floor` (the floor that receives falling crates), `next_conveyor` (where a caught package continues), and `falling_package` (the crate currently leaving the belt).
+
+### Direction
+`Direction` is the left/right enum used by conveyors. It tells `Conveyor.move_packages()` which edge is the entry point and which direction to offset package coordinates.
 
 ### PackageFactory
 `PackageFactory` represents the loading dock that injects new crates into the system. It stores the spawn coordinates for packages and, on demand, produces a ready-to-ride `Package` that joins its assigned conveyor without player intervention.
@@ -59,6 +65,9 @@ Key attributes: `new_package_x`, `new_package_y`, `new_package_length`, `new_pac
 ### Floor
 `Floor` names the individual platforms where plumbers can stand during the shift. It pairs fixed coordinates with whichever `Player` is stationed there so the game can reason about legal elevator stops and enforce that tasks happen from the correct level.
 Key attributes: `x`, `y` (platform position), and `player` (the plumber currently working that station).
+
+### DomainError
+`DomainError` is the custom exception raised when a game rule is violated (moving beyond available floors, picking a package illegally, etc.). Controllers swallow it so invalid inputs simply have no effect instead of crashing the loop.
 
 ### Truck
 `Truck` is the delivery target: a movable cargo bay that accepts completed packages and counts toward the win condition. When its hold reaches eight crates the round is done.
@@ -106,6 +115,12 @@ class Controller:
     ...
 ```
 
+### MoveUpPlayer
+`MoveUpPlayer` is a `Controller` bound to the keys that move a specific `Player` one floor higher by calling `Game.move_player_up()`.
+
+### MoveDownPlayer
+`MoveDownPlayer` mirrors the controller above and triggers `Game.move_player_down()` to descend a floor.
+
 ### PyxelElement
 
 Class that renders an object in the application based on game elements and frames data.
@@ -113,6 +128,9 @@ Class that renders an object in the application based on game elements and frame
 `PyxelStaticElement` is used for the same purpose, but it does not need an object to display. Accordingly, it is __static__. It is used for stage decorations.
 
 `Frame` stores information about images. It is used to display several photos for one element at once (since an element can be complex and consist of more than one image (for example, a conveyor belt)).
+
+### Grid
+`Grid` is a simple enum (`ROW` or `COLUMN`) that tells `PyxelElement` whether to lay out its frames horizontally or vertically when drawing multi-frame sprites.
 
 ### BoardedPyxelElement
 
@@ -132,6 +150,9 @@ Decorator for any `PyxelElement` that draws a rectangular border sized after the
 
 ### DeliveriesCounter
 `DeliveriesCounter` mirrors `LivesCounter` for the delivered-package counter. It anchors the HUD location where the total deliveries (and thus bonus-life thresholds) are displayed.
+
+### CanRecievePackage
+`CanRecievePackage` is a typing protocol for any object that accepts `Package` instances via `put_package()`. Conveyors, floors, and the truck conform to it so type checkers can validate package transfers.
 
 ## Entry point
 

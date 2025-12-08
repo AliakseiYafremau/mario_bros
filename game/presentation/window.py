@@ -2,6 +2,8 @@ from game.domain.difficulty import Difficulty
 
 
 class Window:
+    """Centralized holder for Pyxel window dimensions."""
+
     def __init__(
             self,
             difficulty: Difficulty | None = None,

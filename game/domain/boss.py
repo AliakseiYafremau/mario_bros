@@ -2,6 +2,8 @@ from game.domain.elements import Element
 
 
 class Boss(Element):
+    """Inspector character that appears briefly to penalize mistakes."""
+
     def __init__(self,
                  x: int,
                  y: int,

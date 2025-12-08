@@ -2,6 +2,11 @@
 
 You can find report in [`docs`](docs/index.md) folder.
 
+## Requirements
+
+- Python3.8 or higher
+- [pip](https://pip.pypa.io/en/stable/)
+
 ## Setup project
 
 ```bash

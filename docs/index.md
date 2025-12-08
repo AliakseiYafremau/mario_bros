@@ -4,6 +4,9 @@ Mario Bros is a  conveyor-warehouse challenge: Luigi and Mario shuffle along mul
 
 # Classes
 
+<img width="961" height="601" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/ec460b2f-6e53-4c48-acdf-cc636c3c589e" />
+__Fig 1.__ _Classes Design scheme_
+
 ## Main logic
 
 ### Element

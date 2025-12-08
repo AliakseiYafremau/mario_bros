@@ -70,6 +70,18 @@ Key attributes: `players` (tuple of controllable characters), `floors` (allowed 
 
 ## Pyxel util classes
 
+### App
+`App` is the Pyxel bootstrapper. It looks at the command-line arguments to decide which screen to display (difficulty selector, running game, or game over), constructs an appropriately sized `Window`, loads the `global_sprites.pyxres` pack, and starts the Pyxel loop. It also exposes helpers (`change_to_game()`, `change_to_game_over()`, `change_to_difficulty_selector()`) that relaunch the Python process with new arguments whenever the user switches modes, ensuring each screen starts with a clean state.
+
+### Window
+`Window` centralizes the window geometry. When created with a `Difficulty` it pulls the canonical width and height from the difficulty configuration; otherwise it simply wraps the explicit width/height pair passed by callers. This keeps Pyxel initialization consistent no matter which screen is running.
+
+### DifficultySelectorScreen
+`DifficultySelectorScreen` is the landing menu. It renders the controls legend, listens for number keys to pick a difficulty, plays a confirmation sound, and hands control back to `App.change_to_game()` once the chime finishes so the game launches on the chosen difficulty.
+
+### GameOverScreen
+`GameOverScreen` appears when the player loses all lives. It shows the defeat message alongside the final score and survival time, and waits for either `ESC` to quit Pyxel or `SPACE` to relaunch via `App.change_to_difficulty_selector()` so the player can try again.
+
 ### Controller
 Command class that facilitates handling user input by providing a unified interface for each function.
 

@@ -11,6 +11,7 @@ from game.presentation.game_over import GameOverScreen
 
 
 class App:
+    """Bootstrap class responsible for picking the right screen and relaunching the process when needed."""
     def __init__(self, new_width: int | None,
                  new_height: int | None,
                  new_difficulty_value: int | None,
@@ -20,6 +21,7 @@ class App:
                 Path(__file__).resolve().parents[2] / "assets" / "global_sprites.pyxres"
         )
 
+        # Determine which screen to boot into (gameplay, game over, or selector) based on CLI args.
         if new_difficulty_value is not None and new_difficulty_value != -1:
             self.current_screen = create_game_app(selected_difficulty=Difficulty(new_difficulty_value), app=self)
         elif new_difficulty_value is not None and new_difficulty_value == -1:
@@ -27,6 +29,7 @@ class App:
         else:
             self.current_screen = DifficultySelectorScreen(app=self)
 
+        # If window size is passed via args reuse it, otherwise fall back to menu defaults.
         if new_width is not None and new_height is not None:
             running_window = Window(width=new_width, height=new_height)
         else:
@@ -51,6 +54,7 @@ class App:
 
     @staticmethod
     def change_to_game(difficulty_value) -> None:
+        # Recreate the window tailored to the selected difficulty and restart the app.
         new_running_window = Window(difficulty=Difficulty(difficulty_value))
 
         project_root = Path(__file__).resolve().parents[2]
@@ -67,6 +71,7 @@ class App:
 
     @staticmethod
     def change_to_game_over(points: int, seconds_alive: float) -> None:
+        # Relaunch the process passing the game over flag along with the final stats.
         new_running_window = Window(width=200, height=175)
 
         project_root = Path(__file__).resolve().parents[2]
@@ -85,6 +90,7 @@ class App:
 
     @staticmethod
     def change_to_difficulty_selector() -> None:
+        # Relaunch the app to return to the difficulty selection screen with default window size.
         new_running_window = Window(width=200, height=175)
 
         project_root = Path(__file__).resolve().parents[2]

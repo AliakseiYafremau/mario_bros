@@ -68,7 +68,19 @@ Key attributes: `capacity` (always eight), `cargo` (list of delivered packages),
 `Game` is the supervisor for the entire shift: it knows all players, belts, factories, and the truck, ensures plumbers stand on valid floors, tracks the remaining lives, and exposes the actions—moving packages, spawning crates, or relocating a player—that keep the level running. Think of it as the facade that bundles the simulation API behind one object so callers have a single entry point for advancing the level.
 Key attributes: `players` (tuple of controllable characters), `floors` (allowed positions for each player), `conveyors`, `factories`, `truck`, `tick` (global time), and `live_amount` (remaining lives before game over).
 
+### Boss
+`Boss` is the surprise inspector that occasionally visits to penalize sloppy play. It inherits `Element` for positioning and carries two extra flags: `comes_in_time`, the timestamp when the boss entered through the door, and `has_to_leave`, which signals the rendering layer to remove the sprite after the visit ends.
+
+### Door
+`Door` is the portal the `Boss` uses. It extends `Element` with a direct reference to the associated `Boss`, letting the presentation layer spawn or hide the inspector based on door animation frames and visit timing.
+
+### Difficulty
+`Difficulty` centralizes the scaling presets. It stores the active difficulty index and exposes `difficulty_values()`, which returns a dictionary describing belts per map, conveyor speeds, point thresholds for increasing difficulty, extra-life cadence, control inversion, and window bounds. Both the game setup and Pyxel windows read from this mapping to stay in sync.
+
 ## Pyxel util classes
+
+### Screen
+`Screen` is the abstract base for every Pyxel screen. It only stores a reference to the owning `App` and defines the `update()`/`draw()` interface, which `DifficultySelectorScreen`, `GameApp`, and `GameOverScreen` implement.
 
 ### App
 `App` is the Pyxel bootstrapper. It looks at the command-line arguments to decide which screen to display (difficulty selector, running game, or game over), constructs an appropriately sized `Window`, loads the `global_sprites.pyxres` pack, and starts the Pyxel loop. It also exposes helpers (`change_to_game()`, `change_to_game_over()`, `change_to_difficulty_selector()`) that relaunch the Python process with new arguments whenever the user switches modes, ensuring each screen starts with a clean state.
@@ -81,6 +93,9 @@ Key attributes: `players` (tuple of controllable characters), `floors` (allowed 
 
 ### GameOverScreen
 `GameOverScreen` appears when the player loses all lives. It shows the defeat message alongside the final score and survival time, and waits for either `ESC` to quit Pyxel or `SPACE` to relaunch via `App.change_to_difficulty_selector()` so the player can try again.
+
+### GameApp
+`GameApp` is the in-game screen. It receives the fully built `Game`, the HUD `PyxelElement`s, and the controller bindings, then drives the simulation loop: throttling package/truck movement ticks, checking for key presses, synchronizing package sprites with their states, refreshing HUD counters, and orchestrating boss visits through the `Door`/`Boss` pair. When the truck fills up or the players lose all lives, it signals the `App` to swap screens.
 
 ### Controller
 Command class that facilitates handling user input by providing a unified interface for each function.
@@ -106,6 +121,22 @@ Decorator for any `PyxelElement` that draws a rectangular border sized after the
 ### PyxelApp
 
 `PyxelApp` wires the Pyxel event loop to the game simulation: it loads sprite resources, keeps a list of `PyxelElement` instances to draw, binds `Controller`s to keyboard buttons, and advances `Game` ticks according to configurable delays for package movement and creation. On every update it polls the buttons, extends the render list with freshly spawned packages, and calls `Game.move_packages()` / `Game.create_package()` when the elapsed time exceeds the configured cadence before redrawing the scene.
+
+## HUD helpers
+
+### PointsCounter
+`PointsCounter` tracks the thousands/hundreds/tens/ones digits shown on the scoreboard. `update_points()` validates that the score fits within four digits, splits the incoming integer into individual digits, and stores them for the renderer.
+
+### LivesCounter
+`LivesCounter` is an `Element` placeholder that marks where the lives indicator is drawn. All logic for adding or removing lives happens in `Game`, but the element lets Pyxel position the corresponding sprites.
+
+### DeliveriesCounter
+`DeliveriesCounter` mirrors `LivesCounter` for the delivered-package counter. It anchors the HUD location where the total deliveries (and thus bonus-life thresholds) are displayed.
+
+## Entry point
+
+### `main()`
+`main()` lives in `game/main.py` and acts as the CLI bridge into Pyxel. It parses up to five optional integers passed on the command line (window width/height, difficulty preset, carried-over points, seconds survived) and forwards them to `App`. When arguments are omitted they remain `None`, allowing the app to fall back to the defaults baked into the presentation layer.
 
 # Main Algorithms
 - `Game.move_packages()` is the heart of the loop. First, it inspects every `Conveyor` for a `falling_package`. If the target `finish_floor` hosts a `Player`, the player briefly picks that package, drops it toward the `next_conveyor`, and the controller inserts it onto the next belt; otherwise a dropped package decrements `live_amount`. After resolving transfers it calls `Conveyor.move_packages()` on each belt and increments the global `tick`.

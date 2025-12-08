@@ -177,7 +177,7 @@ A difficulty level has also been implemented, which determines the number of con
 
 # User manual
 
-All user actions are controlled via `Controllers`. Each `Controller` is responsible for a specific trigger (for example, moving a specific player in a specific direction (up/down)). The __W__ and __S__ buttons are used to control _Luigi_, and the ____ and ____ buttons are used to control _Mario_.
+All user actions are controlled via `Controllers`. Each `Controller` is responsible for a specific trigger (for example, moving a specific player in a specific direction (up/down)). The __W__ and __S__ buttons are used to control _Luigi_, and the __UP__ and __DOWN__ buttons are used to control _Mario_.
 
 # Conclusions
 
@@ -189,6 +189,6 @@ The code itself is formatted and correct due to checks using `ruff` and `mypy`. 
 
 While working on the project, we were inspired by works such as _"Design Patterns: Elements of Reusable Object-Oriented Software"_ and _"Clean Architecture"_. They helped us implement certain parts of the project and gave us a general vision of how to divide responsibilities in the code.
 
-Teamwork was implemented through `git` and __Github__, which facilitated development by working through different branches and pull requests.
+Teamwork was implemented through `git` and __Github__, which facilitated development by working through different branches and pull requests, a tool which (like it was mentioned in the given report example) we believe is extremely important for proper programming.
 
-Despite all the work that has been done, there are some aspects that could be improved. Currently, Window and Difficulty bring in the global state (the game depends on the global value specified in `domain/difficulty.py` and `presentation/gui.py`).
+Despite all the work that has been done, there are some aspects that could be improved. For example, a better starting menu / difficulty selector, a fuller soundtrack for the game, etc.

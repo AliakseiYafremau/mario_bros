@@ -51,12 +51,9 @@ class Element:
 
         :param x: int, the new x-coordinate. Must be a non-negative integer.
         :raises TypeError: if x is not an int.
-        :raises ValueError: if x is negative.
         """
         if not isinstance(x, int):
             raise TypeError("The x coordinate must be an int")
-        if x < 0:
-            raise ValueError("The x coordinate cannot be negative")
         self.__x = x
 
     # y property
@@ -148,7 +145,7 @@ class MotionElement(Element):
         :param x: int, the new x-coordinate, must be >= 0.
         :param y: int, the new y-coordinate, must be >= 0.
         :raises TypeError: if x or y are not ints.
-        :raises ValueError: if x or y are negative.
+        :raises ValueError: if y is negative.
         """
         self.x = int(x)
         self.y = int(y)
@@ -158,7 +155,6 @@ class MotionElement(Element):
 
         :param x: int, the new x-coordinate, must be >= 0.
         :raises TypeError: if x is not an int.
-        :raises ValueError: if x is negative.
         """
         self.move(x=x, y=self.y)
 

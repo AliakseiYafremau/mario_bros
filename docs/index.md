@@ -249,6 +249,9 @@ Avoid losing all three lives.
 
 ## **Controls**
 
+### **General**
+- **ESC** - Quiting the game
+
 ### **Mario**
 - **UP arrow** – Move up  
 - **DOWN arrow** – Move down  
@@ -273,16 +276,28 @@ On the start screen:
 - Press **3** → Extreme  
 - Press **4** → Crazy  
 
+## **Game Over**
+On the lose screen:
+- Press **ESC** → Quit  
+- Press **SPACE** → Play Again  
+
 ## **Game Screenshots**
 
+We've provided some screenshots of the game for reference.
+
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/4b6b949c-5af7-4644-bbce-1a360c4eb74e" />
-**Fig 2.** *Difficulty Selection Screen*
+ **Fig 2.** *Difficulty Selection Screen*
+
+
 
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/29eb6f35-6cb7-4ed9-b71b-a07f3f8ee657" />
-**Fig 3.** *Playing the game*
+ **Fig 3.** *Playing the game*
+
+
 
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/3fb5c1d5-daa8-4688-b1fb-a9f493ba3aa4" />
-**Fig 4.** *Game Over Screen*
+ **Fig 4.** *Game Over Screen*
+
 
 ---
 

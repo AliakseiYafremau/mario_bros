@@ -211,7 +211,7 @@ After certain triggers (like losing a package or resting too long):
 ✔ Full truck movement animation  
 ✔ Dynamic difficulty scaling  
 ✔ Score, lives, and delivery counters  
-✔ Player and resting animations
+✔ Player and resting animations  
 ✔ Boss animation with door event  
 ✔ Sound integration  
 ✔ Full Pyxel rendering system  

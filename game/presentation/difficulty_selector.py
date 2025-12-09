@@ -6,16 +6,37 @@ from game.presentation.screen import Screen
 
 
 class DifficultySelectorScreen(Screen):
-    """Landing screen that handles difficulty selection, confirmation chime, and handoff to the game."""
-    def __init__(self, app):
+    """Landing screen that handles difficulty selection and transitions.
+
+    This screen shows a menu for selecting a difficulty level and
+    plays a confirmation chime before starting the game.
+    """
+
+    def __init__(self, app) -> None:
+        """Initializes the difficulty selector screen.
+
+        :param app: the root application that manages screen changes.
+        """
         super().__init__(app)
         self.selected_difficulty_value: int | None = None
-        self.sound_plays_at: float = 0.0  # Marks when the confirmation sound started playing.
+        # Marks when the confirmation sound started playing.
+        self.sound_plays_at: float = 0.0
 
-    def update(self):
+    def update(self) -> None:
+        """Updates the screen logic.
+
+        Handles:
+          * quitting the application,
+          * difficulty selection,
+          * waiting for the confirmation chime before starting the game.
+        """
         # When a difficulty was selected wait ~1 second for the chime and then start the game.
-        if self.selected_difficulty_value is not None and self.sound_plays_at + 1 < perf_counter():
+        if (
+            self.selected_difficulty_value is not None
+            and self.sound_plays_at + 1 < perf_counter()
+        ):
             self.app.change_to_game(self.selected_difficulty_value)
+
         if pyxel.btnp(pyxel.KEY_ESCAPE):
             pyxel.quit()
         elif pyxel.btnp(pyxel.KEY_1):
@@ -30,11 +51,13 @@ class DifficultySelectorScreen(Screen):
         elif pyxel.btnp(pyxel.KEY_4):
             self.selected_difficulty_value = 3
             pyxel.play(0, 6)
+
         if self.selected_difficulty_value is not None and self.sound_plays_at == 0.0:
             # Record the moment the sound plays so we can delay the transition.
             self.sound_plays_at = perf_counter()
 
-    def draw(self):
+    def draw(self) -> None:
+        """Draws the difficulty selector screen."""
         pyxel.cls(0)
         # Display the instructions for quitting and picking a difficulty level.
         pyxel.text(44, 10, "Mario Bros. --- Game & Watch", 4)
